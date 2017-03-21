@@ -10,7 +10,7 @@ class Author(TimeStampedModel):
     last_name = models.CharField(_('Фамилия'), max_length=255, blank=True)
     middle_name = models.CharField(_('Отчество'), max_length=255, blank=True)
     description = models.TextField(_('Описание'), blank=True)
-    photo = models.ImageField(_('Фото'), max_length=255, blank=True, null=True)
+    photo = models.ImageField(_('Фото'), upload_to='authors', max_length=255, blank=True, null=True)
     is_active = models.BooleanField(default=True)
 
     class Meta:

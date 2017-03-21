@@ -91,3 +91,9 @@ ENV/
 # IDE
 .idea/
 db.sqlite3
+
+# Django
+media/
+
+# OSX
+.DS_Store

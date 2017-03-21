@@ -22,7 +22,9 @@ INSTALLED_APPS = [
 
     'apps.authors',
     'apps.tags',
-    'apps.articles'
+    'apps.articles',
+
+    'apps.utils'
 ]
 
 MIDDLEWARE = [
@@ -90,7 +92,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
 LANGUAGE_CODE = 'ru-RU'
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
@@ -100,3 +102,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Media
+MEDIA_ROOT = '/Users/ptitsyn/projects/country/media/'
+MEDIA_URL = '/storage/'

@@ -6,6 +6,7 @@ from apps.utils.models import TimeStampedModel
 
 class Section(models.Model):
     name = models.CharField(_('Название'), max_length=255, unique=True)
+    slug = models.CharField(_('Слаг'), max_length=255, unique=True)
     is_active = models.BooleanField(default=True)
 
     class Meta:
