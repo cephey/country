@@ -1,0 +1,78 @@
+{% load static %}
+
+<table class="full-table">
+	<tr>
+		<td class="w25"><div style="width:25px; height:1px"><!-- --></div></td>
+		<td class="wp40">
+		<a href="/"><img src="{% static 'i/logo.gif' %}" width="218" height="44" alt="" ></a><br>
+		<div class="p_hv">
+		<div class="bl_normal"><span class="or3_normal">Кто владеет информацией,<br>владеет миром</span></div>
+        </div>
+		</td>
+		<td class="wp60 align-right valign-top">
+            <!--div style="padding-bottom:3px;"><div class="normal">
+                <strong>Вы можете оказать помощь ФОРУМу.мск здесь: WMR R127966713532 , YaD 41001845584610</strong>
+            </div></div-->
+        {% include 'incl/block_rating.html' %}
+
+		</td>
+		<td class="w25"><div style="width:25px; height:1px"><!-- --></div></td>
+	</tr>
+</table>
+<div style="width:7px; height:1px"><!-- --></div>
+
+<div class="align-right"><table class="h21 menu full-table">
+	<tr>
+
+		<td class="clear2 wp85">{% include 'incl/marquee.html' %}</td>
+		<TH>
+		<DIV class=p_h2><!--noindex--><A href="http://forummsk.info/">English</A><!--/noindex--></DIV>
+        </TH>
+		<TD class="clear w2">&nbsp;</TD>
+		<TH>
+		<DIV class=p_h2><A href="/opposition_hoop/">Кольцо&nbsp;оппозиции</A></DIV>
+        </TH>
+		<TD class="clear w2">&nbsp;</TD>
+		<th><div class="p_h2"><a href="/dialog/">Форум</a></div></th>
+		<td class="w25 clear"><div style="width:25px; height:1px"><!-- --></div></td>
+	</tr>
+</table></div>
+
+<table class="full-table menu h35">
+	<tr>
+		<td class="w25"><div style="width:25px; height:1px"><!-- --></div></td>
+        {% if active_section %} {# current section name #}
+            <td class="align-center">
+                <div class="p_h">
+                    <a href="/">Главная</a>
+                </div>
+            </td>
+        {% else %}
+            <th> {# active #}
+                <div class="p_h">
+                    <a href="/">Главная</a>
+                </div>
+            </th>
+        {% endif %}
+
+        {% for section in sections %}
+            {% if active_section and active_section == section.slug %}
+                <th>
+                    <div class="p_h">
+                        <a href="{% url 'articles:section' section.slug %}">{{ section.name }}</a>
+                    </div>
+                </th>
+            {% else %}
+                {% if not active_section %}
+                    <td><img src="{% static 'i/sep2.gif' %}" width="1" height="21" alt=""></td>
+                {% endif %}
+                <td class="align-center">
+                    <div class="p_h">
+                        <a href="{% url 'articles:section' section.slug %}">{{ section.name }}</a>
+                    </div>
+                </td>
+            {% endif %}
+        {% endfor %}
+		<td class="w25"><div style="width:25px; height:1px"><!-- --></div></td>
+	</tr>
+</table>

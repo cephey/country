@@ -1,7 +1,12 @@
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from apps.utils.models import TimeStampedModel
+
+NAVIGATE_SECTIONS = [
+    'politic', 'economic', 'region', 'society', 'power', 'fpolitic', 'kompromat', 'moscow'
+]
 
 
 class Section(models.Model):
@@ -16,6 +21,9 @@ class Section(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('articles:section', kwargs={'slug': self.slug})
 
 
 class Article(TimeStampedModel):
@@ -36,6 +44,9 @@ class Article(TimeStampedModel):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('articles:detail', kwargs={'slug': self.section.slug, 'pk': self.id})
 
 
 class Comment(models.Model):

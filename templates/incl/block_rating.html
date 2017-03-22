@@ -1,0 +1,40 @@
+{% load static %}
+{% load htmlutils %}
+
+<table class="full-table bgE6F0F5">
+    <tr>
+        <td class="valign-top bg_blu_l w27">
+            <div class="p_hv">
+                <img src="{% static 'i/l_reiting.gif' %}" width="27" height="28" alt="">
+            </div>
+        </td>
+        <td class="valign-top bg_blu_r">
+            <div class="p_hv align-left">
+                <div class="big1">Рейтинг</div>
+                <div class="normal" style="position:absolute;top:20px;right:30px">
+                    <a href="{% url 'articles:section' 'best' %}">все лучшие новости</a>
+                    <span class="active">
+                        <a href="{% url 'articles:section' 'best' %}">&gt;&gt;</a>
+                    </span>
+                </div>
+				<div class="normal align-left">
+                    {% if news %}
+                        <ul>
+                            {% for news in news_list %}
+                                <li>
+                                    <a href="{% url 'articles:detail' news.slug news.id %}">{{ news.name }}</a>
+                                    {% if news.comments_count %}
+                                        <span class="active">
+                                            <a title="{{ news.comments_count|num_ending:'комментари,й,я,ев' }}"
+                                               href="{% url 'articles:detail' news.slug news.id %}#clist">({{ news.comments_count }})</a>
+                                        </span>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
