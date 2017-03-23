@@ -19,6 +19,10 @@ class Author(TimeStampedModel):
         ordering = ('-pk',)
 
     def __str__(self):
+        return self.cover_name
+
+    @property
+    def cover_name(self):
         return '{} {}'.format(self.last_name, self.first_name)
 
     # def get_absolute_url(self):

@@ -1,0 +1,47 @@
+<div class="big1 rl">
+    <a href="{% url 'articles:section' section.slug %}">{{ section.name }}</a>
+</div>
+
+<div style="width:1px; height:1px"><!-- --></div>
+
+<div class="border_bl">
+
+    {% if section.atricles %}
+
+        {% with section.atricles.0 as article %}
+            {% include 'incl/article_block_v2.html' %}
+        {% endwith %}
+
+        {% if section.atricles|length > 1 %}
+
+            <div style="height:1px; background: #C1DAE6;"><!-- --></div>
+            <div class="normal">
+                <div class="p_h">
+                    {% for article in section.atricles|slice:'1:' %}
+                        {% include 'incl/article_block_short.html' %}
+                    {% endfor %}
+                </div>
+                <div style="height:1px; background: #C1DAE6;"><!-- --></div>
+                <div class="p_hv">
+                    <div class="align-right">
+                        <a href="{% url 'articles:section' section.slug %}">все материалы раздела</a>
+                        <span class="active">
+                            <a href="{% url 'articles:section' section.slug %}">&gt;&gt;</a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+        {% endif %}
+
+    {% endif %}
+
+    <table class="full-table h7 bgFFF0E6">
+        <tr>
+            <td class="bg_blu_l w7"><div style="width:7px; height:7px"><!-- --></div></td>
+            <td class="wp100 bg_blu_c"><div style="width:1px; height:7px"><!-- --></div></td>
+            <td class="bg_blu_r w7"><div style="width:7px; height:7px"><!-- --></div></td>
+        </tr>
+    </table>
+
+</div>

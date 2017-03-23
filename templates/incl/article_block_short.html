@@ -1,0 +1,11 @@
+{% load htmlutils %}
+
+<div class="list {% if article.video %}list_video{% endif %}">
+    <a href="{% url 'articles:detail' article.slug article.id %}">{{ article.title }}</a>
+    {% if article.comments_count %}
+        <span class="active">
+            <a title="{{ article.comments_count|num_ending:'комментари,й,я,ев' }}"
+               href="{% url 'articles:detail' article.slug article.id %}#clist">({{ article.comments_count }})</a>
+        </span>
+    {% endif %}
+</div>

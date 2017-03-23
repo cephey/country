@@ -1,7 +1,8 @@
 {% load static %}
+{% load htmlutils %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}ФОРУМ.мск{% endblock %}</title>
@@ -38,17 +39,241 @@
 <meta name="viewport" content="maximum-scale=1">
 </head>
 <body>
-{% block body %}{% endblock %}
+{% include 'incl/header_bottom.html' %}
+<table class="full-table">
+    <tr>
+		<td class="w25">
+            <div style="width:25px; height:1px"><!-- --></div>
+        </td>
+
+		<td class="wp{% if no_right_column %}100{% else %}70{% endif %} valign-top">
+
+            <table class="full-table">
+                <tr>
+                    <td>
+                        <div class="big1 or">Главная новость</div>
+                        <div style="width:1px; height:1px"><!-- --></div>
+                    </td>
+                    <td>&nbsp;</td>
+                    <td>
+                        <div class="big1 or">Материал дня</div>
+                        <div style="width:1px; height:1px"><!-- --></div>
+                    </td>
+                </tr>
+                <tr>
+                    {% include 'incl/article_block.html' with article=main_news color='bgFFF0E6' %}
+                    <td class="w7">
+                        <div style="width:7px; height:1px"><!-- --></div>
+                    </td>
+                    {% include 'incl/article_block.html' with article=main_material color='bgFFF0E6' %}
+                </tr>
+            </table>
+
+            <div style="margin-top: 5px;" class="normal align-center">
+                {% include 'incl/ya_direct.html' %}
+            </div>
+
+            <div style="width:1px; height:7px"><!-- --></div>
+
+            <table class="full-table">
+                <tr>
+                    <td class="valign-top wp50">
+                        {% include 'incl/block_part_main.html' with section=materials.politic %}
+                        <div style="width:1px; height:7px"><!-- --></div>
+                    </td>
+                    <td class="w7">
+                        <div style="width:7px; height:1px"><!-- --></div>
+                    </td>
+                    <td class="valign-top wp50">
+                        {% include 'incl/block_part_main.html' with section=materials.moscow %}
+                        <div style="width:1px; height:7px"><!-- --></div>
+                    </td>
+                </tr>
+            </table>
+
+            <table class="full-table">
+                <tr>
+                    <td class="valign-top wp50">
+                        {% include 'incl/block_part_main.html' with section=materials.economic %}
+                        <div style="width:1px; height:7px"><!-- --></div>
+                        {% include 'incl/block_part_main.html' with section=materials.region %}
+                        <div style="width:1px; height:7px"><!-- --></div>
+                        {% include 'incl/block_part_main.html' with section=materials.society %}
+                        <div style="width:1px; height:7px"><!-- --></div>
+                    </td>
+                    <td class="w7">
+                        <div style="width:7px; height:1px"><!-- --></div>
+                    </td>
+                    <td class="valign-top wp50">
+                        {% include 'incl/block_part_main.html' with section=materials.power %}
+                        <div style="width:1px; height:7px"><!-- --></div>
+                        {% include 'incl/block_part_main.html' with section=materials.fpolitic %}
+                        <div style="width:1px; height:7px"><!-- --></div>
+                        {% include 'incl/block_part_main.html' with section=materials.kompromat %}
+                        <div style="width:1px; height:7px"><!-- --></div>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="align-center">
+                <a href="/stalin/">
+                    <img src="{% static 'i/banner/bun_center1.gif' %}" width=234 height=60 alt="Сталин">
+                </a>&nbsp;
+                <a href="/vernost_leninu/">
+                    <img src="{% static 'i/banner/bun_center2.gif' %}" width=234 height=60 alt="Ленин">
+                </a>&nbsp;
+                <a rel="nofollow" href="http://www.putinavotstavku.org/" target="_blank">
+                    <img src="http://www.putinavotstavku.org/images/informer.gif" width="220" height="58" alt="Путин должен уйти" title="Путин должен уйти">
+                </a>
+            </div>
+
+        </td>
+
+		<td class="w7">
+            <div style="width:7px; height:1px"><!-- --></div>
+        </td>
+
+        {% if not no_right_column %}
+
+            <td class="wp30 valign-top">
+
+                <& /www/comps/block_material_votes.msn &>
+                <% spacer(w=>1,h=>14) %>
+
+                <& block_video.msn &>
+                <% spacer(w=>1,h=>14) %>
+
+                <& block_news.msn &>
+                <% spacer(w=>1,h=>14) %>
+
+                {% if request.path != '/' %}
+                    <table class="wp100">
+                        <tr>
+                            <td class="align-center">
+                                <div id="yandex_ad_R-59310-1"></div>
+                            </td>
+                        </tr>
+                    </table>
+                {% endif %}
+
+                <& block_notice.msn &>
+                <% spacer(w=>1,h=>14) %>
+
+                <& search.msn &>
+                <% spacer(w=>1,h=>7) %>
+
+                <& add_news.msn &>
+                <% spacer(w=>1,h=>14) %>
+
+
+                <& block_bloggers.msn &>
+                <% spacer(w=>1,h=>14) %>
+
+
+                <& block_author.msn &>
+                <% spacer(w=>1,h=>14) %>
+
+                {% if request.path == '/' %}
+                    <iframe src="http://worldcrisis.ru/crisis/crisis/wc_club_foummsk_t" width="100%" frameborder="0" height="200" scrolling="no"></iframe>
+                {% endif %}
+
+                <& block_banner_right.msn &>
+                <% spacer(w=>1,h=>14) %>
+
+                <% spacer(w=>1,h=>14) %>
+                <& banner/bottom_right100.msn &>
+
+                <div class="sape">
+                    <!--# block name="adv" -->&nbsp;<!--# endblock -->
+                    <!--# include virtual="/sape/" stub="adv" -->
+                </div>
+
+            </td>
+
+            <td class="w25">
+                <div style="width:25px; height:1px"><!-- --></div>
+            </td>
+
+        {% endif %}
+    </tr>
+</table>
+
+<div style="width:1px; height:14px"><!-- --></div>
+
+<& block_banners_bottom.msn &>
+
+<table class="full-table h21">
+	<tr>
+		<td class="w25 footer">
+            <div style="width:25px; height:1px"><!-- --></div>
+        </td>
+		<td class="footer">
+            <div class="p_l">
+                <div class="wh_normal">&copy; 1998-2016 <!--noindex--><a href="/">ФОРУМ.мск</a> (наши зеркала: <a href="http://forum-msk.org">forum-msk.org</a> <a rel="nofollow" href="http://forum-msk.com.ua">forum-msk.com.ua</a> <a rel="nofollow"  href="http://forummsk.info">forummsk.info</a>)<!--/noindex--></div>
+            </div>
+		</td>
+		<td class="align-right footer">
+            <div class="p_l">
+                <div class="wh_normal"><a href="/about/">о нас</a> | <a href="/i/banner/bun_88x31_1.gif">наша кнопка</a> | <a href="/advert/">реклама на сайте</a> | <!--noindex--><a rel="nofollow" href="http://spreadsheets.google.com/viewform?formkey=dHprVFlvQ0tMbjVscVRvMGM5Z1BmTnc6MQ"><span style="color:red">связаться с нами</span></a> | email: forum-msk@yandex.ru<!--/noindex--></div>
+            </div>
+		</td>
+		<td class="w25 footer">
+            <div style="width:25px; height:1px"><!-- --></div>
+        </td>
+	</tr>
+</table>
+
+<& block_text_banners3.msn &>
+
+<& count.msn &>
+
+%	if ($r->uri ne "/index.html") {
+		<& ../import/partner_redtram2.msn &>
+%	}
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-1566987-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+<!-- Yandex.Metrika counter --><script type="text/javascript">(function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter17515558 = new Ya.Metrika({id:17515558, enableAll: true}); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f); } else { f(); } })(document, window, "yandex_metrika_callbacks");</script><noscript><div><img src="//mc.yandex.ru/watch/17515558" style="position:absolute; left:-9999px;" alt="" /></div></noscript><!-- /Yandex.Metrika counter -->
+% if ($ARGS{share}) {
+    <script type="text/javascript" src="//yastatic.net/share/share.js" charset="utf-8"></script>
+% }
+
+% if ($r->uri ne '/index.html') {
+        <script type="text/javascript">
+        (function(w, d, n, s, t) {
+            w[n] = w[n] || [];
+            w[n].push(function() {
+                Ya.Context.AdvManager.render({
+                    blockId: "R-59310-1",
+                    renderTo: "yandex_ad_R-59310-1",
+                    async: true
+                });
+            });
+            t = d.getElementsByTagName("script")[0];
+            s = d.createElement("script");
+            s.type = "text/javascript";
+            s.src = "//an.yandex.ru/system/context.js";
+            s.async = true;
+            t.parentNode.insertBefore(s, t);
+        })(this, this.document, "yandexContextAsyncCallbacks");
+        </script>
+% }
 </body>
 </html>
-
-
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<body>
-{% include 'incl/header_bottom.html' %}
-
-<table class="full-table">
-	<tr>
-		<td class="w25"><% spacer(w=>25,h=>1) %></td>
-		<td class="wp<% $request->{no_right_column} ? '100' : '70' %> valign-top">
+<%init>
+    return if $m->cache_self(expire_in => '60', expire_if => sub { $ARGS{expire} },
+        key => 'footer.msn|'.
+            ($r->uri =~ /material/ ? 'material' : '' ) .
+            ($r->uri ne "/index.html" ? '' : 'index') .
+            ( $request->{no_right_column} ? 'no_right_column' : '' ) );
+</%init>

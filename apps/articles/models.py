@@ -33,6 +33,8 @@ class Article(TimeStampedModel):
     authors = models.ManyToManyField('authors.Author', blank=True)
     publish_date = models.DateTimeField(_('Дата публикации'), blank=True, null=True)
     is_active = models.BooleanField(default=True)
+    image = models.ImageField(_('Картинка'), upload_to='articles_image', max_length=255, blank=True, null=True)
+    video = models.FileField(_('Видео'), upload_to='articles_video', max_length=255, blank=True, null=True)
 
     comments_count = models.PositiveIntegerField(_('Кол-во комментариев'), editable=False, default=0)
     # rating field
@@ -47,6 +49,33 @@ class Article(TimeStampedModel):
 
     def get_absolute_url(self):
         return reverse('articles:detail', kwargs={'slug': self.section.slug, 'pk': self.id})
+
+    @property
+    def icon(self):
+        """
+        my $image = $news->get_multimedia_first_image;
+        my $src;
+        if ( $image && ref($image) ) {
+            $src = $image->get_pimage('100x100');
+
+        } elsif ($news->video) {
+            $src = $news->get_preview_video_image;
+        }
+        """
+        return self.image.name
+
+    @property
+    def preview(self):
+        return self.content[:200]
+
+    @property
+    def main_author(self):
+        return self.authors.all()[0]
+
+    @property
+    def author_names(self):
+        names = [a.cover_name for a in self.authors.all()]
+        return ','.join(names)
 
 
 class Comment(models.Model):

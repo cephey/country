@@ -1,0 +1,36 @@
+{% load htmlutils %}
+
+<table class="full-table">
+    <tr>
+        <td>
+            <div class="p_hv">
+                <img class="pwi" src="{{ article.icon }}" alt="{{ article.title }}">
+                <div class="or2_normal">
+                    <strong>
+                        <a href="{% url 'articles:detail' article.slug article.id %}">{{ article.title }}</a>
+                    </strong>
+                    {% if article.comments_count %}
+                        <span class="active">
+                            <a title="{{ article.comments_count|num_ending:'комментари,й,я,ев' }}"
+                               href="{% url 'articles:detail' article.slug article.id %}#clist">({{ article.comments_count }})</a>
+                        </span>
+                    {% endif %}
+                    <br>
+                    <span>
+                        {% if article.main_author %}
+                            <a rel="author" href="{% url 'authors:detail' article.main_author.id %}.html">
+                                <em>{{ article.main_author.cover_name }}</em>
+                            </a>
+                        {% endif %}
+                        {{ article.publish_date }}
+                    </span>
+                </div>
+                <div class="p_t">
+                    <div class="normal">
+                        <a href="{% url 'articles:detail' article.slug article.id %}">{{ article.preview }}</a>
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
