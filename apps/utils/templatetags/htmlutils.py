@@ -1,3 +1,4 @@
+import math
 from django import template
 
 register = template.Library()
@@ -19,5 +20,10 @@ def crop(link, size):
 @register.filter(name='partition')
 def partition(lst, n):
     n = int(n)
-    division = len(lst) / float(n)
-    return [lst[int(round(division * i)): int(round(division * (i + 1)))] for i in range(n)]
+    div = math.ceil(len(lst) / float(n))
+
+    result = [[] for i in range(div)]
+    for i, item in enumerate(lst):
+        result[i % div].append(item)
+
+    return result

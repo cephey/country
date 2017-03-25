@@ -24,8 +24,9 @@ class Blogger(TimeStampedModel):
     def cover_name(self):
         return '{} {}'.format(self.last_name, self.first_name)
 
-    def icon(self, size):
-        return self.photo.name
+    @property
+    def icon(self):
+        return '/storage/' + self.photo.name
 
 
 class Entry(TimeStampedModel):

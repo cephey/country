@@ -28,6 +28,7 @@ class Section(models.Model):
 
 class Article(TimeStampedModel):
     title = models.CharField(_('Заголовок'), max_length=255)
+    description = models.TextField(_('Описание'), blank=True)
     content = models.TextField(_('Содержание'), blank=True)
     section = models.ForeignKey('articles.Section', verbose_name=_('Раздел'))
     authors = models.ManyToManyField('authors.Author', blank=True)
@@ -62,11 +63,11 @@ class Article(TimeStampedModel):
             $src = $news->get_preview_video_image;
         }
         """
-        return self.image.name
+        return '/storage/' + self.image.name
 
     @property
     def preview(self):
-        return self.content[:200]
+        return self.description or (self.content[:400] + '...')
 
     @property
     def main_author(self):
@@ -79,6 +80,8 @@ class Article(TimeStampedModel):
 
 
 class Comment(models.Model):
+    article = models.ForeignKey('articles.Article', verbose_name=_('Статья'))
+    parent = models.ForeignKey('self', verbose_name=_('Родительский комментарий'), blank=True, null=True)
     username = models.CharField(_('Имя'), max_length=255)
     title = models.CharField(_('Заголовок'), max_length=255, blank=True)
     content = models.TextField(_('Содержание'))

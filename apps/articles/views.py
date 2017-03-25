@@ -12,6 +12,7 @@ class IndexView(TemplateView):
         kwargs.update(
             sections=Section.objects.filter(slug__in=NAVIGATE_SECTIONS).order_by('id'),
             marquee=Article.objects.filter(section__slug='news').order_by('-publish_date').first(),
+
             news_list=Article.objects.filter(section__slug='news').order_by('?')[:3],  # order by vote_sum?
 
             main_news=Article.objects.filter(section__slug='news').order_by('-publish_date').first(),
@@ -31,8 +32,8 @@ class IndexView(TemplateView):
             video_articles=Article.objects.filter(video__isnull=False)[:2],
             news_articles=Article.objects.filter(section__slug='news').order_by('?')[:10],  # order by vote_sum?
             notices=Notice.objects.all()[:3],
-            entries=Entry.objects.all()[:5],
-            authors=Author.objects.order_by('last_name')[:20]
+            entries=Entry.objects.order_by('?')[:5],
+            authors=Author.objects.order_by('last_name')[:15]
         )
         # 6 articles for each section
         # order by data (+ shuffle)

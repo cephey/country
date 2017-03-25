@@ -6,33 +6,37 @@
 
 <div class="border_bl">
 
-    {% if section.atricles %}
+    {% if section.article_set.exists %}
 
-        {% with section.atricles.0 as article %}
-            {% include 'incl/article_block_v2.html' %}
-        {% endwith %}
+        {% with atricles=section.article_set.all|slice:':6' %}
 
-        {% if section.atricles|length > 1 %}
+            {% with article=atricles.0 %}
+                {% include 'incl/article_block_v2.html' %}
+            {% endwith %}
 
-            <div style="height:1px; background: #C1DAE6;"><!-- --></div>
-            <div class="normal">
-                <div class="p_h">
-                    {% for article in section.atricles|slice:'1:' %}
-                        {% include 'incl/article_block_short.html' %}
-                    {% endfor %}
-                </div>
+            {% if atricles|length > 1 %}
+
                 <div style="height:1px; background: #C1DAE6;"><!-- --></div>
-                <div class="p_hv">
-                    <div class="align-right">
-                        <a href="{% url 'articles:section' section.slug %}">все материалы раздела</a>
-                        <span class="active">
-                            <a href="{% url 'articles:section' section.slug %}">&gt;&gt;</a>
-                        </span>
+                <div class="normal">
+                    <div class="p_h">
+                        {% for article in atricles|slice:'1:' %}
+                            {% include 'incl/article_block_short.html' %}
+                        {% endfor %}
+                    </div>
+                    <div style="height:1px; background: #C1DAE6;"><!-- --></div>
+                    <div class="p_hv">
+                        <div class="align-right">
+                            <a href="{% url 'articles:section' section.slug %}">все материалы раздела</a>
+                            <span class="active">
+                                <a href="{% url 'articles:section' section.slug %}">&gt;&gt;</a>
+                            </span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-        {% endif %}
+            {% endif %}
+
+        {% endwith %}
 
     {% endif %}
 

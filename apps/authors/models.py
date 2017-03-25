@@ -25,5 +25,9 @@ class Author(TimeStampedModel):
     def cover_name(self):
         return '{} {}'.format(self.last_name, self.first_name)
 
+    @property
+    def icon(self):
+        return '/storage/' + self.photo.name
+
     # def get_absolute_url(self):
     #     return reverse('web:author-detail', kwargs={'pk': self.pk, 'slug': self.slug})
