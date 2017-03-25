@@ -23,6 +23,8 @@ INSTALLED_APPS = [
     'apps.authors',
     'apps.tags',
     'apps.articles',
+    'apps.polls',
+    'apps.bloggers',
 
     'apps.utils'
 ]

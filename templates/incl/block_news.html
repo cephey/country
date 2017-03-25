@@ -1,0 +1,34 @@
+{% load static %}
+
+<table class="full-table">
+    <tr>
+        <td class="bg_enews2 w9">
+            <img src="{% static 'i/bg_enews.gif' %}" width="9" height="26" alt="">
+        </td>
+        <td class="bg_enews2 w7">
+            <div style="width:7px; height:1px"><!-- --></div>
+        </td>
+        <td class="bg_enews2">
+            <span class="big2">
+                <a href="{% url 'articles:section' 'news' %}">Новости</a>
+            </span>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div style="width:1px; height:1px"><!-- --></div>
+        </td>
+        <td class="bg_blu_l">
+            <div style="width:1px; height:1px"><!-- --></div>
+        </td>
+        <td class="bg_blu_r">
+            <div class="p_b">
+                <div class="normal">
+                    {% for article in news_articles %}
+                        {% include 'incl/article_block_short.html' %}
+                    {% endfor %}
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>

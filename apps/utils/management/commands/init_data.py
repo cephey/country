@@ -3,8 +3,12 @@ from django.core.management.base import BaseCommand
 
 from apps.authors.models import Author
 from apps.authors.factories import AuthorFactory
-from apps.articles.models import Section, Article
-from apps.articles.factories import SectionFactory, ArticleFactory
+from apps.articles.models import Section, Article, Notice
+from apps.articles.factories import SectionFactory, ArticleFactory, NoticeFactory
+from apps.bloggers.models import Blogger, Entry
+from apps.bloggers.factories import BloggerFactory, EntryFactory
+from apps.polls.models import Poll, Choice
+from apps.polls.factories import PollFactory, ChoiceFactory
 
 
 class Command(BaseCommand):
@@ -13,28 +17,46 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
 
         # remove all
+        Notice.objects.all().delete()
         Article.objects.all().delete()
         Section.objects.all().delete()
         Author.objects.all().delete()
 
+        Blogger.objects.all().delete()
+        Entry.objects.all().delete()
+
+        Poll.objects.all().delete()
+        Choice.objects.all().delete()
+
         # create all
         authors = AuthorFactory.create_batch(12)
         sections = [
-            SectionFactory(name='politic', slug='Политический расклад'),
-            SectionFactory(name='economic', slug='Экономическая реальность'),
-            SectionFactory(name='region', slug='Жизнь регионов'),
-            SectionFactory(name='society', slug='Общество и его культура'),
-            SectionFactory(name='power', slug='Силовые структуры'),
-            SectionFactory(name='fpolitic', slug='Особенности внешней политики'),
-            SectionFactory(name='kompromat', slug='Компрометирующие материалы'),
-            SectionFactory(name='moscow', slug='Московский листок'),
-            SectionFactory(name='news', slug='Новости'),
-            SectionFactory(name='best', slug='Лучшие статьи ФОРУМ.мск за последнюю неделю')
+            SectionFactory(name='Политический расклад', slug='politic'),
+            SectionFactory(name='Экономическая реальность', slug='economic'),
+            SectionFactory(name='Жизнь регионов', slug='region'),
+            SectionFactory(name='Общество и его культура', slug='society'),
+            SectionFactory(name='Силовые структуры', slug='power'),
+            SectionFactory(name='Особенности внешней политики', slug='fpolitic'),
+            SectionFactory(name='Компрометирующие материалы', slug='kompromat'),
+            SectionFactory(name='Московский листок', slug='moscow'),
+
+            SectionFactory(name='Новости', slug='news'),
+            SectionFactory(name='Лучшие статьи ФОРУМ.мск за последнюю неделю', slug='best'),
+            SectionFactory(name='Видео', slug='video'),
         ]
 
         for section in sections:
-            for i in range(random.randint(3, 10)):
+            for i in range(random.randint(10, 20)):
                 ArticleFactory(
                     section=section,
                     authors=random.sample(authors, random.randint(1, 2))
                 )
+        NoticeFactory.create_batch(16)
+
+        polls = PollFactory.create_batch(3)
+        for poll in polls:
+            ChoiceFactory.create_batch(random.randint(3, 6), poll=poll)
+
+        bloggers = BloggerFactory.create_batch(6)
+        for blogger in bloggers:
+            EntryFactory.create_batch(random.randint(2, 8), blogger=blogger)

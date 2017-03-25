@@ -22,5 +22,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'', include('apps.articles.urls', namespace='articles')),
     url(r'^author/', include('apps.authors.urls', namespace='authors')),
+    url(r'^polls/', include('apps.polls.urls', namespace='polls')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

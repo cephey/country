@@ -22,11 +22,11 @@
                         <ul>
                             {% for news in news_list %}
                                 <li>
-                                    <a href="{% url 'articles:detail' news.slug news.id %}">{{ news.name }}</a>
+                                    <a href="{% url 'articles:detail' news.section.slug news.id %}">{{ news.title }}</a>
                                     {% if news.comments_count %}
                                         <span class="active">
                                             <a title="{{ news.comments_count|num_ending:'комментари,й,я,ев' }}"
-                                               href="{% url 'articles:detail' news.slug news.id %}#clist">({{ news.comments_count }})</a>
+                                               href="{% url 'articles:detail' news.section.slug news.id %}#clist">({{ news.comments_count }})</a>
                                         </span>
                                     {% endif %}
                                 </li>

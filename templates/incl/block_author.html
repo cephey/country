@@ -1,0 +1,51 @@
+{% load static %}
+{% load htmlutils %}
+
+<table class="full-table">
+    <tr>
+        <td class="bg_enews2 w9">
+            <img src="{% static 'i/bg_enews.gif' %}" width="9" height="26" alt="">
+        </td>
+        <td class="bg_enews2 w7">
+            <div style="width:7px; height:1px"><!-- --></div>
+        </td>
+        <td class="bg_enews2">
+            <span class="big2">Авторы</span>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div style="width:1px; height:1px"><!-- --></div>
+        </td>
+        <td class="bg_blu_l">
+            <div style="width:7px; height:1px"><!-- --></div>
+        </td>
+        <td class="bg_blu_r">
+            <div class="p_b">
+                <div class="normal">
+                    <table class="wp100">
+                        {% for sublist in authors|partition:'2' %}
+                            <tr>
+                                {% for author in sublist %}
+                                    <td class="w27 h27 align-center">
+                                        {% if author.photo %}
+                                            <img src="{{ author.icon|crop:'25x25' }}" width="25" height="25" alt="">
+                                        {% else %}
+                                            &nbsp;
+                                        {% endif %}
+                                    </td>
+                                    <td class="wp50 align-left">
+                                        <a href="{% url 'authors:detail' author.id %}.html">{{ author.cover_name }}</a>
+                                    </td>
+                                {% endfor %}
+                                {% if sublist|length < 2 %}
+                                    <td></td><td></td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>

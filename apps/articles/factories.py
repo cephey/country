@@ -1,7 +1,7 @@
 import factory
 from django.utils import timezone
 
-from apps.articles.models import Section, Article
+from apps.articles.models import Section, Article, Notice
 
 
 class SectionFactory(factory.django.DjangoModelFactory):
@@ -35,3 +35,11 @@ class ArticleFactory(factory.django.DjangoModelFactory):
         if extracted:
             author = AuthorFactory()
             obj.authors.add(author)
+
+
+class NoticeFactory(factory.django.DjangoModelFactory):
+
+    class Meta:
+        model = Notice
+
+    content = factory.Faker('text', max_nb_chars=256, locale='ru_RU')

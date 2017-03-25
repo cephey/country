@@ -1,0 +1,60 @@
+{% load static %}
+
+<table class="full-table">
+    <tr>
+        <td class="bg_orange2 w9">
+            <img src="{% static 'i/bg_or.gif' %}" width="9" height="26" alt="">
+        </td>
+        <td class="bg_orange2 w7">
+            <div style="width:7px; height:1px"><!-- --></div>
+        </td>
+        <td class="bg_orange2">
+            <span class="big2">Анонсы</span>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div style="width:1px; height:1px"><!-- --></div>
+        </td>
+        <td class="bg_or_l">
+            <div style="width:7px; height:1px"><!-- --></div>
+        </td>
+        <td class="bg_or_r">
+            <div class="p_v">
+                <div class="normal">
+                    <ul style="margin: 0; padding: 0 5px 0 10px;">
+                        {% for notice in notices %}
+                            <li class="li_normal">
+                                <a href="/notice/#{{ notice.id }}">{{ notice.content }}</a>
+                                <span class="active_or">
+                                    <a href="/notice/#{{ notice.id }}">&gt;&gt;</a>
+                                </span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <div style="height:1px; background: #FFD4B7;"><!-- --></div>
+                    <table class="wp100">
+                        <tr>
+                            <td class="align-left">
+                                <div class="p_hv nobr">
+                                    <span class="active_or">
+                                        <a href="/notice/#send">&lt;&lt;</a>
+                                    </span>
+                                    <a href="/notice/#send">добавить анонс</a>
+                                </div>
+                            </td>
+                            <td class="align-right">
+                                <div class="align-right p_hv nobr">
+                                    <a href="/notice/">последние анонсы</a>
+                                    <span class="active_or">
+                                        <a href="/notice/">&gt;&gt;</a>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>

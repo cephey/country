@@ -10,12 +10,12 @@
                     <img class="pwi" src="{{ article.icon }}" alt="{{ article.title }}">
                     <div class="or2_normal">
                         <strong>
-                            <a href="{% url 'articles:detail' article.slug article.id %}">{{ article.title }}</a>
+                            <a href="{% url 'articles:detail' article.section.slug article.id %}">{{ article.title }}</a>
                         </strong>
                         {% if article.comments_count %}
                             <span class="active_or">
                                 <a title="{{ article.comments_count|num_ending:'комментари,й,я,ев' }}"
-                                   href="{% url 'articles:detail' article.slug article.id %}#clist">({{ article.comments_count }})</a>
+                                   href="{% url 'articles:detail' article.section.slug article.id %}#clist">({{ article.comments_count }})</a>
                             </span>
                         {% endif %}
                         <br>
@@ -30,9 +30,9 @@
                     </div>
                     <div class="p_t">
                         <div class="normal">
-                            <a href="{% url 'articles:detail' article.slug article.id %}">{{ article.preview }}</a>
+                            <a href="{% url 'articles:detail' article.section.slug article.id %}">{{ article.preview }}</a>
                             <span class="active_or">
-                                <a href="{% url 'articles:detail' article.slug article.id %}">&gt;&gt;</a>
+                                <a href="{% url 'articles:detail' article.section.slug article.id %}">&gt;&gt;</a>
                             </span>
                         </div>
                     </div>

@@ -1,5 +1,8 @@
 from django.views.generic import TemplateView
-from apps.articles.models import Article, Section, NAVIGATE_SECTIONS
+from apps.authors.models import Author
+from apps.articles.models import Article, Section, NAVIGATE_SECTIONS, Notice
+from apps.polls.models import Poll
+from apps.bloggers.models import Entry
 
 
 class IndexView(TemplateView):
@@ -15,19 +18,46 @@ class IndexView(TemplateView):
             main_material=Article.objects.filter(section__slug='best').order_by('-publish_date').first(),
 
             materials={
-                'politic': Section.objects.filter(slug='politic'),
-                'moscow': Section.objects.filter(slug='moscow'),
-                'economic': Section.objects.filter(slug='economic'),
-                'region': Section.objects.filter(slug='region'),
-                'society': Section.objects.filter(slug='society'),
-                'power': Section.objects.filter(slug='power'),
-                'fpolitic': Section.objects.filter(slug='fpolitic'),
-                'kompromat': Section.objects.filter(slug='kompromat'),
-            }
+                'politic': Section.objects.get(slug='politic'),
+                'moscow': Section.objects.get(slug='moscow'),
+                'economic': Section.objects.get(slug='economic'),
+                'region': Section.objects.get(slug='region'),
+                'society': Section.objects.get(slug='society'),
+                'power': Section.objects.get(slug='power'),
+                'fpolitic': Section.objects.get(slug='fpolitic'),
+                'kompromat': Section.objects.get(slug='kompromat'),
+            },
+            poll=Poll.objects.order_by('?').first(),
+            video_articles=Article.objects.filter(video__isnull=False)[:2],
+            news_articles=Article.objects.filter(section__slug='news').order_by('?')[:10],  # order by vote_sum?
+            notices=Notice.objects.all()[:3],
+            entries=Entry.objects.all()[:5],
+            authors=Author.objects.order_by('last_name')[:20]
         )
         # 6 articles for each section
         # order by data (+ shuffle)
+
+        kwargs['text_banner'] = self.get_text_banner()
         return super().get_context_data(**kwargs)
+
+    def get_text_banner(self):
+        """
+        my $self = shift;
+        return $self->get_text_banner_by_tbn($self->get_tbn_by_uri(@_));
+        my $sape = new Forum::Export::Links(
+            user => 'c55bf3fc219b9610c2b8abde2d8ed171',
+            host => 'forum.msk.ru',
+            charset => 'koi8-r',
+            timeout => 600,
+            filename => $state->data_dir.'/links.db',
+            uri => shift || '/index.html',
+            remote_ip => '80.93.56.97',
+            force_show_code => 1,
+        );
+        my $links = $sape->get_links( count => 10 );
+        return $links=~/\S/ ? $links : undef;
+        """
+        return ''
 
 
 class SectionView(TemplateView):

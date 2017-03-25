@@ -100,3 +100,15 @@ class Comment(models.Model):
         else:
             data.append(self.content[:50])
         return ': '.join(data + [self.created_at.isoformat()])
+
+
+class Notice(TimeStampedModel):
+    content = models.TextField(_('Содержание'))
+
+    class Meta:
+        verbose_name = _('Анонс')
+        verbose_name_plural = _('Анонсы')
+        ordering = ('-pk',)
+
+    def __str__(self):
+        return self.content[:50]

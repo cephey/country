@@ -1,0 +1,51 @@
+{% load static %}
+
+<table class="full-table">
+    <tr>
+        <td class="bg_orange2 w9">
+            <img src="{% static 'i/bg_or.gif' %}" width="9" height="26" alt="">
+        </td>
+        <td class="bg_orange2 w7">
+            <div style="width:7px; height:1px"><!-- --></div>
+        </td>
+        <td class="bg_orange2">
+            <span class="big2">Опрос</span>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div style="width:1px; height:1px"><!-- --></div>
+        </td>
+        <td class="bg_or_l">
+            <div style="width:7px; height:1px"><!-- --></div>
+        </td>
+        <td class="bg_or_r">
+            <div class="p_v">
+                <div class="normal">
+                    <form action="/votes/blank.html" method="POST" target="_blank">
+                        <input type="hidden" name="voteid" value="{{ poll.id }}">
+                        <ul style="margin:5px;padding: 0 0 0 12px;">
+                            <li class="li_normal"><b>{{ poll.question }}</b>:</li>
+                        </ul>
+                        <select name="vote_1" style="width:100%">
+                            <option value="">Варианты ответов:</option>
+                            {% for choice in poll.choice_set.all %}
+                                <option value="{{ choice.id }}">{{ choice.answer }}</option>
+                            {% endfor %}
+                        </select>
+                        <table class="wp100">
+                            <tr>
+                                <td>
+                                    <input type="submit" value="Проголосовать" class="but_or" style="font-size:100%">
+                                </td>
+                                <td class="align-right">
+                                    <a href="{% url 'polls:detail' poll.id %}">Результаты</a>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>

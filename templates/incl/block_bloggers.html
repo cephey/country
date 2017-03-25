@@ -1,0 +1,64 @@
+{% load static %}
+{% load htmlutils %}
+
+<table class="full-table">
+    <tr>
+        <td class="bg_orange2 w9">
+            <img src="{% static 'i/bg_or.gif' %}" width="9" height="26" alt="">
+        </td>
+        <td class="bg_orange2 w7">
+            <div style="width:7px; height:1px"><!-- --></div>
+        </td>
+        <td class="bg_orange2">
+            <span class="big2">
+                <a href="/bloggers/">Наша блогосфера</a>
+            </span>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div style="width:1px; height:1px"><!-- --></div>
+        </td>
+        <td class="bg_or_l">
+            <div style="width:7px; height:1px"><!-- --></div>
+        </td>
+        <td class="bg_or_r">
+            <div class="p_v">
+                <div class="normal">
+                    <table class="wp100">
+                        {% for entry in entries %}
+                            <tr>
+                            <td class="w27 h27 align-center">
+                                {% if entry.blogger.photo %}
+                                    <img class="w25 h25" src="{{ entry.blogger.icon|crop:'25x25' }}"
+                                         alt="{{ entry.blogger.cover_name }}" title="{{ entry.blogger.cover_name }}">
+                                {% else %}
+                                    &nbsp;
+                                {% endif %}
+                            </td>
+                                <td>
+                                    <a href="/bloggers/{{ entry.blogger.id }}.html">
+                                        <i>{{ entry.blogger.cover_name }}</i>
+                                    </a>: <a target="_blank" rel="nofollow" href="{{ entry.link }}">{{ entry.title }}</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                    <div style="height:1px; background: #FFD4B7;"><!-- --></div>
+                    <table class="wp100">
+                        <tr>
+                            <td class="align-right">
+                                <div class="align-right p_hv nobr">
+                                    <a href="/bloggers/">Все записи</a>
+                                    <span class="active_or">
+                                        <a href="/bloggers/">&gt;&gt;</a>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
