@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
@@ -63,7 +64,7 @@ class Article(TimeStampedModel):
             $src = $news->get_preview_video_image;
         }
         """
-        return '/storage/' + self.image.name
+        return settings.MEDIA_URL + self.image.name
 
     @property
     def preview(self):

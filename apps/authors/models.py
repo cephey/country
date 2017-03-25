@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
@@ -27,7 +28,7 @@ class Author(TimeStampedModel):
 
     @property
     def icon(self):
-        return '/storage/' + self.photo.name
+        return settings.MEDIA_URL + self.photo.name
 
-    # def get_absolute_url(self):
-    #     return reverse('web:author-detail', kwargs={'pk': self.pk, 'slug': self.slug})
+    def get_absolute_url(self):
+        return reverse('authors:detail', kwargs={'pk': self.id})
