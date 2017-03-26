@@ -1,8 +1,81 @@
 {% extends 'base.html' %}
 
 {% load static %}
+{% load htmlutils %}
 
-{% block title %}{{ section.name }} - ФОРУМ.мск{% endblock %}
+{% block title %}{{ active_section.name }}{% if page_obj.number > 1 %}, страница {{ page_obj.number }}{% endif %} - ФОРУМ.мск{% endblock %}
+
+{% block description %}{{ active_section.name }}{% endblock %}
 
 {% block content %}
+    <div class="big1 or">{{ active_section.name }}</div>
+    <div style="width:1px; height:1px"><!-- --></div>
+    <div class="border_or">
+        <table class="full-table">
+            {% for article in object_list %}
+                <tr>
+                    <td>
+                        <div class="p_hv">
+                            <div class="or2_normal">
+                                <img class="pwi" src="{{ article.icon }}" alt="{{ article.title }}">
+                                <strong class="black">
+                                    <a href="{% url 'articles:detail' article.section.slug article.id %}">{{ article.title }}</a>
+                                </strong>
+                                {% if article.comments_count %}
+                                    <span class="active_or">
+                                        <a title="{{ article.comments_count|num_ending:'комментари,й,я,ев' }}"
+                                           href="{% url 'articles:detail' article.section.slug article.id %}#clist">({{ article.comments_count }})</a>
+                                    </span>
+                                {% endif %}
+                                <br>
+                                <span>
+                                    {% if article.main_author %}
+                                        <a rel="author" href="{% url 'authors:detail' article.main_author.id %}.html">
+                                            <em>{{ article.main_author.cover_name }}</em>
+                                        </a>
+                                    {% endif %}
+                                    {{ article.publish_date }}<br>
+                                </span>
+                            </div>
+                            <div class="p_t">
+                                <div class="normal">
+                                    <a href="{% url 'articles:detail' article.section.slug article.id %}">{{ article.preview }}</a>
+                                    <span class="active_or">
+                                        <a href="{% url 'articles:detail' article.section.slug article.id %}">&gt;&gt;</a>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% if not forloop.last %}
+                    <tr>
+                        <td>
+                            <div style="height:1px; background: #FFD4B7;"><!-- --></div>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </table>
+
+        <div class="normal">
+            <div class="p_l align-center">
+{#                <& /inc/pages_.msn, total => $total, n => $perpage, p => $ARGS{p} &>#}
+            </div>
+        </div>
+    </div>
+
+    <table class="full-table h7 bgFFF0E6">
+        <tr>
+            <td class="bg_orange_l w7">
+                <div style="width:7px; height:7px"><!-- --></div>
+            </td>
+            <td class="wp100 bg_orange_c">
+                <div style="width:1px; height:7px"><!-- --></div>
+            </td>
+            <td class="bg_orange_r w7">
+                <div style="width:7px; height:7px"><!-- --></div>
+            </td>
+        </tr>
+    </table>
 {% endblock %}

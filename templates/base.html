@@ -48,7 +48,9 @@
             <div style="width:25px; height:1px"><!-- --></div>
         </td>
 
-        {% block content %}{% endblock %}
+        <td class="wp{% if no_right_column %}100{% else %}70{% endif %} valign-top">
+            {% block content %}{% endblock %}
+        </td>
 
 		<td class="w7">
             <div style="width:7px; height:1px"><!-- --></div>
