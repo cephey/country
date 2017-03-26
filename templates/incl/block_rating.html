@@ -18,15 +18,15 @@
                     </span>
                 </div>
 				<div class="normal align-left">
-                    {% if news_list %}
+                    {% if header_rating_news %}
                         <ul>
-                            {% for news in news_list %}
+                            {% for article in header_rating_news %}
                                 <li>
-                                    <a href="{% url 'articles:detail' news.section.slug news.id %}">{{ news.title }}</a>
-                                    {% if news.comments_count %}
+                                    <a href="{% url 'articles:detail' article.section.slug article.id %}">{{ article.title }}</a>
+                                    {% if article.comments_count %}
                                         <span class="active">
-                                            <a title="{{ news.comments_count|num_ending:'комментари,й,я,ев' }}"
-                                               href="{% url 'articles:detail' news.section.slug news.id %}#clist">({{ news.comments_count }})</a>
+                                            <a title="{{ article.comments_count|num_ending:'комментари,й,я,ев' }}"
+                                               href="{% url 'articles:detail' article.section.slug article.id %}#clist">({{ article.comments_count }})</a>
                                         </span>
                                     {% endif %}
                                 </li>

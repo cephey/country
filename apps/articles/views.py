@@ -1,20 +1,14 @@
-from django.views.generic import TemplateView
-from apps.authors.models import Author
-from apps.articles.models import Article, Section, NAVIGATE_SECTIONS, Notice
-from apps.polls.models import Poll
-from apps.bloggers.models import Entry
+from django.shortcuts import get_object_or_404
+from django.views.generic import TemplateView, ListView, DetailView
+from apps.articles.models import Article, Section
+from apps.utils.mixins.views import HeaderContextMixin, SidebarContextMixin
 
 
-class IndexView(TemplateView):
+class IndexView(HeaderContextMixin, SidebarContextMixin, TemplateView):
     template_name = 'articles/index.html'
 
     def get_context_data(self, **kwargs):
         kwargs.update(
-            sections=Section.objects.filter(slug__in=NAVIGATE_SECTIONS).order_by('id'),
-            marquee=Article.objects.filter(section__slug='news').order_by('-publish_date').first(),
-
-            news_list=Article.objects.filter(section__slug='news').order_by('?')[:3],  # order by vote_sum?
-
             main_news=Article.objects.filter(section__slug='news').order_by('-publish_date').first(),
             main_material=Article.objects.filter(section__slug='best').order_by('-publish_date').first(),
 
@@ -28,41 +22,40 @@ class IndexView(TemplateView):
                 'fpolitic': Section.objects.get(slug='fpolitic'),
                 'kompromat': Section.objects.get(slug='kompromat'),
             },
-            poll=Poll.objects.order_by('?').first(),
-            video_articles=Article.objects.filter(video__isnull=False)[:2],
-            news_articles=Article.objects.filter(section__slug='news').order_by('?')[:10],  # order by vote_sum?
-            notices=Notice.objects.all()[:3],
-            entries=Entry.objects.order_by('?')[:5],
-            authors=Author.objects.order_by('last_name')[:15]
         )
         # 6 articles for each section
         # order by data (+ shuffle)
-
-        kwargs['text_banner'] = self.get_text_banner()
+        kwargs.update(
+            self.get_header_context()
+        )
+        kwargs.update(
+            self.get_sidebar_context()
+        )
         return super().get_context_data(**kwargs)
 
-    def get_text_banner(self):
-        """
-        my $self = shift;
-        return $self->get_text_banner_by_tbn($self->get_tbn_by_uri(@_));
-        my $sape = new Forum::Export::Links(
-            user => 'c55bf3fc219b9610c2b8abde2d8ed171',
-            host => 'forum.msk.ru',
-            charset => 'koi8-r',
-            timeout => 600,
-            filename => $state->data_dir.'/links.db',
-            uri => shift || '/index.html',
-            remote_ip => '80.93.56.97',
-            force_show_code => 1,
-        );
-        my $links = $sape->get_links( count => 10 );
-        return $links=~/\S/ ? $links : undef;
-        """
-        return ''
 
+class SectionView(HeaderContextMixin, SidebarContextMixin, ListView):
+    template_name = 'articles/section.html'
+    paginate_by = 20
+    model = Article
+    section = None
 
-class SectionView(TemplateView):
-    template_name = 'articles/index.html'
+    def get(self, request, *args, **kwargs):
+        self.section = get_object_or_404(Section, slug=kwargs.get('slug'))
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return super().get_queryset().filter(section=self.section)
+
+    def get_context_data(self, **kwargs):
+        kwargs['active_section'] = self.section
+        kwargs.update(
+            self.get_header_context()
+        )
+        kwargs.update(
+            self.get_sidebar_context()
+        )
+        return super().get_context_data(**kwargs)
 
 
 class RssView(TemplateView):

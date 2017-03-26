@@ -39,95 +39,16 @@
 <meta name="viewport" content="maximum-scale=1">
 </head>
 <body>
+
 {% include 'incl/header_bottom.html' %}
+
 <table class="full-table">
     <tr>
 		<td class="w25">
             <div style="width:25px; height:1px"><!-- --></div>
         </td>
 
-		<td class="wp{% if no_right_column %}100{% else %}70{% endif %} valign-top">
-
-            <table class="full-table">
-                <tr>
-                    <td>
-                        <div class="big1 or">Главная новость</div>
-                        <div style="width:1px; height:1px"><!-- --></div>
-                    </td>
-                    <td>&nbsp;</td>
-                    <td>
-                        <div class="big1 or">Материал дня</div>
-                        <div style="width:1px; height:1px"><!-- --></div>
-                    </td>
-                </tr>
-                <tr>
-                    {% include 'incl/article_block.html' with article=main_news color='bgFFF0E6' %}
-                    <td class="w7">
-                        <div style="width:7px; height:1px"><!-- --></div>
-                    </td>
-                    {% include 'incl/article_block.html' with article=main_material color='bgFFF0E6' %}
-                </tr>
-            </table>
-
-            <div style="margin-top: 5px;" class="normal align-center">
-                {% include 'incl/ya_direct.html' %}
-            </div>
-
-            <div style="width:1px; height:7px"><!-- --></div>
-
-            <table class="full-table">
-                <tr>
-                    <td class="valign-top wp50">
-                        {% include 'incl/block_part_main.html' with section=materials.politic %}
-                        <div style="width:1px; height:7px"><!-- --></div>
-                    </td>
-                    <td class="w7">
-                        <div style="width:7px; height:1px"><!-- --></div>
-                    </td>
-                    <td class="valign-top wp50">
-                        {% include 'incl/block_part_main.html' with section=materials.moscow %}
-                        <div style="width:1px; height:7px"><!-- --></div>
-                    </td>
-                </tr>
-            </table>
-
-            <table class="full-table">
-                <tr>
-                    <td class="valign-top wp50">
-                        {% include 'incl/block_part_main.html' with section=materials.economic %}
-                        <div style="width:1px; height:7px"><!-- --></div>
-                        {% include 'incl/block_part_main.html' with section=materials.region %}
-                        <div style="width:1px; height:7px"><!-- --></div>
-                        {% include 'incl/block_part_main.html' with section=materials.society %}
-                        <div style="width:1px; height:7px"><!-- --></div>
-                    </td>
-                    <td class="w7">
-                        <div style="width:7px; height:1px"><!-- --></div>
-                    </td>
-                    <td class="valign-top wp50">
-                        {% include 'incl/block_part_main.html' with section=materials.power %}
-                        <div style="width:1px; height:7px"><!-- --></div>
-                        {% include 'incl/block_part_main.html' with section=materials.fpolitic %}
-                        <div style="width:1px; height:7px"><!-- --></div>
-                        {% include 'incl/block_part_main.html' with section=materials.kompromat %}
-                        <div style="width:1px; height:7px"><!-- --></div>
-                    </td>
-                </tr>
-            </table>
-
-            <div class="align-center">
-                <a href="/stalin/">
-                    <img src="{% static 'i/banner/bun_center1.gif' %}" width=234 height=60 alt="Сталин">
-                </a>&nbsp;
-                <a href="/vernost_leninu/">
-                    <img src="{% static 'i/banner/bun_center2.gif' %}" width=234 height=60 alt="Ленин">
-                </a>&nbsp;
-                <a rel="nofollow" href="http://www.putinavotstavku.org/" target="_blank">
-                    <img src="http://www.putinavotstavku.org/images/informer.gif" width="220" height="58" alt="Путин должен уйти" title="Путин должен уйти">
-                </a>
-            </div>
-
-        </td>
+        {% block content %}{% endblock %}
 
 		<td class="w7">
             <div style="width:7px; height:1px"><!-- --></div>
@@ -137,14 +58,20 @@
 
             <td class="wp30 valign-top">
 
-                {% include 'incl/block_material_votes.html' %}
-                <div style="width:1px; height:14px"><!-- --></div>
+                {% if poll %}
+                    {% include 'incl/block_material_votes.html' %}
+                    <div style="width:1px; height:14px"><!-- --></div>
+                {% endif %}
 
-                {% include 'incl/block_video.html' %}
-                <div style="width:1px; height:14px"><!-- --></div>
+                {% if sidebar_videos %}
+                    {% include 'incl/block_video.html' %}
+                    <div style="width:1px; height:14px"><!-- --></div>
+                {% endif %}
 
-                {% include 'incl/block_news.html' %}
-                <div style="width:1px; height:14px"><!-- --></div>
+                {% if sidebar_news %}
+                    {% include 'incl/block_news.html' %}
+                    <div style="width:1px; height:14px"><!-- --></div>
+                {% endif %}
 
                 {% if request.path != '/' %}
                     <table class="wp100">
@@ -156,8 +83,10 @@
                     </table>
                 {% endif %}
 
-                {% include 'incl/block_notice.html' %}
-                <div style="width:1px; height:14px"><!-- --></div>
+                {% if notices %}
+                    {% include 'incl/block_notices.html' %}
+                    <div style="width:1px; height:14px"><!-- --></div>
+                {% endif %}
 
                 {% include 'incl/search.html' %}
                 <div style="width:1px; height:7px"><!-- --></div>
@@ -165,16 +94,20 @@
                 {% include 'incl/add_news.html' %}
                 <div style="width:1px; height:14px"><!-- --></div>
 
-                {% include 'incl/block_bloggers.html' %}
-                <div style="width:1px; height:14px"><!-- --></div>
+                {% if entries %}
+                    {% include 'incl/block_bloggers.html' %}
+                    <div style="width:1px; height:14px"><!-- --></div>
+                {% endif %}
 
-                {% include 'incl/block_author.html' %}
-                <div style="width:1px; height:14px"><!-- --></div>
+                {% if authors %}
+                    {% include 'incl/block_authors.html' %}
+                    <div style="width:1px; height:14px"><!-- --></div>
+                {% endif %}
 
                 {% if request.path == '/' %}
                     <iframe src="http://worldcrisis.ru/crisis/crisis/wc_club_foummsk_t" width="100%" frameborder="0" height="200" scrolling="no"></iframe>
+                    <div style="width:1px; height:14px"><!-- --></div>
                 {% endif %}
-                <div style="width:1px; height:14px"><!-- --></div>
 
             </td>
 
