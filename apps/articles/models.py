@@ -32,6 +32,7 @@ class Article(TimeStampedModel):
     description = models.TextField(_('Описание'), blank=True)
     content = models.TextField(_('Содержание'), blank=True)
     section = models.ForeignKey('articles.Section', verbose_name=_('Раздел'))
+    is_news = models.BooleanField(_('Новость'), default=False)
     authors = models.ManyToManyField('authors.Author', blank=True)
     publish_date = models.DateTimeField(_('Дата публикации'), blank=True, null=True)
     is_active = models.BooleanField(default=True)
@@ -50,6 +51,8 @@ class Article(TimeStampedModel):
         return self.title
 
     def get_absolute_url(self):
+        if self.is_news:
+            return reverse('articles:detail', kwargs={'slug': 'news', 'pk': self.id})
         return reverse('articles:detail', kwargs={'slug': self.section.slug, 'pk': self.id})
 
     @property

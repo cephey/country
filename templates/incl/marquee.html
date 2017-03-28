@@ -1,7 +1,7 @@
 <div id='marquee'>
     <div class="p_r" style="display:none">
         {% if article %}
-            <a href="{% url 'articles:detail' article.section.slug article.id %}">{{ article.title }}</a>
+            <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
         {% endif %}
     </div>
 </div>

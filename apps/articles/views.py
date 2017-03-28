@@ -9,8 +9,8 @@ class IndexView(HeaderContextMixin, SidebarContextMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         kwargs.update(
-            main_news=Article.objects.filter(section__slug='news').order_by('-publish_date').first(),
-            main_material=Article.objects.filter(section__slug='best').order_by('-publish_date').first(),
+            main_news=Article.objects.filter(is_news=True).order_by('-publish_date').first(),
+            main_material=Article.objects.order_by('-publish_date', '-comments_count').first(),
 
             materials={
                 'politic': Section.objects.get(slug='politic'),

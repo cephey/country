@@ -39,21 +39,17 @@ class Command(BaseCommand):
             SectionFactory(name='Силовые структуры', slug='power'),
             SectionFactory(name='Особенности внешней политики', slug='fpolitic'),
             SectionFactory(name='Компрометирующие материалы', slug='kompromat'),
-            SectionFactory(name='Московский листок', slug='moscow'),
-
-            SectionFactory(name='Новости', slug='news'),
-            SectionFactory(name='Лучшие статьи ФОРУМ.мск за последнюю неделю', slug='best'),
-            SectionFactory(name='Видео', slug='video'),
+            SectionFactory(name='Московский листок', slug='moscow')
         ]
 
         for section in sections:
             for i in range(random.randint(8, 12)):
                 article = ArticleFactory(
                     section=section,
+                    is_news=not bool(random.randint(0, 6)),
                     authors=random.sample(authors, random.randint(1, 2))
                 )
-                # Comment.objects.create(article=article, username='lolo', content='lolo')
-                CommentFactory.create_batch(random.randint(0, 6), article=article)
+                CommentFactory.create_batch(random.randint(0, 8), article=article)
 
         NoticeFactory.create_batch(16)
 
