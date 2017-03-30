@@ -107,6 +107,15 @@ span.active_or a:hover {color:#FFFFFF; background: #FFD4B7; text-decoration:none
 
 .bg_orange_c {background: #FFF0E6;  border-bottom:1px #FFD4B7 solid;}
 
+.bg_sidebar_orange .bg_title {background: #F3E1E1 url(/static/i/bg_orange2.gif) repeat-x top;}
+.bg_sidebar_orange .bg_title .mark {background: #FFEEE3 url(/static/i/bg_or.gif) no-repeat;}
+.bg_sidebar_orange .bg_content_l {background: #FFEEE3 url(/static/i/bg_or_l.gif) no-repeat bottom left;}
+.bg_sidebar_orange .bg_content_r {background: #FFEEE3 url(/static/i/bg_or_r.gif) no-repeat bottom right;}
+
+.bg_sidebar_blue .bg_title {background: #A6D0EA url(/static/i/bg_enews2.gif) repeat-x top;}
+.bg_sidebar_blue .bg_title .mark {background: #FFEEE3 url(/static/i/bg_enews.gif) no-repeat;}
+.bg_sidebar_blue .bg_content_l {background: #E6F0F5 url(/static/i/bg_blue_l.gif) no-repeat bottom left;}
+.bg_sidebar_blue .bg_content_r {background: #E6F0F5 url(/static/i/bg_blue_r.gif) no-repeat bottom right;}
 
 .bg_enews2 {background: #A6D0EA url(/static/i/bg_enews2.gif) repeat-x top;}
 .bg_orange2 {background: #F3E1E1 url(/static/i/bg_orange2.gif) repeat-x top;}

@@ -1,0 +1,30 @@
+{% extends 'incl/sidebar/blocks/base.html' %}
+{% load htmlutils %}
+
+{% block color_class %}bg_sidebar_blue{% endblock %}
+
+{% block title %}Авторы{% endblock %}
+
+{% block content %}
+<table class="wp100">
+    {% for sublist in authors|partition:'2' %}
+        <tr>
+            {% for author in sublist %}
+                <td class="w27 h27 align-center">
+                    {% if author.photo %}
+                        <img src="{{ author.icon|crop:'25x25' }}" width="25" height="25" alt="">
+                    {% else %}
+                        &nbsp;
+                    {% endif %}
+                </td>
+                <td class="wp50 align-left">
+                    <a href="{% url 'authors:detail' author.id %}.html">{{ author.cover_name }}</a>
+                </td>
+            {% endfor %}
+            {% if sublist|length < 2 %}
+                <td></td><td></td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+</table>
+{% endblock %}

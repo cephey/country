@@ -1,0 +1,11 @@
+{% extends 'incl/sidebar/blocks/base.html' %}
+
+{% block color_class %}bg_sidebar_blue{% endblock %}
+
+{% block title %}<a href="{% url 'articles:section' 'news' %}">Новости</a>{% endblock %}
+
+{% block content %}
+{% for article in sidebar_news %}
+    {% include 'incl/article_block_short.html' %}
+{% endfor %}
+{% endblock %}

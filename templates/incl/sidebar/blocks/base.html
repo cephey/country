@@ -1,0 +1,30 @@
+{% load static %}
+
+<table class="full-table {% block color_class %}bg_sidebar_orange{% endblock %}">
+    <tr>
+        <td class="bg_title w9">
+            <div class="mark" style="width:9px; height:26px"></div>
+        </td>
+        <td class="bg_title w7">
+            <div style="width:7px; height:1px"><!-- --></div>
+        </td>
+        <td class="bg_title">
+            <span class="big2">{% block title %}{% endblock %}</span>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div style="width:1px; height:1px"><!-- --></div>
+        </td>
+        <td class="bg_content_l">
+            <div style="width:7px; height:1px"><!-- --></div>
+        </td>
+        <td class="bg_content_r">
+            <div class="p_v">
+                <div class="normal">
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>

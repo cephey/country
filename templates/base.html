@@ -61,17 +61,17 @@
             <td class="wp30 valign-top">
 
                 {% if poll %}
-                    {% include 'incl/block_material_votes.html' %}
+                    {% include 'incl/sidebar/blocks/poll.html' %}
                     <div style="width:1px; height:14px"><!-- --></div>
                 {% endif %}
 
                 {% if sidebar_videos %}
-                    {% include 'incl/block_video.html' %}
+                    {% include 'incl/sidebar/blocks/internet_tv.html' %}
                     <div style="width:1px; height:14px"><!-- --></div>
                 {% endif %}
 
                 {% if sidebar_news %}
-                    {% include 'incl/block_news.html' %}
+                    {% include 'incl/sidebar/blocks/news.html' %}
                     <div style="width:1px; height:14px"><!-- --></div>
                 {% endif %}
 
@@ -86,23 +86,23 @@
                 {% endif %}
 
                 {% if notices %}
-                    {% include 'incl/block_notices.html' %}
+                    {% include 'incl/sidebar/blocks/notices.html' %}
                     <div style="width:1px; height:14px"><!-- --></div>
                 {% endif %}
 
-                {% include 'incl/search.html' %}
+                {% include 'incl/sidebar/blocks/search.html' %}
                 <div style="width:1px; height:7px"><!-- --></div>
 
-                {% include 'incl/add_news.html' %}
+                {% include 'incl/sidebar/blocks/add_news.html' %}
                 <div style="width:1px; height:14px"><!-- --></div>
 
                 {% if entries %}
-                    {% include 'incl/block_bloggers.html' %}
+                    {% include 'incl/sidebar/blocks/bloggers.html' %}
                     <div style="width:1px; height:14px"><!-- --></div>
                 {% endif %}
 
                 {% if authors %}
-                    {% include 'incl/block_authors.html' %}
+                    {% include 'incl/sidebar/blocks/authors.html' %}
                     <div style="width:1px; height:14px"><!-- --></div>
                 {% endif %}
 
@@ -173,17 +173,40 @@
     </table>
 {% endif %}
 
-{% include 'incl/count.html' %}
+<div class="p_hv align-center">
+    <table class="wp100">
+        <tr>
+            <td>
+                <!--noindex-->
+                {% include 'incl/adv/counter_widgets/mailru.html' %}&nbsp;
+                {% include 'incl/adv/counter_widgets/rambler.html' %}&nbsp;
+                {% include 'incl/adv/counter_widgets/liveinternet.html' %}&nbsp;
+                {% include 'incl/adv/counter_widgets/yandex.html' %}&nbsp;
+                <script>
+                    marqueeStart('marquee')
+                </script>
+                <!--/noindex-->
+            </td>
+            <td class="wp30 align-right normal">
+                читайте нас также: <a href="/pda/">pda</a> |
+                <!--noindex-->
+                <a rel="nofollow" href="http://twitter.com/forummsk">twitter</a>
+                <!--/noindex--> |
+                <a href="{% url 'articles:rss' %}">rss</a>
+            </td>
+        </tr>
+    </table>
+</div>
 
-{% include 'incl/ga.html' %}
-{% include 'incl/ya_metrika.html' %}
+{% include 'incl/adv/ga.html' %}
+{% include 'incl/adv/ya_metrika.html' %}
 
 {% if share %}
     <script type="text/javascript" src="//yastatic.net/share/share.js" charset="utf-8"></script>
 {% endif %}
 
 {% if request.path != '/' %}
-    {% include 'incl/ya_context.html' with block_id='R-59310-1' %}
+    {% include 'incl/adv/ya_context.html' with block_id='R-59310-1' %}
 {% endif %}
 
 </body>

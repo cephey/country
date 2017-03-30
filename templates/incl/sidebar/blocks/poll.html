@@ -1,0 +1,28 @@
+{% extends 'incl/sidebar/blocks/base.html' %}
+
+{% block title %}Опрос{% endblock %}
+
+{% block content %}
+<form action="/votes/blank.html" method="POST" target="_blank">
+    <input type="hidden" name="voteid" value="{{ poll.id }}">
+    <ul style="margin:5px;padding: 0 0 0 12px;">
+        <li class="li_normal"><b>{{ poll.question }}</b>:</li>
+    </ul>
+    <select name="vote_1" style="width:100%">
+        <option value="">Варианты ответов:</option>
+        {% for choice in poll.choice_set.all %}
+            <option value="{{ choice.id }}">{{ choice.answer }}</option>
+        {% endfor %}
+    </select>
+    <table class="wp100">
+        <tr>
+            <td>
+                <input type="submit" value="Проголосовать" class="but_or" style="font-size:100%">
+            </td>
+            <td class="align-right">
+                <a href="{% url 'polls:detail' poll.id %}">Результаты</a>
+            </td>
+        </tr>
+    </table>
+</form>
+{% endblock %}

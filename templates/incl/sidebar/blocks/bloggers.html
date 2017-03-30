@@ -1,0 +1,39 @@
+{% extends 'incl/sidebar/blocks/base.html' %}
+{% load htmlutils %}
+
+{% block title %}<a href="/bloggers/">Наша блогосфера</a>{% endblock %}
+
+{% block content %}
+<table class="wp100">
+    {% for entry in entries %}
+        <tr>
+        <td class="w27 h27 align-center">
+            {% if entry.blogger.photo %}
+                <img class="w25 h25" src="{{ entry.blogger.icon|crop:'25x25' }}"
+                     alt="{{ entry.blogger.cover_name }}" title="{{ entry.blogger.cover_name }}">
+            {% else %}
+                &nbsp;
+            {% endif %}
+        </td>
+            <td>
+                <a href="/bloggers/{{ entry.blogger.id }}.html">
+                    <i>{{ entry.blogger.cover_name }}</i>
+                </a>: <a target="_blank" rel="nofollow" href="{{ entry.link }}">{{ entry.title }}</a>
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+<div style="height:1px; background: #FFD4B7;"><!-- --></div>
+<table class="wp100">
+    <tr>
+        <td class="align-right">
+            <div class="align-right p_hv nobr">
+                <a href="/bloggers/">Все записи</a>
+                <span class="active_or">
+                    <a href="/bloggers/">&gt;&gt;</a>
+                </span>
+            </div>
+        </td>
+    </tr>
+</table>
+{% endblock %}
