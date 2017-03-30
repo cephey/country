@@ -1,0 +1,19 @@
+{% if incl_microdata %}
+    <em itemscope itemtype="http://schema.org/Person">
+        {% if article.main_author %}
+            <a rel="author" itemprop="url" href="{% url 'authors:detail' article.main_author.id %}.html">
+                <em itemprop="name">{{ article.main_author.cover_name }}</em>
+            </a>
+        {% else %}
+            <em itemprop="name">{{ article.author_names }}</em>
+        {% endif %}
+    </em>
+{% else %}
+    {% if article.main_author %}
+        <a rel="author" href="{% url 'authors:detail' article.main_author.id %}.html">
+            <em>{{ article.main_author.cover_name }}</em>
+        </a>
+    {% else %}
+        <em>{{ article.author_names }}</em>
+    {% endif %}
+{% endif %}

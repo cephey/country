@@ -23,7 +23,7 @@
                             {% for article in header_rating_news %}
                                 <li>
                                     <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
-                                    {% if article.comments_count %}
+                                    {% if article.can_comment %}
                                         <span class="active">
                                             <a title="{{ article.comments_count|num_ending:'комментари,й,я,ев' }}"
                                                href="{{ article.get_absolute_url }}#clist">({{ article.comments_count }})</a>

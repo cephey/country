@@ -39,6 +39,19 @@ class ArticleFactory(factory.django.DjangoModelFactory):
             obj.authors.add(author)
 
     @factory.post_generation
+    def tags(obj, create, extracted, **kwargs):
+        from apps.tags.factories import TaggedItemFactory
+        if extracted:
+            for tag in extracted:
+                TaggedItemFactory(tag=tag, content_object=obj)
+
+    @factory.post_generation
+    def with_tag(obj, create, extracted, **kwargs):
+        from apps.tags.factories import TaggedItemFactory
+        if extracted:
+            TaggedItemFactory(content_object=obj)
+
+    @factory.post_generation
     def description(obj, create, extracted, **kwargs):
         if not extracted and random.randint(0, 2):
             obj.description = Faker(locale='ru_RU').text(max_nb_chars=random.randint(128, 1024))

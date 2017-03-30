@@ -58,5 +58,19 @@ class SectionView(HeaderContextMixin, SidebarContextMixin, ListView):
         return super().get_context_data(**kwargs)
 
 
+class ArticleView(HeaderContextMixin, SidebarContextMixin, DetailView):
+    template_name = 'articles/detail.html'
+    model = Article
+
+    def get_context_data(self, **kwargs):
+        kwargs.update(
+            self.get_header_context()
+        )
+        kwargs.update(
+            self.get_sidebar_context()
+        )
+        return super().get_context_data(**kwargs)
+
+
 class RssView(TemplateView):
     template_name = 'articles/rss.html'

@@ -21,7 +21,7 @@
                                 <strong class="black">
                                     <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
                                 </strong>
-                                {% if article.comments_count %}
+                                {% if article.can_comment %}
                                     <span class="active_or">
                                         <a title="{{ article.comments_count|num_ending:'комментари,й,я,ев' }}"
                                            href="{{ article.get_absolute_url }}#clist">({{ article.comments_count }})</a>
@@ -29,12 +29,8 @@
                                 {% endif %}
                                 <br>
                                 <span>
-                                    {% if article.main_author %}
-                                        <a rel="author" href="{% url 'authors:detail' article.main_author.id %}.html">
-                                            <em>{{ article.main_author.cover_name }}</em>
-                                        </a>
-                                    {% endif %}
-                                    {{ article.publish_date }}<br>
+                                    {% include 'authors/incl/cover_name.html' with article=article %}
+                                    {{ article.publish_date|date:'d.m.Y' }}<br>
                                 </span>
                             </div>
                             <div class="p_t">

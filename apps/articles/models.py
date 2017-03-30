@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.contenttypes.fields import GenericRelation
 
 from apps.utils.models import TimeStampedModel
 
@@ -33,12 +34,18 @@ class Article(TimeStampedModel):
     content = models.TextField(_('Содержание'), blank=True)
     section = models.ForeignKey('articles.Section', verbose_name=_('Раздел'))
     is_news = models.BooleanField(_('Новость'), default=False)
-    authors = models.ManyToManyField('authors.Author', blank=True)
+    authors = models.ManyToManyField('authors.Author', verbose_name=_('Авторы'), blank=True)
+    author_names = models.CharField(_('Авторы'), max_length=255, blank=True,
+                                    help_text=_('Список внешних авторов через запятую'))
     publish_date = models.DateTimeField(_('Дата публикации'), blank=True, null=True)
     is_active = models.BooleanField(default=True)
     image = models.ImageField(_('Картинка'), upload_to='articles_image', max_length=255, blank=True, null=True)
     video = models.FileField(_('Видео'), upload_to='articles_video', max_length=255, blank=True, null=True)
+    source = models.CharField(_('Источник'), max_length=255, blank=True)
+    source_link = models.URLField(_('Ссылка на источник'), blank=True)
+    tags = GenericRelation('tags.TaggedItem')
 
+    can_comment = models.BooleanField(_('Можно оставлять комментарии'), default=True)
     comments_count = models.PositiveIntegerField(_('Кол-во комментариев'), editable=False, default=0)
     # rating field
 
@@ -70,17 +77,25 @@ class Article(TimeStampedModel):
         return settings.MEDIA_URL + self.image.name
 
     @property
+    def video_code(self):
+        return ''
+
+    @property
     def preview(self):
         return self.description or (self.content[:400] + '...')
 
     @property
     def main_author(self):
-        return self.authors.all()[0]
+        authors = self.authors.all()
+        return authors[0] if authors else None
 
     @property
-    def author_names(self):
-        names = [a.cover_name for a in self.authors.all()]
-        return ','.join(names)
+    def section_name(self):
+        return 'Новости' if self.is_news else self.section.name
+
+    @property
+    def keywords(self):
+        return ','.join([ti.tag.name for ti in self.tags.all()])
 
 
 class Comment(models.Model):
@@ -107,6 +122,18 @@ class Comment(models.Model):
         else:
             data.append(self.content[:50])
         return ': '.join(data + [self.created_at.isoformat()])
+
+
+class Multimedia(models.Model):
+    article = models.ForeignKey('articles.Article', verbose_name=_('Статья'))
+    description = models.TextField(_('Описание'), blank=True)
+    link = models.URLField(_('Ссылка'), blank=True)
+    created_at = models.DateTimeField(_('Дата создания'), auto_now_add=True, editable=False)
+
+    class Meta:
+        verbose_name = _('Мультимедиа')
+        verbose_name_plural = _('Мультимедиа')
+        ordering = ('-pk',)
 
 
 class Notice(TimeStampedModel):
