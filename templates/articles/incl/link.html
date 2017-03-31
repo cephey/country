@@ -1,0 +1,16 @@
+{% load htmlutils %}
+
+{% if strong %}
+    <strong>
+        <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
+    </strong>
+{% else %}
+    <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
+{% endif %}
+
+{% if article.can_comment %}
+    <span class="active">
+        <a title="{{ article.comments_count|num_ending:'комментари,й,я,ев' }}"
+           href="{{ article.get_absolute_url }}#clist">({{ article.comments_count }})</a>
+    </span>
+{% endif %}

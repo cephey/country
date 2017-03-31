@@ -11,7 +11,13 @@
         {% with atricles=section.article_set.all|slice:':6' %}
 
             {% with article=atricles.0 %}
-                {% include 'incl/article_block_v2.html' %}
+                <table class="full-table">
+                    <tr>
+                        <td>
+                            {% include 'incl/tile/content.html' with color='blue' %}
+                        </td>
+                    </tr>
+                </table>
             {% endwith %}
 
             {% if atricles|length > 1 %}
@@ -20,7 +26,9 @@
                 <div class="normal">
                     <div class="p_h">
                         {% for article in atricles|slice:'1:' %}
-                            {% include 'incl/article_block_short.html' %}
+                            <div class="list {% if article.video %}list_video{% endif %}">
+                                {% include 'articles/incl/link.html' with article=article %}
+                            </div>
                         {% endfor %}
                     </div>
                     <div style="height:1px; background: #C1DAE6;"><!-- --></div>

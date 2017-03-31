@@ -1,0 +1,21 @@
+{% if article %}
+    <div class="p_hv {% if color == 'orange' %}art_or{% elif color == 'blue' %}art_bl{% endif %}">
+        <img class="pwi" src="{{ article.icon }}" alt="{{ article.title }}">
+        <div class="or2_normal">
+            {% include 'articles/incl/link.html' with article=article strong=True %}
+            <br>
+            <span>
+                {% include 'authors/incl/cover_name.html' with article=article %}
+                {{ article.publish_date|date:'d.m.Y' }}<br>
+            </span>
+        </div>
+        <div class="p_t">
+            <div class="normal">
+                <a href="{{ article.get_absolute_url }}">{{ article.preview }}</a>
+                <span class="active">
+                    <a href="{{ article.get_absolute_url }}">&gt;&gt;</a>
+                </span>
+            </div>
+        </div>
+    </div>
+{% endif %}

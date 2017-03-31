@@ -1,40 +1,9 @@
 {% load htmlutils %}
 
-<td class="valign-top wp50 hp100">
 <table class="full-table hp100 {{ color }}">
     <tr>
         <td colspan="3" class="hp100 valign-top border_or">
-            {% if article %}
-                <div>
-                <div class="p_hv">
-                    <img class="pwi" src="{{ article.icon }}" alt="{{ article.title }}">
-                    <div class="or2_normal">
-                        <strong>
-                            <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
-                        </strong>
-                        {% if article.can_comment %}
-                            <span class="active_or">
-                                <a title="{{ article.comments_count|num_ending:'комментари,й,я,ев' }}"
-                                   href="{{ article.get_absolute_url }}#clist">({{ article.comments_count }})</a>
-                            </span>
-                        {% endif %}
-                        <br>
-                        <span>
-                            {% include 'authors/incl/cover_name.html' with article=article %}
-                            {{ article.publish_date|date:'d.m.Y' }}<br>
-                        </span>
-                    </div>
-                    <div class="p_t">
-                        <div class="normal">
-                            <a href="{{ article.get_absolute_url }}">{{ article.preview }}</a>
-                            <span class="active_or">
-                                <a href="{{ article.get_absolute_url }}">&gt;&gt;</a>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                </div>
-            {% endif %}
+            {% include 'incl/tile/content.html' with color='orange' %}
         </td>
     </tr>
     <tr>
@@ -43,4 +12,3 @@
         <td class="bg_orange_r w7"><div style="width:7px; height:7px"><!-- --></div></td>
     </tr>
 </table>
-</td>

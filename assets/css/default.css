@@ -72,6 +72,12 @@ li.li_normal { list-style-image: none}
 span.active a {font-size:80%; background: #BBD6E4; text-decoration:none; padding:0 3px 0 3px;}
 span.active a:hover {color:#FFFFFF; background: #BBD6E4; text-decoration:none; padding:0 3px 0 3px;}
 
+.art_or .active a {font-size:80%; background: #FFD4B7; text-decoration:none; padding:0 3px 0 3px;}
+.art_or .active a:hover {color:#FFFFFF; background: #FFD4B7; text-decoration:none; padding:0 3px 0 3px;}
+
+.art_bl .active a {font-size:80%; background: #BBD6E4; text-decoration:none; padding:0 3px 0 3px;}
+.art_bl .active a:hover {color:#FFFFFF; background: #BBD6E4; text-decoration:none; padding:0 3px 0 3px;}
+
 span.active_or a {font-size:80%; background: #FFD4B7; text-decoration:none; padding:0 3px 0 3px;}
 span.active_or a:hover {color:#FFFFFF; background: #FFD4B7; text-decoration:none; padding:0 3px 0 3px;}
 

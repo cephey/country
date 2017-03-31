@@ -16,11 +16,15 @@
         </td>
     </tr>
     <tr>
-        {% include 'incl/article_block.html' with article=main_news color='bgFFF0E6' %}
+        <td class="valign-top wp50 hp100">
+            {% include 'incl/article_block.html' with article=main_news color='bgFFF0E6' %}
+        </td>
         <td class="w7">
             <div style="width:7px; height:1px"><!-- --></div>
         </td>
-        {% include 'incl/article_block.html' with article=main_material color='bgFFF0E6' %}
+        <td class="valign-top wp50 hp100">
+            {% include 'incl/article_block.html' with article=main_material color='bgFFF0E6' %}
+        </td>
     </tr>
 </table>
 
@@ -33,14 +37,14 @@
 <table class="full-table">
     <tr>
         <td class="valign-top wp50">
-            {% include 'incl/section_tile.html' with section=materials.politic %}
+            {% include 'incl/tile/block.html' with section=materials.politic %}
             <div style="width:1px; height:7px"><!-- --></div>
         </td>
         <td class="w7">
             <div style="width:7px; height:1px"><!-- --></div>
         </td>
         <td class="valign-top wp50">
-            {% include 'incl/section_tile.html' with section=materials.moscow %}
+            {% include 'incl/tile/block.html' with section=materials.moscow %}
             <div style="width:1px; height:7px"><!-- --></div>
         </td>
     </tr>
@@ -49,22 +53,22 @@
 <table class="full-table">
     <tr>
         <td class="valign-top wp50">
-            {% include 'incl/section_tile.html' with section=materials.economic %}
+            {% include 'incl/tile/block.html' with section=materials.economic %}
             <div style="width:1px; height:7px"><!-- --></div>
-            {% include 'incl/section_tile.html' with section=materials.region %}
+            {% include 'incl/tile/block.html' with section=materials.region %}
             <div style="width:1px; height:7px"><!-- --></div>
-            {% include 'incl/section_tile.html' with section=materials.society %}
+            {% include 'incl/tile/block.html' with section=materials.society %}
             <div style="width:1px; height:7px"><!-- --></div>
         </td>
         <td class="w7">
             <div style="width:7px; height:1px"><!-- --></div>
         </td>
         <td class="valign-top wp50">
-            {% include 'incl/section_tile.html' with section=materials.power %}
+            {% include 'incl/tile/block.html' with section=materials.power %}
             <div style="width:1px; height:7px"><!-- --></div>
-            {% include 'incl/section_tile.html' with section=materials.fpolitic %}
+            {% include 'incl/tile/block.html' with section=materials.fpolitic %}
             <div style="width:1px; height:7px"><!-- --></div>
-            {% include 'incl/section_tile.html' with section=materials.kompromat %}
+            {% include 'incl/tile/block.html' with section=materials.kompromat %}
             <div style="width:1px; height:7px"><!-- --></div>
         </td>
     </tr>
