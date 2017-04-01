@@ -25,7 +25,8 @@ INSTALLED_APPS = [
     'apps.articles',
     'apps.polls',
     'apps.bloggers',
-
+    'apps.votes',
+    'apps.users',
     'apps.utils'
 ]
 
