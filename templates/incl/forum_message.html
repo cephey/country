@@ -1,0 +1,69 @@
+{% load static %}
+{% load htmlutils %}
+
+<a id="c{{ comment.id }}"></a>
+
+<div class="newscomment-avatar">
+    <img src="{{ comment.get_avatar|crop:'45x45' }}" width="45" height="45" alt="">
+</div>
+<div class="newscomment-meta">
+    <i>{{ comment.title|safe }}</i>
+    <br />
+    <span class="newscomment-meta-author">{{ comment.username }}</span>
+    <span class="newscomment-meta-date">написал {{ comment.created_at|date:'d.m.Y H:i' }}</span>
+</div>
+
+<div class="newscomment-content">
+    {% if comment.karma <= -5 %}
+        <a href="#" style="color:#6DA3BD" id="ca{{ comment.id }}" onClick="return karmed('{{ comment.id }}')">Раскрыть комментарий</a>
+        <p style="display:none" id="ch{{ comment.id }}">{{ comment.content|safe }}</p>
+        <br />
+    {% else %}
+        {{ comment.content|safe }}
+    {% endif %}
+</div>
+
+{% if article.discussion_status == 'open' %}
+    <div class="newscomment-reply">
+        <a class="reply uline" rel="nofollow"
+           href="{{ article.get_absolute_url }}?pf={{ page_num|default:1 }}&amp;mid={{ comment.id }}#comment"
+           onClick="return makeForumReplyForm('comment_replay_{{ comment.id }}', 'Re: {{ comment.title|safe }}', '{{ comment.id }}');">Ответить</a>
+        <div class="newscomment-reply-vote">
+            {% if request.session.session_key == comment.token or request.user == comment.user %}
+                <img src="{% static 'i/good.png' %}" width="10" height="10"
+                     alt="За свои комментарии голосовать запрещено."
+                     title="За свои комментарии голосовать запрещено.">&nbsp;
+                {% if comment.karma %}
+                    <span style="color:{% if comment.karma > 0 %}green{% else %}red{% endif %}">{{ comment.karma }}</span>&nbsp;
+                {% else %}
+                    0&nbsp;
+                {% endif %}
+                <img src="{% static 'i/bad.png' %}" width="10" height="10"
+                     alt="За свои комментарии голосовать запрещено."
+                     title="За свои комментарии голосовать запрещено.">
+            {% else %}
+                <script>
+                    document.write('<a rel="nofollow" href="/dialog/karma.html?up=1&amp;mid={{ comment.id }}&amp;back={{ request.get_full_path }}#c{{ comment.id }}" title="Хороший комментарий"><img src="{% static 'i/good.png' %}" width="10" height="10" ></a>&nbsp;{% if comment.karma %}<span style="color:{% if comment.karma > 0 %}green{% else %}red{% endif %}">{{ comment.karma }}</span>&nbsp;{% else %}0&nbsp;{% endif %}<a rel="nofollow" href="/dialog/karma.html?down=1&amp;mid={{ comment.id }}&amp;back={{ request.get_full_path }}#c{{ comment.id }}" title="Плохой комментарий (комментарий скроется, если наберет -5)"><img src="{% static 'i/bad.png' %}" width="10" height="10" ></a>');
+                </script>
+            {% endif %}
+        </div>
+    </div>
+{% endif %}
+
+{% if request.user.is_staff %}
+    <a href="/dialog/moderate.html?tid={{ article.id }}&action=deletemessage&mid={{ comment.id }}&back={{ request.get_full_path }}" class="uline" onclick="return confirm('Вы уверены в удалении?');">Удалить</a>
+    {% if request.forum_banip %}
+%		if ($message->ip() && $request->{forum_banip}->{$message->ip()}) {
+			| <a href="/dialog/moderate.html?tid=<% $message->thread_id() %>&action=unban&ip=<% $message->ip() %>&back=<% $back %>" class="uline">Разбанить ip (<% $message->ip() %>)</a>
+%		} else {
+			| <a href="/dialog/moderate.html?tid=<% $message->thread_id() %>&action=ban&ip=<% $message->ip() %>&back=<% $back %>" class="uline">Забанить ip (<% $message->ip() %>)</a>
+%		}
+%		if ($request->{forum_bannick}->{ $message->trimed_username } ) {
+			| <a href="/dialog/moderate.html?tid=<% $message->thread_id() %>&action=unbannick&id=<% $message->id %>&back=<% $back %>" class="uline">Разбанить ник (<% $message->get_author() %>)</a>
+%		} else {
+			| <a href="/dialog/moderate.html?tid=<% $message->thread_id() %>&action=bannick&id=<% $message->id %>&back=<% $back %>" class="uline">Забанить ник (<% $message->get_author() %>)</a>
+%		}
+    {% endif %}
+{% endif %}
+
+<span id="comment_replay_{{ comment.id }}"></span>

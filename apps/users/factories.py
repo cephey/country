@@ -9,3 +9,4 @@ class UserFactory(factory.django.DjangoModelFactory):
 
     username = factory.Faker('user_name')
     email = factory.Faker('email')
+    avatar = factory.django.ImageField(from_path='fixtures/i/flag.jpg')

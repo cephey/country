@@ -3,6 +3,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.fields import GenericRelation
+from model_utils import Choices
 
 from apps.utils.models import TimeStampedModel
 
@@ -29,6 +30,10 @@ class Section(models.Model):
 
 
 class Article(TimeStampedModel):
+    DISCUSSION_STATUS = Choices(
+        ('open', 'Открыто'),
+        ('close', 'Закрыто')
+    )
     title = models.CharField(_('Заголовок'), max_length=255)
     description = models.TextField(_('Описание'), blank=True)
     content = models.TextField(_('Содержание'), blank=True)
@@ -44,10 +49,12 @@ class Article(TimeStampedModel):
     source = models.CharField(_('Источник'), max_length=255, blank=True)
     source_link = models.URLField(_('Ссылка на источник'), blank=True)
     tags = GenericRelation('tags.TaggedItem')
+    votes = GenericRelation('votes.Vote')
 
-    can_comment = models.BooleanField(_('Можно оставлять комментарии'), default=True)
+    show_comments = models.BooleanField(_('Показывать комментарии'), default=True)
+    discussion_status = models.CharField(_('Статус обсуждения'), max_length=8, choices=DISCUSSION_STATUS,
+                                         default=DISCUSSION_STATUS.open)
     comments_count = models.PositiveIntegerField(_('Кол-во комментариев'), editable=False, default=0)
-    # rating field
 
     class Meta:
         verbose_name = _('Статья')
@@ -99,6 +106,8 @@ class Article(TimeStampedModel):
 
 
 class Comment(models.Model):
+    token = models.CharField(_('Идентификатор'), max_length=40, blank=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
     article = models.ForeignKey('articles.Article', verbose_name=_('Статья'))
     parent = models.ForeignKey('self', verbose_name=_('Родительский комментарий'), blank=True, null=True)
     username = models.CharField(_('Имя'), max_length=255)
@@ -106,7 +115,9 @@ class Comment(models.Model):
     content = models.TextField(_('Содержание'))
     created_at = models.DateTimeField(_('Дата создания'), auto_now_add=True, editable=False)
     is_active = models.BooleanField(default=True)
-    # votes field
+    votes = GenericRelation('votes.Vote')
+
+    karma = models.IntegerField(_('Суммарная оценка'), default=0)
 
     class Meta:
         verbose_name = _('Комментарий')
@@ -122,6 +133,12 @@ class Comment(models.Model):
         else:
             data.append(self.content[:50])
         return ': '.join(data + [self.created_at.isoformat()])
+
+    def get_avatar(self):
+        if self.user_id:
+            return self.user.get_avatar()
+        if self.token:
+            return 'https://dummyimage.com/45x45/ff0066/000000.png&text={}'.format(self.username[0])
 
 
 class Multimedia(models.Model):

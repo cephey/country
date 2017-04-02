@@ -1,6 +1,10 @@
+from django.db.models import Count, Avg
 from django.shortcuts import get_object_or_404
-from django.views.generic import TemplateView, ListView, DetailView
+from django.contrib.contenttypes.models import ContentType
+from django.views.generic import TemplateView, ListView, DetailView, RedirectView
+
 from apps.articles.models import Article, Section
+from apps.votes.models import Vote
 from apps.utils.mixins.views import HeaderContextMixin, SidebarContextMixin
 
 
@@ -63,6 +67,10 @@ class ArticleView(HeaderContextMixin, SidebarContextMixin, DetailView):
     model = Article
 
     def get_context_data(self, **kwargs):
+        kwargs['art_votes'] = (Vote.objects
+                               .filter(object_id=self.object.id,
+                                       content_type=ContentType.objects.get_for_model(Article))
+                               .aggregate(count=Count('id'), avg=Avg('score')))
         kwargs.update(
             self.get_header_context()
         )
@@ -70,6 +78,15 @@ class ArticleView(HeaderContextMixin, SidebarContextMixin, DetailView):
             self.get_sidebar_context()
         )
         return super().get_context_data(**kwargs)
+
+
+class ActionView(RedirectView):
+
+    def get_redirect_url(self, *args, **kwargs):
+        return self.request.META.get('HTTP_REFERER')
+
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 
 
 class RssView(TemplateView):

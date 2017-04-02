@@ -45,7 +45,8 @@ class Command(BaseCommand):
 
         get_user_model().objects.exclude(is_staff=True).delete()
 
-        # create all
+        # ---------------------
+
         tokens = [str(uuid.uuid4()).replace('-', '') for i in range(100)]
         self.stdout.write('Generate users...')
         users = UserFactory.create_batch(50)
@@ -95,23 +96,38 @@ class Command(BaseCommand):
                     if random.randint(0, 1):
                         params['source_link'] = Faker().url()
 
+                if not random.randint(0, 20):
+                    params['show_comments'] = False  # hide comments
+                if not random.randint(0, 2):
+                    params['discussion_status'] = Article.DISCUSSION_STATUS.close  # close discussion
+
                 article = ArticleFactory(**params)
+
                 # comments
-                CommentFactory.create_batch(random.randint(0, 8), article=article)
+                comment_count = random.randint(0, 8)
+                comment_tokens = random.sample(tokens, comment_count)
+                comment_users = random.sample(users, comment_count)
+                for j in range(comment_count):
+                    c_params = dict(article=article)
+                    if random.randint(0, 1):
+                        c_params['token'] = comment_tokens[j]
+                    else:
+                        c_params['user'] = comment_users[j]
+                    CommentFactory(**c_params)
 
         self.stdout.write('Generate ratings(articles votes)...')
         all_article_ids = list(Article.objects.values_list('id', flat=True))
         article_ids = random.sample(all_article_ids, int(len(all_article_ids) * 0.9))  # 90% articles with votes
         for article_id in article_ids:
             vote_count = random.randint(0, 16)
-            art_tokens = random.sample(tokens, vote_count)
-            art_users = random.sample(users, vote_count)
+            vote_tokens = random.sample(tokens, vote_count)
+            vote_users = random.sample(users, vote_count)
             for i in range(vote_count):
                 params = dict(object_id=article_id, content_type=article_ct, score=random.randint(1, 5))
                 if random.randint(0, 1):
-                    params['token'] = art_tokens[i]
+                    params['token'] = vote_tokens[i]
                 else:
-                    params['user'] = art_users[i]
+                    params['user'] = vote_users[i]
                 VoteFactory(**params)
 
         self.stdout.write('Generate likes(comments votes)...')
@@ -119,14 +135,14 @@ class Command(BaseCommand):
         comment_ids = random.sample(all_comment_ids, int(len(all_comment_ids) * 0.9))  # 90% comments with likes
         for comment_id in comment_ids:
             like_count = random.randint(0, 6)
-            com_tokens = random.sample(tokens, like_count)
-            com_users = random.sample(users, like_count)
+            vote_tokens = random.sample(tokens, like_count)
+            vote_users = random.sample(users, like_count)
             for i in range(like_count):
                 params = dict(object_id=comment_id, content_type=comment_ct, score=random.choice([-1, 1]))
                 if random.randint(0, 1):
-                    params['token'] = com_tokens[i]
+                    params['token'] = vote_tokens[i]
                 else:
-                    params['user'] = com_users[i]
+                    params['user'] = vote_users[i]
                 VoteFactory(**params)
 
         self.stdout.write('Generate notices...')

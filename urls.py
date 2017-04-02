@@ -24,5 +24,6 @@ urlpatterns = [
     url(r'^author/', include('apps.authors.urls', namespace='authors')),
     url(r'^polls/', include('apps.polls.urls', namespace='polls')),
     url(r'^tags/', include('apps.tags.urls', namespace='tags')),
+    url(r'^votes/', include('apps.votes.urls', namespace='votes')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

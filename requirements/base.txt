@@ -2,6 +2,7 @@
 
 # django and batteries
 Django==1.10.6
+django-model-utils==2.6.1
 
 # misc
 Pillow==3.3.2

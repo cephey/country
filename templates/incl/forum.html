@@ -1,0 +1,76 @@
+<a id="clist"></a>
+
+<div class="newscomments-header">
+    <div class="big1">Всего комментариев к статье: {{ article.comments_count }}</div>
+    <span>Комментарии не премодерируются и их можно оставлять анонимно</span>
+</div>
+
+<div class="newscomments-list">
+    {% if request.user.is_staff %}
+        <div class="normal">
+            <div class="p_hv">
+                {% if article.discussion_status == 'open' %}
+                    <a href="{% url 'articles:action' article.id 'close' %}" class="uline">закрыть обсуждение</a>
+                {% else %}
+                    <a href="{% url 'articles:action' article.id 'open' %}" class="uline">открыть обсуждение</a>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+    {% for comment in article.comment_set.all %}
+        <div class="newscomment">
+            {% include 'incl/forum_message.html' with article=article %}
+        </div>
+    {% endfor %}
+    <div class="normal">
+        <div class="p_hv">
+            {% if not article.comment_set.exists %}
+                Нет ни одного комментария, ваш ответ будет первым<br>
+            {% endif %}
+            <& /inc/pages_.msn, total => $total, n => $perpage, p => $ARGS{pf}, pname => 'pf', anchor => "clist" &>
+        </div>
+    </div>
+
+    <a id="comment"></a>
+</div>
+
+{% if article.discussion_status == 'open' %}
+    <div class="big1 newscomments-header">Написать комментарий</div>
+    <div class="newscomment-createform">
+        {% include 'incl/forum_message_form.html' with article=article %}
+    </div>
+{% endif %}
+
+{#<%args>#}
+{#	$news => undef#}
+{#</%args>#}
+{#<%init>#}
+{#	return undef unless ($news && ref($news) && $news->{id} && $news->can_comment());#}
+{#	my $thread = $news->get_news_thread();#}
+{#	return undef unless $thread && ref($thread);#}
+{##}
+{#	my $perpage = 20;#}
+{#	$ARGS{pf} = $ARGS{pf} !~ /^\d+$/ ? 1 : $ARGS{pf};#}
+{##}
+{#	my $total = $thread->get_count_messages();#}
+{##}
+{#	$ARGS{pf} = 1 if $perpage*($ARGS{pf}-1)>$total;#}
+{##}
+{#	my @messages = $thread->get_messages(#}
+{#		limit => $perpage,#}
+{#		offset => $perpage*($ARGS{pf}-1),#}
+{#		order_by => 'id desc',#}
+{#	);#}
+{##}
+{#	my ($mid, $subject);#}
+{#	if ($ARGS{mid} =~ /^\d+$/) {#}
+{#		if (my $doc_mid = $keeper->get_object_by_id( $ARGS{mid}, class => 'Forum::Message' ) ) {#}
+{#			if ($doc_mid && ref($doc_mid) && $doc_mid->id()) {#}
+{#				$mid = $doc_mid->{id};#}
+{#				$subject = 'Re: '.$doc_mid->name();#}
+{#			}#}
+{#		}#}
+{#	}#}
+{##}
+{#    my $karmed = $thread->ip_is_karmed_messages($request->ip, [ map { $_->id } @messages ]);#}
+{#</%init>#}

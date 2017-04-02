@@ -1,0 +1,47 @@
+<div id="forum_form">
+    <form action="/dialog/replay.html" method=POST >
+        {% csrf_token %}
+        <input type=hidden name="thread_id" value='{{ article.id }}'>
+        <input type=hidden name="parent_id" id="comment_parent" value="">
+        <input type=hidden name="back" value="{{ request.get_full_path }}">
+        <table class="noborder wp90">
+            <tr>
+				<td class="normal w100"><b>Ваше имя:</b></td>
+				<td><input maxlength=50 name="username" value="" type="text" style="font-size:12px"></td>
+			</tr>
+			<tr>
+				<td colspan="2"><div style="width:1px; height:7px"><!-- --></div></td>
+			</tr>
+			<tr>
+				<td class="normal"><b>Заголовок:</b></td>
+				<td><input maxlength=100 name="name" id="comment_body" value="" type="text" style="font-size:12px;width:100%;"></td>
+			</tr>
+			<tr>
+				<td colspan="2"><div style="width:1px; height:7px"><!-- --></div></td>
+			</tr>
+			<tr>
+				<td colspan="2" class="normal">
+                    <b>Комментарий:</b>
+                    <div style="width:1px; height:7px"><!-- --></div>
+                    <textarea name="body" rows="8" cols="8" style="width:100%;"></textarea>
+                    <div style="width:1px; height:7px"><!-- --></div>
+                </td>
+			</tr>
+            {% if not request.is_bot %}
+                <tr>
+                    <td class="w150 normal"><b>Введите число, указанное на картинке:</b></td>
+                    <td>
+                        <img src="/captcha/i.gif?<% $token %>" width="80" height="30" alt=""><br />
+                        <input type="text" name="token" value="" style="width:86px"><br />
+                        <input type="hidden" name="ctoken" value="<% $token %>">
+                    </td>
+                </tr>
+            {% endif %}
+			<tr>
+				<td colspan="2">
+                    <input name="submit" value="ответить" type="submit" class="but" style="font-size:12px">
+                </td>
+			</tr>
+		</table>
+    </form>
+</div>

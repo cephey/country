@@ -18,7 +18,7 @@ function voteMakeActiveStar(textID,num) {
         try {
                 for (var i=1;i<=5;i++) {
                         var el = $('vote_'+textID+'_'+i);
-                        el.src = num < i ? '/i/site/star_deactive.png' : '/i/site/star_active.png';
+                        el.src = num < i ? '/static/i/star_deactive.png' : '/static/i/star_active.png';
                 }
         } catch(e) {}
         return false;
@@ -29,7 +29,7 @@ function voteMakeDeativeStar(textID,rating) {
                 if (ajaxExtra.ratingRound[textID]) rating = ajaxExtra.ratingRound[textID];
                 for (var i=1;i<=5;i++) {
                         var el = $('vote_'+textID+'_'+i);
-                        el.src = rating < i ? '/i/site/star_deactive.png' : '/i/site/star_active.png';
+                        el.src = rating < i ? '/static/i/star_deactive.png' : '/static/i/star_active.png';
                 }
         } catch(e) {}
         return false;
@@ -55,7 +55,7 @@ function makeForumReplyForm(element, subj, parent_id) {
 		commentActionFormElement.parentNode.removeChild(commentActionFormElement);
 	}
 
-	// src элемента
+	// src О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫
 	var newElement = document.createElement('div');
 	newElement.innerHTML = commentActionForm[id];
 

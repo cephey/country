@@ -30,7 +30,7 @@
                     </em>
                 </a>
             </span>
-            {% if object.can_comment %}
+            {% if object.show_comments %}
                 <span>
                     <a href="#clist" itemprop="discussionUrl" content="{{ article.get_absolute_url }}#clist">
                         комментариев {{ object.comments_count }}
@@ -92,7 +92,7 @@
                     <table class="full-table">
                         <tr>
                             <td class="align-left">
-                                <& /www/comps/block_vote.msn, news => $news &>
+                                {% include 'incl/block_vote.html' with article=object %}
                             </td>
                             <td class="align-right">
                                 <table class="noborder">
@@ -126,9 +126,9 @@
 
 <div style="width:1px; height:7px"><!-- --></div>
 
-{% if object.can_comment %}
+{% if object.show_comments %}
     <!--noindex-->
-    <& forum.msn, news => $news, %ARGS &>
+    {% include 'incl/forum.html' with article=object %}
     <!--/noindex-->
     <div style="width:1px; height:5px"><!-- --></div>
     <div id="yandex_ad_R-59310-2"></div>
