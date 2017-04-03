@@ -5,7 +5,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.views.generic import TemplateView, ListView, DetailView, RedirectView
 from django.core.paginator import InvalidPage, Paginator
 
-from apps.articles.models import Article, Section, Comment
+from apps.articles.models import Article, Section, Comment, NAVIGATE_SECTIONS
 from apps.votes.models import Vote
 from apps.utils.mixins.views import HeaderContextMixin, SidebarContextMixin
 from apps.utils.mixins.paginator import PaginatorMixin
@@ -77,6 +77,18 @@ class ArticleView(HeaderContextMixin, SidebarContextMixin, PaginatorMixin, Detai
 
         comments = Comment.objects.filter(article=self.object, is_active=True)
         kwargs['art_comments'] = self.paginate_qs(comments, 3)
+
+        if not self.object.show_comments:
+            data = []
+            for slug in NAVIGATE_SECTIONS:
+                data.append(
+                    (Article.objects
+                     .filter(section__slug=slug, is_active=True)
+                     .select_related('section')
+                     .order_by('-publish_date')
+                     .first())
+                )
+            kwargs['in_sections'] = data
 
         kwargs.update(
             self.get_header_context()

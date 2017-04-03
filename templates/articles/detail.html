@@ -127,6 +127,7 @@
 <div style="width:1px; height:7px"><!-- --></div>
 
 {% if object.show_comments %}
+
     <!--noindex-->
     {% include 'incl/forum.html' with article=object %}
     <!--/noindex-->
@@ -134,9 +135,31 @@
     <div id="yandex_ad_R-59310-2"></div>
     {% include 'incl/adv/ya_context.html' with block_id='R-59310-2' %}
     <div style="width:1px; height:5px"><!-- --></div>
-{% else %}
+
+{% elif in_sections %}
+
     <div style="width:1px; height:5px"><!-- --></div>
-    <& ../comps/block_in_sections.msn &>
+    {% with articles=in_sections %}
+        <div class="big1 bl">В разделах:</div>
+        <div style="width:1px; height:1px"><!-- --></div>
+        <div class="border_bl">
+            <table cellpadding=0 cellspacing=0 width="100%" class="border_t_bl">
+                {% for article in articles %}
+                    <tr>
+                        <td>
+                            <div class="normal align-right">
+                                <a href="{% url 'articles:section' article.section.slug %}">{{ article.section.name }}</a>
+                            </div>
+                        </td>
+                        <td>
+                            {% include 'incl/tile/content.html' with color='blue' %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% endwith %}
+
 {% endif %}
 
 
