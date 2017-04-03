@@ -1,11 +1,14 @@
+from django.http import Http404
 from django.db.models import Count, Avg
 from django.shortcuts import get_object_or_404
 from django.contrib.contenttypes.models import ContentType
 from django.views.generic import TemplateView, ListView, DetailView, RedirectView
+from django.core.paginator import InvalidPage, Paginator
 
-from apps.articles.models import Article, Section
+from apps.articles.models import Article, Section, Comment
 from apps.votes.models import Vote
 from apps.utils.mixins.views import HeaderContextMixin, SidebarContextMixin
+from apps.utils.mixins.paginator import PaginatorMixin
 
 
 class IndexView(HeaderContextMixin, SidebarContextMixin, TemplateView):
@@ -62,7 +65,7 @@ class SectionView(HeaderContextMixin, SidebarContextMixin, ListView):
         return super().get_context_data(**kwargs)
 
 
-class ArticleView(HeaderContextMixin, SidebarContextMixin, DetailView):
+class ArticleView(HeaderContextMixin, SidebarContextMixin, PaginatorMixin, DetailView):
     template_name = 'articles/detail.html'
     model = Article
 
@@ -71,6 +74,10 @@ class ArticleView(HeaderContextMixin, SidebarContextMixin, DetailView):
                                .filter(object_id=self.object.id,
                                        content_type=ContentType.objects.get_for_model(Article))
                                .aggregate(count=Count('id'), avg=Avg('score')))
+
+        comments = Comment.objects.filter(article=self.object, is_active=True)
+        kwargs['art_comments'] = self.paginate_qs(comments, 3)
+
         kwargs.update(
             self.get_header_context()
         )

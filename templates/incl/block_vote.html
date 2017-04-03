@@ -7,10 +7,10 @@
                 {% if art_votes.count %}
                     <meta itemprop="ratingCount" content="{{ art_votes.count }}" />
                     <meta itemprop="bestRating" content="5" />
-                    <meta itemprop="ratingValue" content="{{ art_votes.avg }}" />
+                    <meta itemprop="ratingValue" content="{{ art_votes.avg|floatformat:2 }}" />
                 {% endif %}
                 {% for _ in ''|center:5 %}
-                    <div class="vote_passive" onmouseover="voteMakeActiveStar({{ article.id }}, {{ forloop.counter }})" onmouseout="voteMakeDeativeStar({{ article.id }}, {{ art_votes.avg|default:0 }})">
+                    <div class="vote_passive" onmouseover="voteMakeActiveStar({{ article.id }}, {{ forloop.counter }})" onmouseout="voteMakeDeativeStar({{ article.id }}, {{ art_votes.avg|default:0|floatformat:2 }})">
                         <form class="vote_form" action="{% url 'votes:article' %}" name="voting" method="POST">
                             {% csrf_token %}
                             <input type="hidden" name="id" value="{{ article.id }}">
@@ -25,7 +25,7 @@
     </tr>
     <tr>
         <td>
-            Рейтинг: {{ art_votes.avg|default:0 }},&nbsp;&nbsp;Голосов: {{ art_votes.count }}
+            Рейтинг: {{ art_votes.avg|default:0|floatformat:2 }},&nbsp;&nbsp;Голосов: {{ art_votes.count }}
         </td>
     </tr>
 </table>

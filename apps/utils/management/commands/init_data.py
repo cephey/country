@@ -104,7 +104,7 @@ class Command(BaseCommand):
                 article = ArticleFactory(**params)
 
                 # comments
-                comment_count = random.randint(0, 8)
+                comment_count = random.randint(0, 20)
                 comment_tokens = random.sample(tokens, comment_count)
                 comment_users = random.sample(users, comment_count)
                 for j in range(comment_count):

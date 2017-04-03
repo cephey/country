@@ -17,7 +17,7 @@
             </div>
         </div>
     {% endif %}
-    {% for comment in article.comment_set.all %}
+    {% for comment in art_comments.object_list %}
         <div class="newscomment">
             {% include 'incl/forum_message.html' with article=article %}
         </div>
@@ -27,7 +27,7 @@
             {% if not article.comment_set.exists %}
                 Нет ни одного комментария, ваш ответ будет первым<br>
             {% endif %}
-            <& /inc/pages_.msn, total => $total, n => $perpage, p => $ARGS{pf}, pname => 'pf', anchor => "clist" &>
+            {% include 'incl/paginator.html' with page_obj=art_comments %}
         </div>
     </div>
 
