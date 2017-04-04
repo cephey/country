@@ -11,7 +11,7 @@ class SidebarContextMixin(object):
             'poll': Poll.objects.order_by('?').first(),
             'sidebar_videos': Article.objects.filter(video__isnull=False)[:2],
             'sidebar_news': Article.objects.filter(is_news=True).order_by('?')[:10],  # order by vote_sum?
-            'notices': Notice.objects.all()[:3],
+            'notices': Notice.objects.filter(status=Notice.STATUS.approved)[:3],
             'entries': Entry.objects.order_by('?')[:5],
             'authors': Author.objects.order_by('last_name')[:15],
         }
@@ -25,3 +25,15 @@ class HeaderContextMixin(object):
             'marquee': Article.objects.order_by('-publish_date').first(),
             'sections': Section.objects.filter(slug__in=NAVIGATE_SECTIONS).order_by('id'),
         }
+
+
+class PageContextMixin(HeaderContextMixin, SidebarContextMixin):
+
+    def get_context_data(self, **kwargs):
+        kwargs.update(
+            self.get_header_context()
+        )
+        kwargs.update(
+            self.get_sidebar_context()
+        )
+        return super().get_context_data(**kwargs)

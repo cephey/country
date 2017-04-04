@@ -154,7 +154,12 @@ class Multimedia(models.Model):
 
 
 class Notice(TimeStampedModel):
-    content = models.TextField(_('Содержание'))
+    STATUS = Choices(
+        ('new', 'Новый'),
+        ('approved', 'Одобрен')
+    )
+    content = models.CharField(_('Содержание'), max_length=200)
+    status = models.CharField(_('Статус'), max_length=8, choices=STATUS, default=STATUS.new)
 
     class Meta:
         verbose_name = _('Анонс')

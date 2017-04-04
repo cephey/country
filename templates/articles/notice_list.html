@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load htmlutils %}
+
+{% block content %}
+    <div class="big1 or">Анонсы</div>
+    <div style="width:1px; height:1px"><!-- --></div>
+    <div class="border_or">
+        <table class="full-table">
+            {% for notice in object_list %}
+                <tr>
+                    <td>
+                        <a id="{{ notice.id }}"></a>
+                        <div class="p_hv">
+                            <div class="normal">
+                                {{ notice.content }}
+                            </div>
+                        </div>
+                        <div style="height:1px; background: #FFD4B7;"><!-- --></div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+
+        <a id="send"></a>
+        <br>
+        <br>
+        <br>
+        <br>
+        {% if messages %}
+            {% for message in messages %}
+                <center>
+                    <span class="normal">
+                        <b>{{ message }}</b>
+                    </span>
+                </center>
+            {% endfor %}
+        {% else %}
+            {% if form.content.errors %}
+                {% for error in form.content.errors %}
+                    <center>
+                        <span class="normal" style="color:red">
+                            <b>{{ error|escape }}</b>
+                        </span>
+                    </center>
+                {% endfor %}
+            {% endif %}
+
+            <form action="{% url 'articles:notice' %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="save" value="1">
+                <table border=0>
+                    <tr>
+                        <td colspan="3">
+                            <div class="normal">
+                                <b>Если вы считаете, что некоторое событие достойно того, чтобы о нем узнали массы, вы можете опубликовать его у нас на сайте, воспользовавшись формой ниже.</b>
+                                <br>
+                                После одобрения редактором ваше объявление появится на сайте.
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="normal">Текст объявления (макс. 200 символов):</div>
+                        </td>
+                        <td class="wp50">
+                            <input maxlength="200" type="text" name="content" style="width:100%">
+                        </td>
+                        <td>
+                            <input type="submit" value="Добавить" class="but">
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        {% endif %}
+    </div>
+
+    <table class="full-table h7 bgFFF0E6">
+        <tr>
+            <td class="bg_orange_l w7"><div style="width:7px; height:7px"><!-- --></div></td>
+            <td class="wp100 bg_orange_c"><div style="width:1px; height:7px"><!-- --></div></td>
+            <td class="bg_orange_r w7"><div style="width:7px; height:7px"><!-- --></div></td>
+        </tr>
+    </table>
+{% endblock %}

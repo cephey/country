@@ -1,16 +1,18 @@
+from django.contrib import messages
 from django.db.models import Count, Avg
+from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
+from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
-from django.views.generic import TemplateView, DetailView, RedirectView
+from django.views.generic import TemplateView, ListView, DetailView, RedirectView, CreateView
 
-from apps.articles.models import Article, Section, Comment, NAVIGATE_SECTIONS
-from apps.articles.views import BaseArticleListView
-from apps.utils.mixins.views import HeaderContextMixin, SidebarContextMixin
+from apps.articles.models import Article, Section, Comment, Notice, NAVIGATE_SECTIONS
+from apps.utils.mixins.views import PageContextMixin
 from apps.utils.mixins.paginator import PaginatorMixin
 from apps.votes.models import Vote
 
 
-class IndexView(HeaderContextMixin, SidebarContextMixin, TemplateView):
+class IndexView(PageContextMixin, TemplateView):
     template_name = 'articles/index.html'
 
     def get_context_data(self, **kwargs):
@@ -40,6 +42,13 @@ class IndexView(HeaderContextMixin, SidebarContextMixin, TemplateView):
         return super().get_context_data(**kwargs)
 
 
+class BaseArticleListView(PageContextMixin, ListView):
+    template_name = 'articles/list.html'
+    paginate_by = 5
+    model = Article
+    page_kwarg = 'p'
+
+
 class SectionView(BaseArticleListView):
     section = None
 
@@ -58,7 +67,7 @@ class SectionView(BaseArticleListView):
         return super().get_context_data(**kwargs)
 
 
-class ArticleDetailView(HeaderContextMixin, SidebarContextMixin, PaginatorMixin, DetailView):
+class ArticleDetailView(PageContextMixin, PaginatorMixin, DetailView):
     template_name = 'articles/detail.html'
     model = Article
 
@@ -89,6 +98,24 @@ class ArticleDetailView(HeaderContextMixin, SidebarContextMixin, PaginatorMixin,
         kwargs.update(
             self.get_sidebar_context()
         )
+        return super().get_context_data(**kwargs)
+
+
+class NoticeListView(PageContextMixin, CreateView):
+    template_name = 'articles/notice_list.html'
+    model = Notice
+    fields = ['content']
+
+    def get_success_url(self):
+        return reverse('articles:notice') + '#send'
+
+    def form_valid(self, form):
+        messages.info(self.request, _('Ваше объявление будет обязательно рассмотрено'
+                                      'нашим редактором в самое ближайшее время.'))
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        kwargs['object_list'] = Notice.objects.filter(status=Notice.STATUS.approved)[:20]
         return super().get_context_data(**kwargs)
 
 
