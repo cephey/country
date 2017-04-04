@@ -47,9 +47,9 @@ class Command(BaseCommand):
 
         # ---------------------
 
-        tokens = [str(uuid.uuid4()).replace('-', '') for i in range(100)]
+        tokens = [str(uuid.uuid4()).replace('-', '') for i in range(300)]
         self.stdout.write('Generate users...')
-        users = UserFactory.create_batch(50)
+        users = UserFactory.create_batch(100)
 
         self.stdout.write('Generate authors...')
         authors = AuthorFactory.create_batch(30)
@@ -72,7 +72,7 @@ class Command(BaseCommand):
 
         self.stdout.write('Generate articles with comments...')
         for section in sections:
-            for i in range(random.randint(8, 12)):
+            for i in range(random.randint(20, 50)):
                 # authors
                 params = dict(
                     section=section,
@@ -146,14 +146,14 @@ class Command(BaseCommand):
                 VoteFactory(**params)
 
         self.stdout.write('Generate notices...')
-        NoticeFactory.create_batch(16)
+        NoticeFactory.create_batch(30)
 
         self.stdout.write('Generate polls...')
-        polls = PollFactory.create_batch(3)
+        polls = PollFactory.create_batch(5)
         for poll in polls:
             ChoiceFactory.create_batch(random.randint(3, 6), poll=poll)
 
         self.stdout.write('Generate bloggers with entries...')
-        bloggers = BloggerFactory.create_batch(6)
+        bloggers = BloggerFactory.create_batch(10)
         for blogger in bloggers:
-            EntryFactory.create_batch(random.randint(2, 8), blogger=blogger)
+            EntryFactory.create_batch(random.randint(10, 20), blogger=blogger)

@@ -3,12 +3,12 @@
 {% load static %}
 {% load htmlutils %}
 
-{% block title %}{{ active_section.name }}{% if page_obj.number > 1 %}, страница {{ page_obj.number }}{% endif %} - ФОРУМ.мск{% endblock %}
+{% block title %}{{ partition.name }}{% if page_obj.number > 1 %}, страница {{ page_obj.number }}{% endif %} - ФОРУМ.мск{% endblock %}
 
-{% block description %}{{ active_section.name }}{% endblock %}
+{% block description %}{{ partition.name }}{% endblock %}
 
 {% block content %}
-<div class="big1 or">{{ active_section.name }}</div>
+<div class="big1 or">{{ partition.name }}</div>
 <div style="width:1px; height:1px"><!-- --></div>
 <div class="border_or">
     <table class="full-table">

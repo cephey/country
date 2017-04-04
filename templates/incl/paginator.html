@@ -1,23 +1,25 @@
-{% if page_obj.number > 4 %}
-    [<a href="{{ article.get_absolute_url }}?pf=1">В начало</a>]
-{% endif %}
-{% if page_obj.has_previous %}
-    <a title="Предыдущая страница" href="{{ article.get_absolute_url }}?pf={{ page_obj.previous_page_number }}">&lt;&lt;</a>
-{% endif %}
-
-{% for p in page_obj.paginator.page_range %}
-    {% if p > page_obj.number|add:'-4' and p < page_obj.number|add:'4' %}
-        {% if p == page_obj.number %}
-            <b>{{ p }}</b>
-        {% else %}
-            <a href="{{ article.get_absolute_url }}?pf={{ p }}#clist">{{ p }}</a>
-        {% endif %}
+{% if page_obj.paginator.num_pages > 1 %}
+    {% if page_obj.number > 4 %}
+        [<a href="{{ article.get_absolute_url }}?{{ page }}=1">В начало</a>]
     {% endif %}
-{% endfor %}
+    {% if page_obj.has_previous %}
+        <a title="Предыдущая страница" href="{{ article.get_absolute_url }}?{{ page }}={{ page_obj.previous_page_number }}">&lt;&lt;</a>
+    {% endif %}
 
-{% if page_obj.has_next %}
-    <a title="Следующая страница" href="{{ article.get_absolute_url }}?pf={{ page_obj.next_page_number }}">&gt;&gt;</a>
-{% endif %}
-{% if page_obj.number < page_obj.paginator.num_pages|add:'-3' %}
-    [<a href="{{ article.get_absolute_url }}?pf={{ page_obj.paginator.num_pages }}">В конец</a>]
+    {% for p in page_obj.paginator.page_range %}
+        {% if p > page_obj.number|add:'-4' and p < page_obj.number|add:'4' %}
+            {% if p == page_obj.number %}
+                <b>{{ p }}</b>
+            {% else %}
+                <a href="{{ article.get_absolute_url }}?{{ page }}={{ p }}{% if anchor %}#{{ anchor }}{% endif %}">{{ p }}</a>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+        <a title="Следующая страница" href="{{ article.get_absolute_url }}?{{ page }}={{ page_obj.next_page_number }}">&gt;&gt;</a>
+    {% endif %}
+    {% if page_obj.number < page_obj.paginator.num_pages|add:'-3' %}
+        [<a href="{{ article.get_absolute_url }}?{{ page }}={{ page_obj.paginator.num_pages }}">В конец</a>]
+    {% endif %}
 {% endif %}

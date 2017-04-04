@@ -1,14 +1,13 @@
-from django.http import Http404
 from django.db.models import Count, Avg
 from django.shortcuts import get_object_or_404
 from django.contrib.contenttypes.models import ContentType
-from django.views.generic import TemplateView, ListView, DetailView, RedirectView
-from django.core.paginator import InvalidPage, Paginator
+from django.views.generic import TemplateView, DetailView, RedirectView
 
 from apps.articles.models import Article, Section, Comment, NAVIGATE_SECTIONS
-from apps.votes.models import Vote
+from apps.articles.views import BaseArticleListView
 from apps.utils.mixins.views import HeaderContextMixin, SidebarContextMixin
 from apps.utils.mixins.paginator import PaginatorMixin
+from apps.votes.models import Vote
 
 
 class IndexView(HeaderContextMixin, SidebarContextMixin, TemplateView):
@@ -41,10 +40,7 @@ class IndexView(HeaderContextMixin, SidebarContextMixin, TemplateView):
         return super().get_context_data(**kwargs)
 
 
-class SectionView(HeaderContextMixin, SidebarContextMixin, ListView):
-    template_name = 'articles/section.html'
-    paginate_by = 20
-    model = Article
+class SectionView(BaseArticleListView):
     section = None
 
     def get(self, request, *args, **kwargs):
@@ -55,17 +51,14 @@ class SectionView(HeaderContextMixin, SidebarContextMixin, ListView):
         return super().get_queryset().filter(section=self.section)
 
     def get_context_data(self, **kwargs):
-        kwargs['active_section'] = self.section
         kwargs.update(
-            self.get_header_context()
-        )
-        kwargs.update(
-            self.get_sidebar_context()
+            partition=self.section,
+            art_section=self.section
         )
         return super().get_context_data(**kwargs)
 
 
-class ArticleView(HeaderContextMixin, SidebarContextMixin, PaginatorMixin, DetailView):
+class ArticleDetailView(HeaderContextMixin, SidebarContextMixin, PaginatorMixin, DetailView):
     template_name = 'articles/detail.html'
     model = Article
 
