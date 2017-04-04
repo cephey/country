@@ -20,6 +20,7 @@ from apps.votes.factories import VoteFactory
 from apps.users.factories import UserFactory
 
 LOW = {
+    'label': 'low',
     'token_count': 100,
     'user_count': 50,
     'author_count': 20,
@@ -36,6 +37,7 @@ LOW = {
     'max_entry_count': 10,
 }
 MIDDLE = {
+    'label': 'middle',
     'token_count': 200,
     'user_count': 70,
     'author_count': 30,
@@ -52,6 +54,7 @@ MIDDLE = {
     'max_entry_count': 20,
 }
 HEIGHT = {
+    'label': 'height',
     'token_count': 300,
     'user_count': 100,
     'author_count': 40,
@@ -72,11 +75,22 @@ HEIGHT = {
 class Command(BaseCommand):
     help = 'Initial data for testing'
 
+    def add_arguments(self, parser):
+        parser.add_argument('--middle', action='store_true')
+        parser.add_argument('--height', action='store_true')
+
     def handle(self, *args, **kwargs):
+        STR = LOW
+        if kwargs.get('middle'):
+            STR = MIDDLE
+        elif kwargs.get('height'):
+            STR = HEIGHT
+        self.stdout.write('A <{}> strategy is chosen'.format(STR['label']))
+
         article_ct = ContentType.objects.get_for_model(Article)
         comment_ct = ContentType.objects.get_for_model(Comment)
 
-        # remove all
+        self.stdout.write('Remove all data from DB')
         Notice.objects.all().delete()
         Comment.objects.all().delete()
         Article.objects.all().delete()
@@ -95,8 +109,6 @@ class Command(BaseCommand):
         get_user_model().objects.exclude(is_staff=True).delete()
 
         # ---------------------
-
-        STR = LOW  # strategy
 
         tokens = [str(uuid.uuid4()).replace('-', '') for i in range(STR['token_count'])]
         self.stdout.write('Generate users...')
