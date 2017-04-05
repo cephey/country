@@ -1,1 +1,64 @@
 {% extends 'base.html' %}
+
+{% load static %}
+{% load htmlutils %}
+
+{% block title %}Публикации {{ object.cover_name }} - ФОРУМ.мск{% endblock %}
+
+{% block content %}
+    <div class="big1 or">Автор - {{ object.cover_name }}</div>
+    <div style="width:1px; height:1px"><!-- --></div>
+    <div class="border_or">
+        <table class="full-table">
+            <tr>
+                <td>
+                    <div class="or2_normal">&nbsp;&nbsp;<b>Об авторе:</b></div>
+                    <div class="normal">
+                        <img class="pwi" src="{{ object.icon|crop:'100x100' }}" alt="{{ object.cover_name|safe }}">
+                        {{ object.description }}
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <table class="full-table h7 bgFFF0E6">
+        <tr>
+            <td class="bg_orange_l w7"><div style="width:7px; height:7px"><!-- --></div></td>
+            <td class="wp100 bg_orange_c"><div style="width:1px; height:7px"><!-- --></div></td>
+            <td class="bg_orange_r w7"><div style="width:7px; height:7px"><!-- --></div></td>
+        </tr>
+    </table>
+
+    <div style="width:1px; height:7px"><!-- --></div>
+
+    <div class="big1 bl">Последние статьи автора:</div>
+    <div style="width:1px; height:1px"><!-- --></div>
+    <div class="border_bl">
+        <div class="p_hv">
+            <div class="normal">
+                <ul>
+                    {% for article in obj_atricles %}
+                        <li>
+                            <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
+                            <span class="grey">
+                                {{ article.publish_date|date:'d.m.Y' }}
+                            </span>
+                            <span class="active">
+                                <a href="{{ article.get_absolute_url }}">&gt;&gt;</a>
+                            </span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <table class="full-table h7 bgFFF0E6">
+        <tr>
+            <td class="bg_blu_l w7"><div style="width:7px; height:7px"><!-- --></div></td>
+            <td class="wp100 bg_blu_c"><div style="width:1px; height:7px"><!-- --></div></td>
+            <td class="bg_blu_r w7"><div style="width:7px; height:7px"><!-- --></div></td>
+        </tr>
+    </table>
+{% endblock %}
