@@ -1,1 +1,57 @@
 {% extends 'base.html' %}
+
+{% load static %}
+{% load htmlutils %}
+
+{% block title %}Результаты голосования - ФОРУМ.мск{% endblock %}
+
+{% block content %}
+    <div class="big1 or">Результаты голосования</div>
+    <div style="width:1px; height:1px"><!-- --></div>
+    <div class="border_or">
+        <div class="normal">
+            <div class="p_hv">
+                <table width="100%">
+                    <tr>
+                        <td colspan=2 align=center>
+                            <b>{{ object.question }}</b>
+                        </td>
+                    </tr>
+                    {% for choice in object.choice_set.all %}
+                        <tr>
+                            <td width="40%" align=right>
+                                <div style="font-size:90%;width:{% widthratio choice.vote_count sum_votes 100 %}%;background-color:#990000">&nbsp;</div>
+                            </td>
+                            <td>
+                                {{ choice.answer }} ({{ choice.vote_count }})
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <br />
+            <br />
+            <div align="center">
+                {% if prev_poll %}
+                    <a href="{{ prev_poll.get_absolute_url }}"><< предыдущий опрос</a>
+                {% endif %}
+                &nbsp;|&nbsp;
+                {% if next_poll %}
+                    <a href="{{ next_poll.get_absolute_url }}">следующий опрос >></a>
+                {% endif %}
+            </div>
+            <br />
+            <br />
+            <br />
+            <br />
+        </div>
+    </div>
+
+    <table class="full-table h7 bgFFF0E6">
+        <tr>
+            <td class="bg_orange_l w7"><div style="width:7px; height:7px"><!-- --></div></td>
+            <td class="wp100 bg_orange_c"><div style="width:1px; height:7px"><!-- --></div></td>
+            <td class="bg_orange_r w7"><div style="width:7px; height:7px"><!-- --></div></td>
+        </tr>
+    </table>
+{% endblock %}

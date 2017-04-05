@@ -17,8 +17,8 @@ class Poll(TimeStampedModel):
     def __str__(self):
         return self.question
 
-    # def get_absolute_url(self):
-    #     return reverse('web:author-detail', kwargs={'pk': self.pk, 'slug': self.slug})
+    def get_absolute_url(self):
+        return reverse('polls:detail', kwargs={'pk': self.pk})
 
 
 class Choice(models.Model):

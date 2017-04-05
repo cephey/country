@@ -3,12 +3,15 @@
 {% block title %}Опрос{% endblock %}
 
 {% block content %}
-<form action="/votes/blank.html" method="POST" target="_blank">
-    <input type="hidden" name="voteid" value="{{ poll.id }}">
+<form action="{% url 'polls:choice_vote' %}" method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="poll_id" value="{{ poll.id }}">
     <ul style="margin:5px;padding: 0 0 0 12px;">
-        <li class="li_normal"><b>{{ poll.question }}</b>:</li>
+        <li class="li_normal">
+            <b>{{ poll.question }}</b>:
+        </li>
     </ul>
-    <select name="vote_1" style="width:100%">
+    <select name="choices" style="width:100%">
         <option value="">Варианты ответов:</option>
         {% for choice in poll.choice_set.all %}
             <option value="{{ choice.id }}">{{ choice.answer }}</option>
