@@ -12,7 +12,7 @@ urlpatterns = [
     url(r'^tags/', include('apps.tags.urls', namespace='tags')),
 
     url(r'^polls/', include('apps.polls.urls', namespace='polls')),
-    url(r'^votes/blank.html', PollDetailView.as_view()),  # legacy
+    url(r'^votes/blank.html', PollDetailView.as_view()),  # deprecated
     # ?voteid=123 - id голосования
     # ?pvoteid=123&type=prev - при переходе с другого голосования (ссылка предыдущий)
     # ?pvoteid=123&type=next - при переходе с другого голосования (ссылка следующий)

@@ -1,50 +1,46 @@
 <div class="big1 rl">
-    <a href="{% url 'articles:section' section.slug %}">{{ section.name }}</a>
+    <a href="{% url 'articles:section' material.section.slug %}">{{ material.section.name }}</a>
 </div>
 
 <div style="width:1px; height:1px"><!-- --></div>
 
 <div class="border_bl">
 
-    {% if section.article_set.exists %}
+    {% if material.articles %}
 
-        {% with atricles=section.article_set.all|slice:':6' %}
+        {% with article=material.articles.0 %}
+            <table class="full-table">
+                <tr>
+                    <td>
+                        {% include 'incl/tile/content.html' with color='blue' %}
+                    </td>
+                </tr>
+            </table>
+        {% endwith %}
 
-            {% with article=atricles.0 %}
-                <table class="full-table">
-                    <tr>
-                        <td>
-                            {% include 'incl/tile/content.html' with color='blue' %}
-                        </td>
-                    </tr>
-                </table>
-            {% endwith %}
+        {% if material.articles|length > 1 %}
 
-            {% if atricles|length > 1 %}
-
-                <div style="height:1px; background: #C1DAE6;"><!-- --></div>
-                <div class="normal">
-                    <div class="p_h">
-                        {% for article in atricles|slice:'1:' %}
-                            <div class="list {% if article.video %}list_video{% endif %}">
-                                {% include 'articles/incl/link.html' with article=article %}
-                            </div>
-                        {% endfor %}
-                    </div>
-                    <div style="height:1px; background: #C1DAE6;"><!-- --></div>
-                    <div class="p_hv">
-                        <div class="align-right">
-                            <a href="{% url 'articles:section' section.slug %}">все материалы раздела</a>
-                            <span class="active">
-                                <a href="{% url 'articles:section' section.slug %}">&gt;&gt;</a>
-                            </span>
+            <div style="height:1px; background: #C1DAE6;"><!-- --></div>
+            <div class="normal">
+                <div class="p_h">
+                    {% for article in material.articles|slice:'1:' %}
+                        <div class="list {% if article.video %}list_video{% endif %}">
+                            {% include 'articles/incl/link.html' with article=article %}
                         </div>
+                    {% endfor %}
+                </div>
+                <div style="height:1px; background: #C1DAE6;"><!-- --></div>
+                <div class="p_hv">
+                    <div class="align-right">
+                        <a href="{% url 'articles:section' material.section.slug %}">все материалы раздела</a>
+                        <span class="active">
+                            <a href="{% url 'articles:section' material.section.slug %}">&gt;&gt;</a>
+                        </span>
                     </div>
                 </div>
+            </div>
 
-            {% endif %}
-
-        {% endwith %}
+        {% endif %}
 
     {% endif %}
 

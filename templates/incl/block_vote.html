@@ -3,20 +3,20 @@
 <table class="noborder">
     <tr>
         <td>
-            <div {% if art_votes.count %}itemprop="aggregateRating" itemscope="itemscope" itemtype="http://schema.org/AggregateRating"{% endif %}>
-                {% if art_votes.count %}
-                    <meta itemprop="ratingCount" content="{{ art_votes.count }}" />
+            <div {% if article.vote_count %}itemprop="aggregateRating" itemscope="itemscope" itemtype="http://schema.org/AggregateRating"{% endif %}>
+                {% if article.vote_count %}
+                    <meta itemprop="ratingCount" content="{{ article.vote_count }}" />
                     <meta itemprop="bestRating" content="5" />
-                    <meta itemprop="ratingValue" content="{{ art_votes.avg|floatformat:2 }}" />
+                    <meta itemprop="ratingValue" content="{{ article.rating|floatformat:2 }}" />
                 {% endif %}
                 {% for _ in ''|center:5 %}
-                    <div class="vote_passive" onmouseover="voteMakeActiveStar({{ article.id }}, {{ forloop.counter }})" onmouseout="voteMakeDeativeStar({{ article.id }}, {{ art_votes.avg|default:0|floatformat:2 }})">
+                    <div class="vote_passive" onmouseover="voteMakeActiveStar({{ article.id }}, {{ forloop.counter }})" onmouseout="voteMakeDeativeStar({{ article.id }}, {{ article.rating|default:0|floatformat:2 }})">
                         <form class="vote_form" action="{% url 'votes:article' %}" name="voting" method="POST">
                             {% csrf_token %}
                             <input type="hidden" name="id" value="{{ article.id }}">
                             <input type="hidden" name="vote" value="{{ forloop.counter }}">
                             <input type="hidden" name="back" value="">
-                            <input alt="*" id="vote_{{ article.id }}_{{ forloop.counter }}" type="image" src="{% if art_votes.avg and art_votes.avg >= forloop.counter %}{% static 'i/star_active.png' %}{% else %}{% static 'i/star_deactive.png' %}{% endif %}">
+                            <input alt="*" id="vote_{{ article.id }}_{{ forloop.counter }}" type="image" src="{% if article.rating and article.rating >= forloop.counter %}{% static 'i/star_active.png' %}{% else %}{% static 'i/star_deactive.png' %}{% endif %}">
                         </form>
                     </div>
                 {% endfor %}
@@ -25,7 +25,7 @@
     </tr>
     <tr>
         <td>
-            Рейтинг: {{ art_votes.avg|default:0|floatformat:2 }},&nbsp;&nbsp;Голосов: {{ art_votes.count }}
+            Рейтинг: {{ article.rating|default:0|floatformat:2 }},&nbsp;&nbsp;Голосов: {{ article.vote_count }}
         </td>
     </tr>
 </table>

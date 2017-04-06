@@ -48,13 +48,15 @@ class Article(TimeStampedModel):
     video = models.FileField(_('Видео'), upload_to='articles_video', max_length=255, blank=True, null=True)
     source = models.CharField(_('Источник'), max_length=255, blank=True)
     source_link = models.URLField(_('Ссылка на источник'), blank=True)
-    tags = GenericRelation('tags.TaggedItem')
-    votes = GenericRelation('votes.Vote')
-
-    show_comments = models.BooleanField(_('Показывать комментарии'), default=True)
     discussion_status = models.CharField(_('Статус обсуждения'), max_length=8, choices=DISCUSSION_STATUS,
                                          default=DISCUSSION_STATUS.open)
+    show_comments = models.BooleanField(_('Показывать комментарии'), default=True)
     comments_count = models.PositiveIntegerField(_('Кол-во комментариев'), editable=False, default=0)
+    tags = GenericRelation('tags.TaggedItem')
+
+    votes = GenericRelation('votes.Vote')
+    rating = models.FloatField(_('Рейтинг'), editable=False, default=0)
+    vote_count = models.PositiveIntegerField(_('Кол-во проголосовавших'), editable=False, default=0)
 
     class Meta:
         verbose_name = _('Статья')
@@ -115,9 +117,9 @@ class Comment(models.Model):
     content = models.TextField(_('Содержание'))
     created_at = models.DateTimeField(_('Дата создания'), auto_now_add=True, editable=False)
     is_active = models.BooleanField(default=True)
-    votes = GenericRelation('votes.Vote')
 
-    karma = models.IntegerField(_('Суммарная оценка'), default=0)
+    votes = GenericRelation('votes.Vote')
+    karma = models.IntegerField(_('Оценка'), editable=False, default=0)
 
     class Meta:
         verbose_name = _('Комментарий')
