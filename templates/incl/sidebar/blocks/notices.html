@@ -1,14 +1,14 @@
 {% extends 'incl/sidebar/blocks/base.html' %}
 
-{% block title %}Анонсы{% endblock %}
+{% block title %}<a href="{% url 'articles:notice' %}">Анонсы</a>{% endblock %}
 
 {% block content %}
 <ul style="margin: 0; padding: 0 5px 0 10px;">
     {% for notice in notices %}
         <li class="li_normal">
-            <a href="/notice/#{{ notice.id }}">{{ notice.content }}</a>
+            <a href="{% url 'articles:notice' %}#{{ notice.id }}">{{ notice.content }}</a>
             <span class="active_or">
-                <a href="/notice/#{{ notice.id }}">&gt;&gt;</a>
+                <a href="{% url 'articles:notice' %}#{{ notice.id }}">&gt;&gt;</a>
             </span>
         </li>
     {% endfor %}
@@ -19,16 +19,16 @@
         <td class="align-left">
             <div class="p_hv nobr">
                 <span class="active_or">
-                    <a href="/notice/#send">&lt;&lt;</a>
+                    <a href="{% url 'articles:notice' %}#send">&lt;&lt;</a>
                 </span>
-                <a href="/notice/#send">добавить анонс</a>
+                <a href="{% url 'articles:notice' %}#send">добавить анонс</a>
             </div>
         </td>
         <td class="align-right">
             <div class="align-right p_hv nobr">
-                <a href="/notice/">последние анонсы</a>
+                <a href="{% url 'articles:notice' %}">последние анонсы</a>
                 <span class="active_or">
-                    <a href="/notice/">&gt;&gt;</a>
+                    <a href="{% url 'articles:notice' %}">&gt;&gt;</a>
                 </span>
             </div>
         </td>

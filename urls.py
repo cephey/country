@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^author/', include('apps.authors.urls', namespace='authors')),
     url(r'^tags/', include('apps.tags.urls', namespace='tags')),
 
+    # polls
     url(r'^polls/', include('apps.polls.urls', namespace='polls')),
     url(r'^votes/blank.html', PollDetailView.as_view()),  # deprecated
     # ?voteid=123 - id голосования

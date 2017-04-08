@@ -8,6 +8,7 @@ from apps.utils.models import TimeStampedModel
 
 class Poll(TimeStampedModel):
     question = models.CharField(_('Вопрос'), max_length=255)
+    sum_votes = models.PositiveIntegerField(_('Всего голосов'), editable=False, default=0)
 
     class Meta:
         verbose_name = _('Опрос')

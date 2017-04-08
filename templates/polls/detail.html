@@ -20,7 +20,7 @@
                     {% for choice in object.choice_set.all %}
                         <tr>
                             <td width="40%" align=right>
-                                <div style="font-size:90%;width:{% widthratio choice.vote_count sum_votes 100 %}%;background-color:#990000">&nbsp;</div>
+                                <div style="font-size:90%;width:{% widthratio choice.vote_count object.sum_votes 100 %}%;background-color:#990000">&nbsp;</div>
                             </td>
                             <td>
                                 {{ choice.answer }} ({{ choice.vote_count }})

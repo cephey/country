@@ -104,8 +104,8 @@ class Command(BaseCommand):
         Blogger.objects.all().delete()
         Entry.objects.all().delete()
 
-        Poll.objects.all().delete()
         Choice.objects.all().delete()
+        Poll.objects.all().delete()
 
         Tag.objects.all().delete()
         Vote.objects.all().delete()

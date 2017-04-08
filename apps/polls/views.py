@@ -1,10 +1,9 @@
-from django.db.models import Sum
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponseRedirect
 from django.views.generic import DetailView, FormView
 
 from apps.utils.mixins.views import PageContextMixin
-from apps.polls.models import Poll, Choice
+from apps.polls.models import Poll
 from apps.polls.forms import ChoiceVoteForm
 
 
@@ -16,11 +15,6 @@ class PollDetailView(PageContextMixin, DetailView):
         return super().get_queryset().prefetch_related('choice_set')
 
     def get_context_data(self, **kwargs):
-        kwargs.update(
-            **(Choice.objects
-               .filter(poll=self.object)
-               .aggregate(sum_votes=Sum('vote_count')))
-        )
         kwargs.update(
             prev_poll=Poll.objects.filter(id__lt=self.object.id).first(),
             next_poll=Poll.objects.filter(id__gt=self.object.id).last()

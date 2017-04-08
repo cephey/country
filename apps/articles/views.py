@@ -14,6 +14,7 @@ from apps.utils.mixins.paginator import PaginatorMixin
 
 Partition = namedtuple('Partition', ['slug', 'name'])
 BEST = 'best'
+NEWS = 'news'
 
 
 class IndexView(PageContextMixin, TemplateView):
@@ -52,6 +53,8 @@ class SectionView(BaseArticleListView):
         slug = kwargs.get('slug')
         if slug == BEST:
             self.section = Partition(slug=slug, name=_('Лучшие статьи ФОРУМ.мск за последнюю неделю'))
+        elif slug == NEWS:
+            self.section = Partition(slug=slug, name=_('Новости'))
         else:
             self.section = get_object_or_404(Section, slug=slug)
         return super().get(request, *args, **kwargs)
@@ -62,15 +65,17 @@ class SectionView(BaseArticleListView):
         return super().get_ordering()
 
     def get_queryset(self):
-        qs = super().get_queryset()
+        qs = super().get_queryset().filter(is_active=True)
         if self.section.slug == BEST:
             return qs.filter(publish_date__gt=timezone.now() - timedelta(days=7))
+        elif self.section.slug == NEWS:
+            return qs.filter(is_news=True)
         return qs.filter(section=self.section)
 
     def get_context_data(self, **kwargs):
         kwargs.update(
             partition=self.section,
-            art_section=None if self.section.slug == BEST else self.section
+            art_section=None if self.section.slug in (BEST, NEWS) else self.section
         )
         return super().get_context_data(**kwargs)
 
