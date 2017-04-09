@@ -4,7 +4,6 @@ from apps.votes.factories import VoteFactory
 from apps.polls.models import Poll, Choice
 from apps.polls.factories import PollFactory, ChoiceFactory
 from apps.articles.factories import ArticleFactory, CommentFactory
-from apps.articles.models import Article
 
 
 class VoteTestCase(TestCase):
