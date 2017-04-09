@@ -32,5 +32,6 @@ class ChoiceVoteForm(forms.Form):
         elif self.token:
             params['token'] = self.token
         else:
-            raise Exception()
-        Vote.objects.get_or_create(**params, defaults={'score': 1})
+            raise Exception('User or Token no provided')
+        params['defaults'] = {'score': 1}
+        Vote.objects.get_or_create(**params)

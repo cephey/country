@@ -1,4 +1,7 @@
 from django.test import TestCase, Client
+
+from apps.votes.models import Vote
+from apps.users.factories import UserFactory
 from apps.polls.factories import PollFactory, ChoiceFactory
 
 
@@ -25,6 +28,51 @@ class PollTestCase(TestCase):
 
         self.assertIn('font-size:90%;width:50%;background-color:#990000', resp.content.decode('utf-8'))
         self.assertIn('третий (5)', resp.content.decode('utf-8'))
+
+    def test_create_vote_user(self):
+        user = UserFactory(username='andrey')
+        user.set_password('secret')
+        user.save()
+        self.app.login(username='andrey', password='secret')
+
+        poll = PollFactory()
+        choice = ChoiceFactory(poll=poll)
+        resp = self.app.post('/polls/', {'poll_id': poll.id, 'choices': choice.id})
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp.url, '/polls/{}/'.format(poll.id))
+
+        votes = Vote.objects.all()
+        self.assertEqual(len(votes), 1)
+        self.assertEqual(votes[0].content_object, choice)
+
+        choice.refresh_from_db()
+        self.assertEqual(choice.vote_count, 1)
+        poll.refresh_from_db()
+        self.assertEqual(poll.sum_votes, 1)
+
+        # try again: has no effect
+        resp = self.app.post('/polls/', {'poll_id': poll.id, 'choices': choice.id})
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(Vote.objects.count(), 1)
+
+        choice.refresh_from_db()
+        self.assertEqual(choice.vote_count, 1)
+        poll.refresh_from_db()
+        self.assertEqual(poll.sum_votes, 1)
+
+    def test_create_vote_anonymous(self):
+        poll = PollFactory()
+        choice = ChoiceFactory(poll=poll)
+
+        resp = self.app.post('/polls/', {'poll_id': poll.id, 'choices': choice.id})
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp.url, '/polls/{}/'.format(poll.id))
+        self.assertEqual(Vote.objects.count(), 1)
+
+        # try again: has no effect
+        resp = self.app.post('/polls/', {'poll_id': poll.id, 'choices': choice.id})
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(Vote.objects.count(), 1)
 
     def test_depricated_urls(self):
         PollFactory(question='Первый')
