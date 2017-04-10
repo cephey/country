@@ -111,7 +111,7 @@ class NoticeListView(PageContextMixin, CreateView):
         return reverse('articles:notice') + '#send'
 
     def form_valid(self, form):
-        messages.info(self.request, _('Ваше объявление будет обязательно рассмотрено'
+        messages.info(self.request, _('Ваше объявление будет обязательно рассмотрено '
                                       'нашим редактором в самое ближайшее время.'))
         return super().form_valid(form)
 
