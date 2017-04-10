@@ -201,9 +201,9 @@ class Command(BaseCommand):
         self.stdout.write('Generate notices...')
         for i in range(STR['notice_count']):
             if random.randint(0, 2):
-                NoticeFactory(status=Notice.STATUS.approved)
-            else:
                 NoticeFactory()
+            else:
+                NoticeFactory(status=Notice.STATUS.new)
 
         self.stdout.write('Generate polls...')
         polls = PollFactory.create_batch(STR['poll_count'])

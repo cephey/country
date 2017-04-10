@@ -6,6 +6,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 from model_utils import Choices
 
 from apps.utils.models import TimeStampedModel
+from apps.articles.managers import ArticleQuerySet
 
 NAVIGATE_SECTIONS = [
     'politic', 'economic', 'region', 'society', 'power', 'fpolitic', 'kompromat', 'moscow'
@@ -34,10 +35,14 @@ class Article(TimeStampedModel):
         ('open', 'Открыто'),
         ('close', 'Закрыто')
     )
+    STATUS = Choices(
+        ('new', 'Новая'),
+        ('approved', 'Одобрена')
+    )
     title = models.CharField(_('Заголовок'), max_length=255)
     description = models.TextField(_('Описание'), blank=True)
-    content = models.TextField(_('Содержание'), blank=True)
-    section = models.ForeignKey('articles.Section', verbose_name=_('Раздел'))
+    content = models.TextField(_('Содержание'))
+    section = models.ForeignKey('articles.Section', verbose_name=_('Раздел'), blank=True, null=True)
     is_news = models.BooleanField(_('Новость'), default=False)
     authors = models.ManyToManyField('authors.Author', verbose_name=_('Авторы'), blank=True)
     author_names = models.CharField(_('Авторы'), max_length=255, blank=True,
@@ -50,6 +55,7 @@ class Article(TimeStampedModel):
     source_link = models.URLField(_('Ссылка на источник'), blank=True)
     discussion_status = models.CharField(_('Статус обсуждения'), max_length=8, choices=DISCUSSION_STATUS,
                                          default=DISCUSSION_STATUS.open)
+    status = models.CharField(_('Статус'), max_length=8, choices=STATUS, default=STATUS.new)
     show_comments = models.BooleanField(_('Показывать комментарии'), default=True)
     comments_count = models.PositiveIntegerField(_('Кол-во комментариев'), editable=False, default=0)
     tags = GenericRelation('tags.TaggedItem')
@@ -57,6 +63,8 @@ class Article(TimeStampedModel):
     votes = GenericRelation('votes.Vote')
     rating = models.FloatField(_('Рейтинг'), editable=False, default=0)
     vote_count = models.PositiveIntegerField(_('Кол-во проголосовавших'), editable=False, default=0)
+
+    objects = models.Manager.from_queryset(ArticleQuerySet)()
 
     class Meta:
         verbose_name = _('Статья')

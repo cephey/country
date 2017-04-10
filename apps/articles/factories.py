@@ -24,6 +24,7 @@ class ArticleFactory(factory.django.DjangoModelFactory):
     section = factory.SubFactory('apps.articles.factories.SectionFactory')
     publish_date = factory.LazyFunction(timezone.now)
     image = factory.django.ImageField(from_path='fixtures/i/flag.jpg')
+    status = 'approved'
 
     @factory.post_generation
     def authors(obj, create, extracted, **kwargs):
@@ -87,3 +88,4 @@ class NoticeFactory(factory.django.DjangoModelFactory):
         model = Notice
 
     content = factory.Faker('text', max_nb_chars=256, locale='ru_RU')
+    status = 'approved'

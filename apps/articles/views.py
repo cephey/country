@@ -27,12 +27,12 @@ class IndexView(PageContextMixin, TemplateView):
         for section in sections:
             materials[section.slug] = {
                 'section': section,
-                'articles': Article.objects.filter(section=section, is_active=True)[:6]
+                'articles': Article.objects.visible().filter(section=section)[:6]
             }
 
         kwargs.update(
-            main_news=Article.objects.filter(is_news=True).order_by('-publish_date').first(),
-            main_material=Article.objects.order_by('-publish_date', '-comments_count').first(),
+            main_news=Article.objects.visible().filter(is_news=True).order_by('-publish_date').first(),
+            main_material=Article.objects.visible().order_by('-publish_date', '-comments_count').first(),
             materials=materials
         )
         return super().get_context_data(**kwargs)
@@ -92,8 +92,8 @@ class ArticleDetailView(PageContextMixin, PaginatorMixin, DetailView):
             data = []
             for slug in NAVIGATE_SECTIONS:
                 data.append(
-                    (Article.objects
-                     .filter(section__slug=slug, is_active=True)
+                    (Article.objects.visible()
+                     .filter(section__slug=slug)
                      .select_related('section')
                      .order_by('-publish_date')
                      .first())
@@ -102,10 +102,24 @@ class ArticleDetailView(PageContextMixin, PaginatorMixin, DetailView):
         return super().get_context_data(**kwargs)
 
 
+class CreateArticleView(PageContextMixin, CreateView):
+    template_name = 'articles/create.html'
+    model = Article
+    fields = ('title', 'description', 'content', 'author_names')
+
+    def get_success_url(self):
+        return reverse('articles:create') + '#res'
+
+    def form_valid(self, form):
+        messages.info(self.request, _('Материал успешно добавлен. '
+                                      'После одобрения редактора он появится на сайте.'))
+        return super().form_valid(form)
+
+
 class NoticeListView(PageContextMixin, CreateView):
     template_name = 'articles/notice_list.html'
     model = Notice
-    fields = ['content']
+    fields = ('content',)
 
     def get_success_url(self):
         return reverse('articles:notice') + '#send'
