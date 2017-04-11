@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load htmlutils %}
+
+{% block title %}{{ blogger_obj.cover_name }} - ФОРУМ.мск{% endblock %}
+
+{% block content %}
+<div class="or">
+    <div class="big1">{{ blogger_obj.cover_name }}</div>
+</div>
+
+<div style="width:1px; height:1px"><!-- --></div>
+
+{% include 'bloggers/incl/entry.html' %}
+{% endblock %}

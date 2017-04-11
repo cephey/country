@@ -3,6 +3,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from apps.utils.models import TimeStampedModel
+from apps.bloggers.managers import BloggerQuerySet, EntryQuerySet
 
 
 class Blogger(TimeStampedModel):
@@ -12,6 +13,8 @@ class Blogger(TimeStampedModel):
     link = models.CharField(_('Ссылка на блог'), max_length=255, blank=True)
     photo = models.ImageField(_('Фото'), upload_to='bloggers', max_length=255, blank=True, null=True)
     is_active = models.BooleanField(default=True)
+
+    objects = models.Manager.from_queryset(BloggerQuerySet)()
 
     class Meta:
         verbose_name = _('Блогер')
@@ -32,9 +35,12 @@ class Blogger(TimeStampedModel):
 
 class Entry(TimeStampedModel):
     title = models.CharField(_('Заголовок'), max_length=255)
+    description = models.TextField(_('Описание'), blank=True)
     blogger = models.ForeignKey('bloggers.Blogger', verbose_name=_('Блогер'))
     link = models.CharField(_('Ссылка на запись'), max_length=255, blank=True)
     is_active = models.BooleanField(default=True)
+
+    objects = models.Manager.from_queryset(EntryQuerySet)()
 
     class Meta:
         verbose_name = _('Запись')

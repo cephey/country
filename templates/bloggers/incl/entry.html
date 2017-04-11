@@ -1,0 +1,54 @@
+{% load htmlutils %}
+
+<div class="border_or">
+    <table class="full-table">
+        {% for entry in page_obj %}
+            <tr>
+                <td>
+                    <div class="p_hv">
+                        <div class="or2_normal">
+                            <a href="{% url 'bloggers:blogger_entry_list' entry.blogger_id %}">
+                                <img src="{{ entry.blogger.icon|crop:'50x50' }}" align=left hspace="6" width="50" height="50">
+                            </a>
+                            <strong class="black">
+                                <i><a href="{% url 'bloggers:blogger_entry_list' entry.blogger_id %}">{{ entry.blogger.cover_name }}</a></i>:
+                                <a href="{{ entry.link }}">{{ entry.title }}</a>
+                            </strong>
+                            <br>
+                            <span>{{ entry.created_at|date:'Y-m-d H:i' }}</span>
+                        </div>
+                        <div class="p_t">
+                            <div class="normal">
+                                {% if entry.description %}
+                                    {{ entry.description }}
+                                    <a href="{{ entry.link }}" target="_blank" class="rarr">&rarr;</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            {% if not forloop.last %}
+                <tr>
+                    <td>
+                        <div style="height:1px; background: #FFD4B7;"><!-- --></div>
+                    </td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    </table>
+
+    <div class="normal">
+        <div class="p_l" align=center>
+            {% include 'incl/paginator.html' with page_obj=page_obj page='p' %}
+        </div>
+    </div>
+</div>
+
+<table class="full-table h7 bgFFF0E6">
+    <tr>
+        <td class="bg_orange_l w7"><div style="width:7px; height:7px"><!-- --></div></td>
+        <td class="wp100 bg_orange_c"><div style="width:1px; height:7px"><!-- --></div></td>
+        <td class="bg_orange_r w7"><div style="width:7px; height:7px"><!-- --></div></td>
+    </tr>
+</table>

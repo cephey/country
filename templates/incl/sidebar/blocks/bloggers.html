@@ -1,7 +1,7 @@
 {% extends 'incl/sidebar/blocks/base.html' %}
 {% load htmlutils %}
 
-{% block title %}<a href="/bloggers/">Наша блогосфера</a>{% endblock %}
+{% block title %}<a href="{% url 'bloggers:last_entry_list' %}">Наша блогосфера</a>{% endblock %}
 
 {% block content %}
 <table class="wp100">
@@ -16,9 +16,8 @@
             {% endif %}
         </td>
             <td>
-                <a href="/bloggers/{{ entry.blogger.id }}.html">
-                    <i>{{ entry.blogger.cover_name }}</i>
-                </a>: <a target="_blank" rel="nofollow" href="{{ entry.link }}">{{ entry.title }}</a>
+                <a href="{% url 'bloggers:blogger_entry_list' entry.blogger_id %}"><i>{{ entry.blogger.cover_name }}</i></a>:
+                <a target="_blank" rel="nofollow" href="{{ entry.link }}">{{ entry.title }}</a>
             </td>
         </tr>
     {% endfor %}

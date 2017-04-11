@@ -12,7 +12,7 @@ class SidebarContextMixin(object):
             'sidebar_videos': Article.objects.visible().filter(video__isnull=False)[:2],
             'sidebar_news': Article.objects.visible().filter(is_news=True).order_by('?')[:10],  # order by vote_sum?
             'notices': Notice.objects.filter(status=Notice.STATUS.approved)[:3],
-            'entries': Entry.objects.order_by('?')[:5],
+            'entries': Entry.objects.active().order_by('?')[:5],
             'authors': Author.objects.order_by('last_name')[:15],
         }
 

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load htmlutils %}
+
+{% block title %}Наша блогосфера - ФОРУМ.мск{% endblock %}
+
+{% block description %}Наша блогосфера{% endblock %}
+
+{% block content %}
+<div class="or">
+    <div class="big1">Наша блогосфера</div>
+    <br />
+    {% for blogger in blogger_list %}
+        <a href="{% url 'bloggers:blogger_entry_list' blogger.id %}">
+            <img src="{{ blogger.icon|crop:'25x25' }}" alt="{{ blogger.cover_name|safe }}"
+                 title="{{ blogger.cover_name|safe }}" width="25" height="25"></a>
+        &nbsp;&nbsp;
+    {% endfor %}
+</div>
+
+<div style="width:1px; height:1px"><!-- --></div>
+
+{% include 'bloggers/incl/entry.html' %}
+{% endblock %}

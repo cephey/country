@@ -54,12 +54,16 @@ class ArticleFactory(factory.django.DjangoModelFactory):
 
     @factory.post_generation
     def description(obj, create, extracted, **kwargs):
-        if not extracted and random.randint(0, 2):
+        if extracted:
+            obj.description = extracted
+        elif random.randint(0, 2):
             obj.description = Faker(locale='ru_RU').text(max_nb_chars=random.randint(128, 1024))
 
     @factory.post_generation
     def content(obj, create, extracted, **kwargs):
-        if not extracted:
+        if extracted:
+            obj.content = extracted
+        else:
             obj.content = Faker(locale='ru_RU').text(max_nb_chars=random.randint(256, 2048))
 
 
@@ -73,12 +77,16 @@ class CommentFactory(factory.django.DjangoModelFactory):
 
     @factory.post_generation
     def title(obj, create, extracted, **kwargs):
-        if not extracted and random.randint(0, 5):
+        if extracted:
+            obj.title = extracted
+        elif random.randint(0, 5):
             obj.title = Faker(locale='ru_RU').sentence(nb_words=3)
 
     @factory.post_generation
     def content(obj, create, extracted, **kwargs):
-        if not extracted:
+        if extracted:
+            obj.content = extracted
+        else:
             obj.content = Faker(locale='ru_RU').text(max_nb_chars=random.randint(128, 512))
 
 
