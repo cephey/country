@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load htmlutils %}
+
+{% block head_css %}
+    {{ block.super }}
+    <style>
+        .r_a {color:#000;font-size:70%;font-family: Arial, Helvetica, sans-serif;}
+        .r_a:hover {text-decoration:none;color:#990000}
+        .r_s {font-size:80%;color:#0C7FC5;font-family: Arial, Helvetica, sans-serif;}
+    </style>
+{% endblock %}
+
+{% block content_width %}100{% endblock %}
+
+{% block content %}
+<div align=center>
+    <br>
+    <font face=arial size="+2" color="#990000"><b>КОЛЬЦО ОППОЗИЦИИ</b></font>
+</div>
+<div class=normal>
+    <p>
+        На <a class="uline" href="/">ФОРУМЕ.мск</a> открыто Кольцо оппозиции  - специальная страница
+        для каталога оппозиционных ресурсов Рунета.
+        <a class="uline" href="/">ФОРУМ.мск</a> является порталом объединяющейся оппозиции,
+        и создание такого каталога именно здесь, у нас наиболее оправданно.
+        Чтобы не вызывать ненужных вопросов о нашей объективности (необъективности),
+        мы не будем включать в каталог <a class="uline" href="/">ФОРУМ.мск</a>, надеемся,
+        что с нами и так ясно кто мы и что мы.
+    </p>
+    <p>Для включения в наш каталог нужно сделать 3 важных вещи:</p>
+    <ul>
+        <li>написать о своем желании веб-мастеру <a class="uline" href="/">ФОРУМА.мск</a> по адресу:
+            <a class="uline" href="mailto:forum-msk@yandex.ru">forum-msk@yandex.ru</a>
+        </li>
+        <li>поставить на первой странице своего сайта кнопку  Кольца оппозиции
+            (или <a class="uline" href="/">ФОРУМА.мск</a> по выбору)
+        </li>
+        <li>соответствовать общепринятым представлениям об оппозиционном ресурсе
+            (поэтому структурам, пытающимся поддержать власть, имитируя оппозиционную деятельность,
+            можно не беспокоиться).
+        </li>
+    </ul>
+    <p>
+        Рейтинг в каталоге выставляется на основе субъективной оценки посещаемости, цитируемости,
+        известности и значимости ресурса довольно большой группой экспертов.
+        Берется средняя составляющая их мнений. На полную объективность не претендует,
+        но исключает возможность накрутки. В случае несогласия мы принимаем аргументированные возражения.
+    </p>
+    <p>
+        По поводу обмена материалами и иных формах информационного сотрудничества
+        <a class="uline" href="mailto:forum-msk@yandex.ru">пишите</a>.
+        Мы это только приветствуем и обязательно найдем приемлемую форму взаимоотношений.
+    </p>
+    <p>
+        <a class="uline" href="{% url 'pages:advert' %}">Реклама</a> и иные возмездные формы сотрудничества
+        приветствуются с еще большим энтузиазмом оппозиция редко бывает богатой.
+    </p>
+</div>
+<br>
+<br>
+<div align=center>
+    <font face=arial color="#990000"><b>Рейтинг ведущих оппозиционных русскоязычных сайтов</b></font>
+</div>
+
+<table width=80% align=center>
+    <tr>
+        {% for sublist in parts|group:'2' %}
+            <td class="valign-top">
+                {% for part in sublist %}
+                    <b><a href="{% url 'pages:resource_list' part.type.id %}" class="r_s"><nobr>{{ part.type.name }}</nobr></a></b>
+                    <br>
+                    {% for resource in part.resources %}
+                        &#149;<a class="r_a" href="{{ resource.url }}" target="_blank">{{ resource.name }}</a>
+                    {% endfor %}
+                    <div style="width:1px; height:3px"><!-- --></div>
+                {% endfor %}
+            </td>
+            {% if not forloop.last %}
+                <td>&nbsp;</td>
+            {% endif %}
+        {% endfor %}
+    </tr>
+</table>
+<br>
+<br>
+<br>
+<div align=center>
+    <font face=arial color="#990000"><b>Последние поступления</b></font>
+</div>
+<br>
+<table cellSpacing=0 cellPadding=0 width="100%" border=0>
+    {% for resource in new_resources %}
+        <tr>
+            <td width=88 height=35>
+                <img src="{{ resource.get_logo|crop:'88x31' }}" width="88" height="31" alt="{{ resource.name|safe }}" title="{{ resource.name|safe }}" align="left">
+            </td>
+            <td>&nbsp;</td>
+            <td width=80% bgcolor="#{% cycle 'E6F0F5' 'A6D0EA' %}">
+                <div class="normal">&nbsp;<a href="{{ resource.url }}" target=_blank>{{ resource.name|safe }}</a></div>
+            </td>
+            <td>&nbsp;</td>
+            <td>
+                {% with resource.rating|stringformat:'i' as rating %}
+                    <img src="{% static 'i/stars/'|add:rating|add:'.gif' %}" alt="">
+                {% endwith %}
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+<br>
+<br>
+<table width="100%">
+    <tr>
+        <td align=center valign=middle colspan=7>
+            <div class="p_b">
+                <div class="normal">
+                    <b>Наши кнопки</b>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <img src="{% static 'i/banner/bun_88x31_1.gif' %}" width="88" height="31">
+        </td>
+        <td><b>:</b></td>
+        <td>
+            {% spaceless %}
+                <textarea rows="3" cols="40" readonly="readonly">
+                    <a href="{% url 'articles:index' %}">
+                        <img src="{% static 'i/banner/bun_88x31_1.gif' %}" width="88" height="31">
+                    </a>
+                </textarea>
+            {% endspaceless %}
+        </td>
+        <td>&nbsp;&nbsp;&nbsp;</td>
+        <td>
+            <img src="{% static 'i/banner/bun2_88x31_1.gif' %}" width="88" height="31">
+        </td>
+        <td><b>:</b></td>
+        <td>
+            {% spaceless %}
+                <textarea rows="3" cols="40" readonly="readonly">
+                    <a href="{% url 'pages:opposition' %}">
+                        <img src="{% static 'i/banner/bun2_88x31_1.gif' %}" width="88" height="31">
+                    </a>
+                </textarea>
+            {% endspaceless %}
+        </td>
+    </tr>
+</table>
+<br>
+<br>
+<br>
+{% endblock %}
+
+{% block sidebar %}{% endblock %}

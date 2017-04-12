@@ -27,3 +27,10 @@ def partition(lst, n):
         result[i % div].append(item)
 
     return result
+
+
+@register.filter(name='group')
+def group(lst, n):
+    n = int(n)
+    size = math.ceil(len(lst) / float(n))
+    return [lst[i:i + size] for i in range(0, len(lst), size)]

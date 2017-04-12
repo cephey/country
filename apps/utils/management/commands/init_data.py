@@ -18,6 +18,8 @@ from apps.tags.factories import TagFactory
 from apps.votes.models import Vote
 from apps.votes.factories import VoteFactory
 from apps.users.factories import UserFactory
+from apps.pages.models import Resource, ResourceType
+from apps.pages.factories import ResourceFactory, ResourceTypeFactory
 
 LOW = {
     'label': 'low',
@@ -110,6 +112,9 @@ class Command(BaseCommand):
         Tag.objects.all().delete()
         Vote.objects.all().delete()
 
+        Resource.objects.all().delete()
+        ResourceType.objects.all().delete()
+
         get_user_model().objects.exclude(is_staff=True).delete()
 
         # ---------------------
@@ -120,6 +125,9 @@ class Command(BaseCommand):
 
         self.stdout.write('Generate authors...')
         authors = AuthorFactory.create_batch(STR['author_count'])
+
+        self.stdout.write('Generate tags...')
+        tags = TagFactory.create_batch(STR['tag_count'])
 
         self.stdout.write('Generate sections...')
         sections = [
@@ -133,9 +141,6 @@ class Command(BaseCommand):
             SectionFactory(name='Московский листок', slug='moscow')
         ]
         a_count_list = [2, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-
-        self.stdout.write('Generate tags...')
-        tags = TagFactory.create_batch(STR['tag_count'])
 
         self.stdout.write('Generate articles with comments...')
         for section in sections:
@@ -181,6 +186,23 @@ class Command(BaseCommand):
                     else:
                         c_params['user'] = comment_users[j]
                     CommentFactory(**c_params)
+
+        self.stdout.write('Generate resources...')
+        resource_types = [
+            ResourceTypeFactory(name='Персональные сайты'),
+            ResourceTypeFactory(name='Партии и общественные движения'),
+            ResourceTypeFactory(name='Оппозиционные СМИ'),
+            ResourceTypeFactory(name='Аналитика'),
+            ResourceTypeFactory(name='Креативные проекты'),
+            ResourceTypeFactory(name='Блоги и форумы'),
+            ResourceTypeFactory(name='Музыка'),
+            ResourceTypeFactory(name='Литература и искусство'),
+            ResourceTypeFactory(name='Региональные организации'),
+            ResourceTypeFactory(name='Библиотеки'),
+            ResourceTypeFactory(name='История')
+        ]
+        for i in range(len(resource_types) * 6):
+            ResourceFactory(type=random.choice(resource_types), rating=random.randint(0, 10))
 
         self.stdout.write('Generate ratings(articles votes)...')
         all_article_ids = list(Article.objects.values_list('id', flat=True))

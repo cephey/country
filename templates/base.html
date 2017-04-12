@@ -48,7 +48,7 @@
             <div style="width:25px; height:1px"><!-- --></div>
         </td>
 
-        <td class="wp{% if no_right_column %}100{% else %}70{% endif %} valign-top">
+        <td class="wp{% block content_width %}70{% endblock %} valign-top">
             {% block content %}{% endblock %}
         </td>
 
@@ -56,8 +56,7 @@
             <div style="width:7px; height:1px"><!-- --></div>
         </td>
 
-        {% if not no_right_column %}
-
+        {% block sidebar %}
             <td class="wp30 valign-top">
 
                 {% if poll %}
@@ -116,8 +115,7 @@
             <td class="w25">
                 <div style="width:25px; height:1px"><!-- --></div>
             </td>
-
-        {% endif %}
+        {% endblock %}
     </tr>
 </table>
 
