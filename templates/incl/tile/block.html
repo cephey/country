@@ -1,3 +1,4 @@
+{% if material %}
 <div class="big1 rl">
     <a href="{% url 'articles:section' material.section.slug %}">{{ material.section.name }}</a>
 </div>
@@ -53,3 +54,4 @@
     </table>
 
 </div>
+{% endif %}
