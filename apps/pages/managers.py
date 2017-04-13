@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class ResourceTypeQuerySet(models.QuerySet):
+class PartitionQuerySet(models.QuerySet):
 
     def active(self):
         return self.filter(is_active=True)
@@ -10,4 +10,4 @@ class ResourceTypeQuerySet(models.QuerySet):
 class ResourceQuerySet(models.QuerySet):
 
     def active(self):
-        return self.filter(is_active=True)
+        return self.filter(is_active=True, partition__is_active=True)

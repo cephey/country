@@ -4,14 +4,14 @@ from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
 from apps.utils.models import TimeStampedModel
-from apps.pages.managers import ResourceTypeQuerySet, ResourceQuerySet
+from apps.pages.managers import PartitionQuerySet, ResourceQuerySet
 
 
-class ResourceType(models.Model):
+class Partition(models.Model):
     name = models.CharField(_('Название'), max_length=255, unique=True)
     is_active = models.BooleanField(default=True)
 
-    objects = models.Manager.from_queryset(ResourceTypeQuerySet)()
+    objects = models.Manager.from_queryset(PartitionQuerySet)()
 
     class Meta:
         verbose_name = _('Тип')
@@ -22,11 +22,11 @@ class ResourceType(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('pages:resource_list', kwargs={'pk': self.id})
+        return reverse('pages:partition', kwargs={'pk': self.id})
 
 
 class Resource(TimeStampedModel):
-    type = models.ForeignKey('pages.ResourceType', verbose_name=_('Тип'))
+    partition = models.ForeignKey('pages.Partition', verbose_name=_('Тип'))
     name = models.CharField(_('Название'), max_length=255)
     logo = models.ImageField(_('Логотип'), upload_to='pages', max_length=255, blank=True, null=True)
     url = models.CharField(_('Адрес'), max_length=255, blank=True)

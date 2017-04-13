@@ -1,0 +1,10 @@
+{% spaceless %}
+<div class=normal align=center>
+    <span style="font-size:12px;color:#0C7FC5">
+        <b>
+            <a style="font-size:12px;color:#0C7FC5" href="{% url 'pages:opposition' %}">Кольцо оппозиции</a> &raquo;
+            <a style="font-size:12px;color:#0C7FC5" href="{% url 'pages:partition' part.id %}">{{ part.name }}</a> &raquo;
+        </b>
+    </span>
+</div>
+{% endspaceless %}

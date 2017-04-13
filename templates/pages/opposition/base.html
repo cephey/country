@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content_width %}100{% endblock %}
+
+{% block content %}
+    {% block main_section %}{% endblock %}
+    <br>
+    <br>
+    <table width="100%">
+        <tr>
+            <td align=center valign=middle colspan=7>
+                <div class="p_b">
+                    <div class="normal">
+                        <b>Наши кнопки</b>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <img src="{% static 'i/banner/bun_88x31_1.gif' %}" width="88" height="31">
+            </td>
+            <td><b>:</b></td>
+            <td>
+                {% spaceless %}
+                    <textarea rows="3" cols="50" readonly="readonly">
+                        <a href="{{ request.get_host }}">
+                            <img src="{{ request.get_host }}{% static 'i/banner/bun_88x31_1.gif' %}" width="88" height="31">
+                        </a>
+                    </textarea>
+                {% endspaceless %}
+            </td>
+            <td>&nbsp;&nbsp;&nbsp;</td>
+            <td>
+                <img src="{% static 'i/banner/bun2_88x31_1.gif' %}" width="88" height="31">
+            </td>
+            <td><b>:</b></td>
+            <td>
+                {% spaceless %}
+                    <textarea rows="3" cols="50" readonly="readonly">
+                        <a href="{{ request.get_host }}{% url 'pages:opposition' %}">
+                            <img src="{{ request.get_host }}{% static 'i/banner/bun2_88x31_1.gif' %}" width="88" height="31">
+                        </a>
+                    </textarea>
+                {% endspaceless %}
+            </td>
+        </tr>
+    </table>
+    <br>
+    <br>
+    <br>
+{% endblock %}
+
+{% block sidebar %}{% endblock %}

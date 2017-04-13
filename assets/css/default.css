@@ -338,3 +338,20 @@ table.noborder td, table.noborder th
      border:solid black 1px;
      }
 .marquee span {white-space:nowrap;}
+
+/* opposition page */
+.r_a {
+    color:#000;
+    font-size:70%;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.r_a:hover {
+    text-decoration:none;
+    color:#990000;
+}
+.r_s {
+    font-size:80%;
+    color:#0C7FC5;
+    font-family: Arial, Helvetica, sans-serif;
+}
+/* - opposition page */

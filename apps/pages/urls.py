@@ -7,5 +7,5 @@ urlpatterns = [
     url(r'^advert/$', views.AdvertView.as_view(), name='advert'),
 
     url(r'^opposition_hoop/$', views.OppositionView.as_view(), name='opposition'),
-    url(r'^opposition_hoop/(?P<pk>\d+)/$', views.ResourceListView.as_view(), name='resource_list'),
+    url(r'^opposition_hoop/(?P<pk>\d+)/$', views.PartitionView.as_view(), name='partition'),
 ]

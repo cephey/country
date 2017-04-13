@@ -1,0 +1,22 @@
+{% load static %}
+{% load htmlutils %}
+
+<table cellSpacing=0 cellPadding=0 width="100%" border=0>
+    {% for resource in resources %}
+        <tr>
+            <td width=88 height=35>
+                <img src="{{ resource.get_logo|crop:'88x31' }}" width="88" height="31" alt="{{ resource.name|safe }}" title="{{ resource.name|safe }}" align="left">
+            </td>
+            <td>&nbsp;</td>
+            <td width=80% bgcolor="#{% cycle 'E6F0F5' 'A6D0EA' %}">
+                <div class="normal">&nbsp;<a href="{{ resource.url }}" target=_blank>{{ resource.name|safe }}</a></div>
+            </td>
+            <td>&nbsp;</td>
+            <td>
+                {% with resource.rating|stringformat:'i' as rating %}
+                    <img src="{% static 'i/stars/'|add:rating|add:'.gif' %}" alt="">
+                {% endwith %}
+            </td>
+        </tr>
+    {% endfor %}
+</table>

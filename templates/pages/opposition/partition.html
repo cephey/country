@@ -1,0 +1,14 @@
+{% extends 'pages/opposition/base.html' %}
+
+{% block main_section %}
+    <div align=center>
+        <br>
+        <font face=arial color="#990000"><b>Рейтинг ведущих оппозиционных русскоязычных сайтов</b></font>
+    </div>
+    <br>
+    {% include 'pages/opposition/incl/breadcrumbs.html' with part=partition %}
+    <br>
+    {% include 'pages/opposition/incl/resources.html' with resources=resource_list %}
+    <br>
+    {% include 'pages/opposition/incl/breadcrumbs.html' with part=partition %}
+{% endblock %}
