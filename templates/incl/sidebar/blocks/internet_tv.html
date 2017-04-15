@@ -2,7 +2,7 @@
 
 {% block color_class %}bg_sidebar_blue{% endblock %}
 
-{% block title %}<a href="/video/">Интернет-ТВ</a>{% endblock %}
+{% block title %}<a href="{% url 'articles:video' %}">Интернет-ТВ</a>{% endblock %}
 
 {% block content %}
 <table class="wp100">
@@ -50,9 +50,9 @@
         </td>
         <td class="align-right">
             <div class="align-right p_hv">
-                <a href="/video/">все видео</a>
+                <a href="{% url 'articles:video' %}">все видео</a>
                 <span class="active">
-                    <a href="/video/">&gt;&gt;</a>
+                    <a href="{% url 'articles:video' %}">&gt;&gt;</a>
                 </span>
             </div>
         </td>

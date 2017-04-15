@@ -1,20 +1,17 @@
 from datetime import timedelta
-from collections import namedtuple
 
 from django.utils import timezone
 from django.contrib import messages
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
+from django.http import HttpResponsePermanentRedirect
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import TemplateView, ListView, DetailView, RedirectView, CreateView
 
-from apps.articles.models import Article, Section, Comment, Notice, NAVIGATE_SECTIONS
+from apps.articles.models import (Article, Section, Comment, Notice, BEST, NEWS, VIDEO,
+                                  NAVIGATE_SECTIONS, GENERIC_SECTIONS)
 from apps.utils.mixins.views import PageContextMixin
 from apps.utils.mixins.paginator import PaginatorMixin
-
-Partition = namedtuple('Partition', ['slug', 'name'])
-BEST = 'best'
-NEWS = 'news'
 
 
 class IndexView(PageContextMixin, TemplateView):
@@ -51,12 +48,10 @@ class SectionView(BaseArticleListView):
 
     def get(self, request, *args, **kwargs):
         slug = kwargs.get('slug')
-        if slug == BEST:
-            self.section = Partition(slug=slug, name=_('Лучшие статьи ФОРУМ.мск за последнюю неделю'))
-        elif slug == NEWS:
-            self.section = Partition(slug=slug, name=_('Новости'))
+        if slug in GENERIC_SECTIONS:
+            self.section = GENERIC_SECTIONS[slug]
         else:
-            self.section = get_object_or_404(Section, slug=slug)
+            self.section = get_object_or_404(Section.objects.active(), slug=slug)
         return super().get(request, *args, **kwargs)
 
     def get_ordering(self):
@@ -65,29 +60,42 @@ class SectionView(BaseArticleListView):
         return super().get_ordering()
 
     def get_queryset(self):
-        qs = super().get_queryset().filter(is_active=True)
+        qs = super().get_queryset().visible()
         if self.section.slug == BEST:
             return qs.filter(publish_date__gt=timezone.now() - timedelta(days=7))
         elif self.section.slug == NEWS:
             return qs.filter(is_news=True)
+        elif self.section.slug == VIDEO:
+            return qs.filter(section__is_video=True)
         return qs.filter(section=self.section)
 
     def get_context_data(self, **kwargs):
         kwargs.update(
             partition=self.section,
-            art_section=None if self.section.slug in (BEST, NEWS) else self.section
+            nav_section=None if self.section.slug in GENERIC_SECTIONS else self.section
         )
         return super().get_context_data(**kwargs)
 
 
 class ArticleDetailView(PageContextMixin, PaginatorMixin, DetailView):
     template_name = 'articles/detail.html'
-    model = Article
+    queryset = Article.objects.visible().select_related('section').prefetch_related('multimedia_set')
+    section = None
+
+    def get(self, request, *args, **kwargs):
+        slug = kwargs.get('slug')
+        if slug in GENERIC_SECTIONS:
+            self.section = GENERIC_SECTIONS[slug]
+        else:
+            self.section = Section.objects.active().filter(slug=slug).first()
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         comments = Comment.objects.filter(article=self.object, is_active=True)
-        kwargs['art_comments'] = self.paginate_qs(comments, 3)
-
+        kwargs.update(
+            art_comments=self.paginate_qs(comments, 3),
+            art_section=self.section or self.object.section
+        )
         if not self.object.show_comments:
             data = []
             for slug in NAVIGATE_SECTIONS:
@@ -132,6 +140,22 @@ class NoticeListView(PageContextMixin, CreateView):
     def get_context_data(self, **kwargs):
         kwargs['object_list'] = Notice.objects.filter(status=Notice.STATUS.approved)[:20]
         return super().get_context_data(**kwargs)
+
+
+class VideoIndexView(PageContextMixin, TemplateView):
+    template_name = 'articles/video.html'
+
+    def get(self, request, *args, **kwargs):
+        # handle deprecated url
+        if request.GET.get('video'):
+            try:
+                video_id = int(request.GET['video'])
+            except (TypeError, ValueError):
+                pass
+            else:
+                url = reverse('articles:detail', kwargs={'slug': VIDEO, 'pk': video_id})
+                return HttpResponsePermanentRedirect(url)
+        return super().get(request, *args, **kwargs)
 
 
 class ActionView(RedirectView):

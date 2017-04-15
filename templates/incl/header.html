@@ -101,7 +101,7 @@
 <table class="full-table menu h35">
 	<tr>
 		<td class="w25"><div style="width:25px; height:1px"><!-- --></div></td>
-        {% if art_section %} {# current section #}
+        {% if nav_section %} {# current section #}
             <td class="align-center">
                 <div class="p_h">
                     <a href="/">Главная</a>
@@ -116,14 +116,14 @@
         {% endif %}
 
         {% for section in sections %}
-            {% if art_section and art_section == section %}
+            {% if nav_section and nav_section == section %}
                 <th>
                     <div class="p_h">
                         <a href="{% url 'articles:section' section.slug %}">{{ section.name }}</a>
                     </div>
                 </th>
             {% else %}
-                {% if not art_section %}
+                {% if not nav_section %}
                     <td><img src="{% static 'i/sep2.gif' %}" width="1" height="21" alt=""></td>
                 {% endif %}
                 <td class="align-center">

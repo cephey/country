@@ -3,7 +3,7 @@
 {% load static %}
 {% load htmlutils %}
 
-{% block title %}{{ object.title }} - {{ object.section_name }} - ФОРУМ.мск{% endblock %}
+{% block title %}{{ object.title }} - {{ art_section.name }} - ФОРУМ.мск{% endblock %}
 
 {% block description %}{{ object.preview }}{% endblock %}
 
@@ -17,16 +17,16 @@
         <p class="news-meta">
             <span>Опубликовано {{ object.publish_date|date:'d.m.Y' }}</span>
             <meta itemprop="datePublished" content="{{ object.publish_date|date:'Y-m-d' }}"/>
-            <meta itemprop="articleSection" content="{{ object.section_name }}">
+            <meta itemprop="articleSection" content="{{ art_section.name }}">
             <span>
                 автором
                 {% include 'authors/incl/cover_name.html' with article=object incl_microdata=True %}
             </span>
             <span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
                 в разделе
-                <a itemprop="url" href="{% if object.is_news %}{% url 'articles:section' 'news' %}{% else %}{{ object.section.get_absolute_url }}{% endif %}">
+                <a itemprop="url" href="{% if object.is_news %}{% url 'articles:section' 'news' %}{% else %}{{ art_section.get_absolute_url }}{% endif %}">
                     <em itemprop="title">
-                        {{ object.section_name }}
+                        {{ art_section.name }}
                     </em>
                 </a>
             </span>
@@ -78,7 +78,8 @@
         <div class="p_t">
             <div class="normal newsbody" itemprop="articleBody">
                 {% if object.video %}
-                    {{ object.video_code }}
+                    {{ object.video_code|safe }}
+                    <br>
                 {% endif %}
                 {% if object.content|length > 1990 %}
                     {% include 'incl/adv/ads_by_google.html' %}

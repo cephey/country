@@ -7,8 +7,9 @@ from django.contrib.contenttypes.models import ContentType
 
 from apps.authors.models import Author
 from apps.authors.factories import AuthorFactory
-from apps.articles.models import Section, Article, Notice, Comment
-from apps.articles.factories import SectionFactory, ArticleFactory, NoticeFactory, CommentFactory
+from apps.articles.models import Section, Article, Notice, Comment, Multimedia
+from apps.articles.factories import (SectionFactory, ArticleFactory, NoticeFactory,
+                                     CommentFactory, MultimediaFactory)
 from apps.bloggers.models import Blogger, Entry
 from apps.bloggers.factories import BloggerFactory, EntryFactory
 from apps.polls.models import Poll, Choice
@@ -27,8 +28,7 @@ LOW = {
     'user_count': 50,
     'author_count': 20,
     'tag_count': 20,
-    'min_art_count': 5,
-    'max_art_count': 10,
+    'avg_art_count': 7,
     'max_com_count': 5,
     'max_art_vote_count': 5,
     'max_like_count': 5,
@@ -45,8 +45,7 @@ MIDDLE = {
     'user_count': 70,
     'author_count': 30,
     'tag_count': 40,
-    'min_art_count': 10,
-    'max_art_count': 20,
+    'avg_art_count': 15,
     'max_com_count': 10,
     'max_art_vote_count': 10,
     'max_like_count': 10,
@@ -63,8 +62,7 @@ HEIGHT = {
     'user_count': 100,
     'author_count': 40,
     'tag_count': 60,
-    'min_art_count': 20,
-    'max_art_count': 50,
+    'avg_art_count': 30,
     'max_com_count': 20,
     'max_art_vote_count': 20,
     'max_like_count': 20,
@@ -99,6 +97,7 @@ class Command(BaseCommand):
         self.stdout.write('Remove all data from DB')
         Notice.objects.all().delete()
         Comment.objects.all().delete()
+        Multimedia.objects.all().delete()
         Article.objects.all().delete()
         Section.objects.all().delete()
 
@@ -138,54 +137,81 @@ class Command(BaseCommand):
             SectionFactory(name='Силовые структуры', slug='power'),
             SectionFactory(name='Особенности внешней политики', slug='fpolitic'),
             SectionFactory(name='Компрометирующие материалы', slug='kompromat'),
-            SectionFactory(name='Московский листок', slug='moscow')
+            SectionFactory(name='Московский листок', slug='moscow'),
+
+            # video
+            SectionFactory(name='Новости политики', slug='video_politic', is_video=True),
+            SectionFactory(name='Экономический расклад', slug='video_economic', is_video=True),
+            SectionFactory(name='Проиcшествия', slug='video_accidents', is_video=True),
+            SectionFactory(name='Внешняя политика', slug='video_fpolitic', is_video=True),
+            SectionFactory(name='Общество и его культура', slug='video_society', is_video=True),
+            SectionFactory(name='Народное видео', slug='video_national', is_video=True),
+
+            # partner video
+            SectionFactory(name='Луганск 24', slug='video_partner_lugansk24', is_video=True),
+            SectionFactory(name='Программа Сергея Доренко', slug='video_partner_dorenko', is_video=True),
+            SectionFactory(name='Красное.ТВ', slug='video_partner_krasnoetv', is_video=True),
+            SectionFactory(name='Nevex.TV', slug='video_partner_nevextv', is_video=True)
         ]
         a_count_list = [2, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
-        self.stdout.write('Generate articles with comments...')
-        for section in sections:
-            for i in range(random.randint(STR['min_art_count'], STR['max_art_count'])):
-                # authors
-                params = dict(
-                    section=section,
-                    is_news=not bool(random.randint(0, 6))
+        self.stdout.write('Generate articles with comments and media...')
+        for i in range(len(sections) * STR['avg_art_count']):
+            section = random.choice(sections)
+            # authors
+            params = dict(
+                section=section,
+                is_news=not bool(random.randint(0, 6))
+            )
+            a_count = random.choice(a_count_list)
+            if not a_count:  # no authors
+                if random.randint(0, 1):
+                    params['author_names'] = AuthorFactory.build().cover_name
+            else:
+                params['authors'] = random.sample(authors, a_count)
+
+            # tags
+            a_tags = random.sample(tags, random.randint(0, 6))
+            if a_tags:
+                params['tags'] = a_tags
+
+            # source
+            if not random.randint(0, 5):
+                params['source'] = Faker(locale='ru_RU').company()
+                if random.randint(0, 1):
+                    params['source_link'] = Faker().url()
+
+            if not random.randint(0, 20):
+                params['show_comments'] = False  # hide comments
+            if not random.randint(0, 3):
+                params['discussion_status'] = Article.DISCUSSION_STATUS.close  # close discussion
+
+            if section.is_video:
+                params.update(
+                    image=None,
+                    with_video=True
                 )
-                a_count = random.choice(a_count_list)
-                if not a_count:  # no authors
-                    if random.randint(0, 1):
-                        params['author_names'] = AuthorFactory.build().cover_name
+
+            article = ArticleFactory(**params)
+
+            # comments
+            comment_count = random.randint(0, STR['max_com_count'])
+            comment_tokens = random.sample(tokens, comment_count)
+            comment_users = random.sample(users, comment_count)
+            for j in range(comment_count):
+                c_params = dict(article=article)
+                if random.randint(0, 1):
+                    c_params['token'] = comment_tokens[j]
                 else:
-                    params['authors'] = random.sample(authors, a_count)
+                    c_params['user'] = comment_users[j]
+                CommentFactory(**c_params)
 
-                # tags
-                a_tags = random.sample(tags, random.randint(0, 6))
-                if a_tags:
-                    params['tags'] = a_tags
-
-                # source
-                if not random.randint(0, 5):
-                    params['source'] = Faker(locale='ru_RU').company()
-                    if random.randint(0, 1):
-                        params['source_link'] = Faker().url()
-
-                if not random.randint(0, 20):
-                    params['show_comments'] = False  # hide comments
-                if not random.randint(0, 3):
-                    params['discussion_status'] = Article.DISCUSSION_STATUS.close  # close discussion
-
-                article = ArticleFactory(**params)
-
-                # comments
-                comment_count = random.randint(0, STR['max_com_count'])
-                comment_tokens = random.sample(tokens, comment_count)
-                comment_users = random.sample(users, comment_count)
-                for j in range(comment_count):
-                    c_params = dict(article=article)
-                    if random.randint(0, 1):
-                        c_params['token'] = comment_tokens[j]
-                    else:
-                        c_params['user'] = comment_users[j]
-                    CommentFactory(**c_params)
+            # multimedia
+            if not random.randint(0, 8):
+                if random.randint(0, 5):
+                    MultimediaFactory(article=article)
+                else:
+                    MultimediaFactory.create_batch(2, article=article)
 
         self.stdout.write('Generate resources...')
         resource_types = [

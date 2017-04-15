@@ -3,7 +3,7 @@ import factory
 from faker import Faker
 from django.utils import timezone
 
-from apps.articles.models import Section, Article, Notice, Comment
+from apps.articles.models import Section, Article, Notice, Comment, Multimedia
 
 
 class SectionFactory(factory.django.DjangoModelFactory):
@@ -66,6 +66,11 @@ class ArticleFactory(factory.django.DjangoModelFactory):
         else:
             obj.content = Faker(locale='ru_RU').text(max_nb_chars=random.randint(256, 2048))
 
+    @factory.post_generation
+    def with_video(obj, create, extracted, **kwargs):
+        if extracted:
+            obj.video = 'https://www.youtube.com/watch?v=rzfIiyBASh8'
+
 
 class CommentFactory(factory.django.DjangoModelFactory):
 
@@ -88,6 +93,16 @@ class CommentFactory(factory.django.DjangoModelFactory):
             obj.content = extracted
         else:
             obj.content = Faker(locale='ru_RU').text(max_nb_chars=random.randint(128, 512))
+
+
+class MultimediaFactory(factory.django.DjangoModelFactory):
+
+    class Meta:
+        model = Multimedia
+
+    article = factory.SubFactory('apps.articles.factories.ArticleFactory')
+    link = factory.Faker('uri')
+    description = factory.Faker('word')
 
 
 class NoticeFactory(factory.django.DjangoModelFactory):

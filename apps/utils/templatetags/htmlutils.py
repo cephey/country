@@ -14,6 +14,11 @@ def num_ending(n, args):
 
 @register.filter(name='crop')
 def crop(link, size):
+    """
+    ``/storage/articles_image/name.jpg`` -> ``/c/100x100/articles_image/name.jpg``
+    ``https://img.youtube.com/vi/rzfIiyBASh8/default.jpg`` not change
+    None -> default image
+    """
     return link
 
 

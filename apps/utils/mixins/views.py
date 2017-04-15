@@ -9,7 +9,7 @@ class SidebarContextMixin(object):
     def get_sidebar_context(self):
         return {
             'poll': Poll.objects.order_by('?').first(),
-            'sidebar_videos': Article.objects.visible().filter(video__isnull=False)[:2],
+            'sidebar_videos': Article.objects.visible().filter(section__is_video=True)[:2],
             'sidebar_news': Article.objects.visible().filter(is_news=True).order_by('?')[:10],  # order by vote_sum?
             'notices': Notice.objects.filter(status=Notice.STATUS.approved)[:3],
             'entries': Entry.objects.active().order_by('?')[:5],
