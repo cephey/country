@@ -20,7 +20,7 @@ class ArticleFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Article
 
-    title = factory.Faker('sentence', nb_words=3, locale='ru_RU')
+    title = factory.Faker('sentence', nb_words=4, locale='ru_RU')
     section = factory.SubFactory('apps.articles.factories.SectionFactory')
     publish_date = factory.LazyFunction(timezone.now)
     image = factory.django.ImageField(from_path='fixtures/i/flag.jpg')

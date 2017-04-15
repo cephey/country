@@ -1,0 +1,39 @@
+{% if material %}
+    <div class="big1 title">
+        <a href="{{ material.section.get_absolute_url }}">{{ material.section.name }}</a>
+    </div>
+    <div style="width:1px; height:1px"><!-- --></div>
+    <div class="border_wrap">
+        <table class="wp100">
+            <tr>
+                {% for article in material.articles %}
+                    <td class="valign-top" style="width: {% widthratio 100 material.articles|length 1 %}%">
+                        <table class="wp100">
+                            <tr>
+                                <td class="valign-top">
+                                    <img class="pwi" src="{{ article.icon }}" alt="{{ article.title }}">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="or2_normal">
+                                        <a href="{{ article.get_absolute_url }}">{{ article.title|truncatechars:50 }}</a>
+                                        <br />
+                                        {{ article.publish_date|date:'d.m.Y' }}
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                {% endfor %}
+            </tr>
+        </table>
+    </div>
+    <table class="full-table h7 bgFFF0E6">
+        <tr>
+            <td class="bg_bottom_l w7"><div style="width:7px; height:7px"><!-- --></div></td>
+            <td class="bg_bottom_c wp100"><div style="width:1px; height:7px"><!-- --></div></td>
+            <td class="bg_bottom_r w7"><div style="width:7px; height:7px"><!-- --></div></td>
+        </tr>
+    </table>
+{% endif %}

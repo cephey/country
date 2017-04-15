@@ -15,7 +15,7 @@ urlpatterns = [
 
     # video
     url(r'^video/$', views.VideoIndexView.as_view(), name='video'),
-    # /video/?video=123 - article detail
+    url(r'^video/(?P<pk>\d+)/$', views.VideoDetailView.as_view(), name='video_detail'),
 
     url(r'^addnews/$', views.CreateArticleView.as_view(), name='create'),
 

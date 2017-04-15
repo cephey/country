@@ -9,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic import TemplateView, ListView, DetailView, RedirectView, CreateView
 
 from apps.articles.models import (Article, Section, Comment, Notice, BEST, NEWS, VIDEO,
-                                  NAVIGATE_SECTIONS, GENERIC_SECTIONS)
+                                  NAVIGATE_SECTIONS, VIDEO_SECTIONS, GENERIC_SECTIONS)
 from apps.utils.mixins.views import PageContextMixin
 from apps.utils.mixins.paginator import PaginatorMixin
 
@@ -28,8 +28,14 @@ class IndexView(PageContextMixin, TemplateView):
             }
 
         kwargs.update(
-            main_news=Article.objects.visible().filter(is_news=True).order_by('-publish_date').first(),
-            main_material=Article.objects.visible().order_by('-publish_date', '-comments_count').first(),
+            main_news=(Article.objects.visible()
+                       .filter(is_news=True)
+                       .order_by('-publish_date')
+                       .first()),
+            main_material=(Article.objects.visible()
+                           .filter(is_news=False)
+                           .order_by('-publish_date', '-comments_count')
+                           .first()),
             materials=materials
         )
         return super().get_context_data(**kwargs)
@@ -142,7 +148,28 @@ class NoticeListView(PageContextMixin, CreateView):
         return super().get_context_data(**kwargs)
 
 
-class VideoIndexView(PageContextMixin, TemplateView):
+class VideoContextMixin(object):
+
+    def get_context_data(self, **kwargs):
+        sections = Section.objects.filter(slug__in=VIDEO_SECTIONS)
+
+        materials = {}
+        for section in sections:
+            if section.slug in ('video_fpolitic', 'video_national'):
+                n = 5
+            elif section.slug.startswith('video_partner'):
+                n = 2
+            else:
+                n = 3
+            materials[section.slug] = {
+                'section': section,
+                'articles': Article.objects.visible().filter(section=section)[:n]
+            }
+        kwargs['materials'] = materials
+        return super().get_context_data(**kwargs)
+
+
+class VideoIndexView(VideoContextMixin, PageContextMixin, TemplateView):
     template_name = 'articles/video.html'
 
     def get(self, request, *args, **kwargs):
@@ -153,9 +180,31 @@ class VideoIndexView(PageContextMixin, TemplateView):
             except (TypeError, ValueError):
                 pass
             else:
-                url = reverse('articles:detail', kwargs={'slug': VIDEO, 'pk': video_id})
+                url = reverse('articles:video_detail', kwargs={'pk': video_id})
                 return HttpResponsePermanentRedirect(url)
         return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        kwargs.update(
+            main_news=(Article.objects.visible()
+                       .filter(is_news=True, section__is_video=True)
+                       .order_by('-publish_date')
+                       .first()),
+            main_material=(Article.objects.visible()
+                           .filter(is_news=False, section__is_video=True)
+                           .order_by('-publish_date', '-comments_count')
+                           .first())
+        )
+        return super().get_context_data(**kwargs)
+
+
+class VideoDetailView(VideoContextMixin, PageContextMixin, DetailView):
+    template_name = 'articles/video.html'
+    queryset = Article.objects.visible().select_related('section')
+
+    def get_context_data(self, **kwargs):
+        kwargs['main_news'] = self.object
+        return super().get_context_data(**kwargs)
 
 
 class ActionView(RedirectView):

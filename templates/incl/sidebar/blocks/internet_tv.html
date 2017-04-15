@@ -18,12 +18,8 @@
                     <tr>
                         <td>
                             <div class="or2">
-                                <a href="/video/?video={{ article.id }}">
-                                    {% if article.title|length > 50 %}
-                                        {{ article.title|slice:':50' }}...
-                                    {% else %}
-                                        {{ article.title }}
-                                    {% endif %}
+                                <a href="{% url 'articles:video_detail' article.id %}">
+                                    {{ article.title|truncatechars:50 }}
                                 </a>
                                 <br />
                                 {{ article.publish_date|date:'d.m.Y' }}
