@@ -1,6 +1,9 @@
 {% load static %}
 
 <table class="noborder">
+    {% for message in messages %}
+        <tr>{{ message }}</tr>
+    {% endfor %}
     <tr>
         <td>
             <div {% if article.vote_count %}itemprop="aggregateRating" itemscope="itemscope" itemtype="http://schema.org/AggregateRating"{% endif %}>
@@ -13,8 +16,8 @@
                     <div class="vote_passive" onmouseover="voteMakeActiveStar({{ article.id }}, {{ forloop.counter }})" onmouseout="voteMakeDeativeStar({{ article.id }}, {{ article.rating|default:0|floatformat:2 }})">
                         <form class="vote_form" action="{% url 'votes:article' %}" name="voting" method="POST">
                             {% csrf_token %}
-                            <input type="hidden" name="id" value="{{ article.id }}">
-                            <input type="hidden" name="vote" value="{{ forloop.counter }}">
+                            <input type="hidden" name="object_id" value="{{ article.id }}">
+                            <input type="hidden" name="score" value="{{ forloop.counter }}">
                             <input type="hidden" name="back" value="">
                             <input alt="*" id="vote_{{ article.id }}_{{ forloop.counter }}" type="image" src="{% if article.rating and article.rating >= forloop.counter %}{% static 'i/star_active.png' %}{% else %}{% static 'i/star_deactive.png' %}{% endif %}">
                         </form>
