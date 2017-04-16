@@ -18,7 +18,7 @@
                     {% endif %}
                 </td>
                 <td class="wp50 align-left">
-                    <a href="{% url 'authors:detail' author.id %}.html">{{ author.cover_name }}</a>
+                    <a href="{% url 'authors:detail' author.id %}">{{ author.cover_name }}</a>
                 </td>
             {% endfor %}
             {% if sublist|length < 2 %}

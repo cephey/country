@@ -44,7 +44,7 @@ class IndexView(PageContextMixin, TemplateView):
 class BaseArticleListView(PageContextMixin, ListView):
     template_name = 'articles/list.html'
     paginate_by = 5
-    model = Article
+    queryset = Article.objects.visible().select_related('section')
     page_kwarg = 'p'
     ordering = '-id'
 
