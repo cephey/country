@@ -9,5 +9,5 @@ class MainPageTestCase(TestCase):
     def test_200_ok(self):
         resp = self.app.get('/')
         self.assertEqual(resp.status_code, 200)
-        self.assertIn('Главная новость', resp.content.decode('utf-8'))
-        self.assertIn('Материал дня', resp.content.decode('utf-8'))
+        self.assertContains(resp, 'Главная новость')
+        self.assertContains(resp, 'Материал дня')

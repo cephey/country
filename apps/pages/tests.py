@@ -10,12 +10,12 @@ class PagesTestCase(TestCase):
     def test_about_page_200(self):
         resp = self.app.get('/about/')
         self.assertEqual(resp.status_code, 200)
-        self.assertIn('Свободы хотим, демократии и прогресса', resp.content.decode('utf-8'))
+        self.assertContains(resp, 'Свободы хотим, демократии и прогресса')
 
     def test_advert_page_200(self):
         resp = self.app.get('/advert/')
         self.assertEqual(resp.status_code, 200)
-        self.assertIn('Реклама на главной странице', resp.content.decode('utf-8'))
+        self.assertContains(resp, 'Реклама на главной странице')
 
     def test_opposition_index_page(self):
         part1 = PartitionFactory(name='Физика')
@@ -33,16 +33,16 @@ class PagesTestCase(TestCase):
         self.assertEqual(resp.status_code, 200)
 
         # check template
-        self.assertIn('Физика', resp.content.decode('utf-8'))
-        self.assertIn('Химия', resp.content.decode('utf-8'))
-        self.assertNotIn('Математика', resp.content.decode('utf-8'))
+        self.assertContains(resp, 'Физика')
+        self.assertContains(resp, 'Химия')
+        self.assertNotContains(resp, 'Математика')
 
-        self.assertIn('Термодинамика', resp.content.decode('utf-8'))
-        self.assertIn('Элементы', resp.content.decode('utf-8'))
-        self.assertNotIn('Оптика', resp.content.decode('utf-8'))
-        self.assertNotIn('Алгебра', resp.content.decode('utf-8'))
+        self.assertContains(resp, 'Термодинамика')
+        self.assertContains(resp, 'Элементы')
+        self.assertNotContains(resp, 'Оптика')
+        self.assertNotContains(resp, 'Алгебра')
 
-        self.assertIn('Наши кнопки', resp.content.decode('utf-8'))
+        self.assertContains(resp, 'Наши кнопки')
 
         # check context
         partitions = resp.context['partitions']
@@ -67,11 +67,11 @@ class PagesTestCase(TestCase):
         self.assertEqual(resp.status_code, 200)
 
         # check template
-        self.assertIn('Каша', resp.content.decode('utf-8'))
-        self.assertIn('Манка', resp.content.decode('utf-8'))
-        self.assertIn('Греча', resp.content.decode('utf-8'))
-        self.assertIn('Перловка', resp.content.decode('utf-8'))
-        self.assertNotIn('Овсянка', resp.content.decode('utf-8'))
+        self.assertContains(resp, 'Каша')
+        self.assertContains(resp, 'Манка')
+        self.assertContains(resp, 'Греча')
+        self.assertContains(resp, 'Перловка')
+        self.assertNotContains(resp, 'Овсянка')
 
         # check context
         self.assertEqual(resp.context['partition'], part)

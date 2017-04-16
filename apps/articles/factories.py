@@ -15,6 +15,10 @@ class SectionFactory(factory.django.DjangoModelFactory):
     slug = factory.Faker('slug')
 
 
+class VideoSectionFactory(SectionFactory):
+    is_video = True
+
+
 class ArticleFactory(factory.django.DjangoModelFactory):
 
     class Meta:
@@ -70,6 +74,16 @@ class ArticleFactory(factory.django.DjangoModelFactory):
     def with_video(obj, create, extracted, **kwargs):
         if extracted:
             obj.video = 'https://www.youtube.com/watch?v=rzfIiyBASh8'
+
+    @factory.post_generation
+    def with_source(obj, create, extracted, **kwargs):
+        if extracted:
+            obj.source = Faker(locale='ru_RU').company()
+
+    @factory.post_generation
+    def with_source_link(obj, create, extracted, **kwargs):
+        if extracted:
+            obj.source_link = Faker().url()
 
 
 class CommentFactory(factory.django.DjangoModelFactory):

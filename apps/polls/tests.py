@@ -17,17 +17,17 @@ class PollTestCase(TestCase):
 
         resp = self.app.get('/polls/{}/'.format(poll.id))
         self.assertEqual(resp.status_code, 200)
-        self.assertIn('Результаты голосования', resp.content.decode('utf-8'))
-        self.assertIn('Как так?', resp.content.decode('utf-8'))
+        self.assertContains(resp, 'Результаты голосования')
+        self.assertContains(resp, 'Как так?')
 
-        self.assertIn('font-size:90%;width:20%;background-color:#990000', resp.content.decode('utf-8'))
-        self.assertIn('первый (2)', resp.content.decode('utf-8'))
+        self.assertContains(resp, 'font-size:90%;width:20%;background-color:#990000')
+        self.assertContains(resp, 'первый (2)')
 
-        self.assertIn('font-size:90%;width:30%;background-color:#990000', resp.content.decode('utf-8'))
-        self.assertIn('второй (3)', resp.content.decode('utf-8'))
+        self.assertContains(resp, 'font-size:90%;width:30%;background-color:#990000')
+        self.assertContains(resp, 'второй (3)')
 
-        self.assertIn('font-size:90%;width:50%;background-color:#990000', resp.content.decode('utf-8'))
-        self.assertIn('третий (5)', resp.content.decode('utf-8'))
+        self.assertContains(resp, 'font-size:90%;width:50%;background-color:#990000')
+        self.assertContains(resp, 'третий (5)')
 
     def test_create_vote_user(self):
         user = UserFactory(username='andrey')
@@ -82,7 +82,7 @@ class PollTestCase(TestCase):
         # by voteid
         resp = self.app.get('/votes/blank.html?voteid={}'.format(poll.id))
         self.assertEqual(resp.status_code, 200)
-        self.assertIn('Второй', resp.content.decode('utf-8'))
+        self.assertContains(resp, 'Второй')
 
         resp = self.app.get('/votes/blank.html?voteid=123456789')
         self.assertEqual(resp.status_code, 404)
@@ -92,15 +92,15 @@ class PollTestCase(TestCase):
         # prev/next
         resp = self.app.get('/votes/blank.html?pvoteid={}&type=prev'.format(poll.id))
         self.assertEqual(resp.status_code, 200)
-        self.assertIn('Первый', resp.content.decode('utf-8'))
+        self.assertContains(resp, 'Первый')
 
         resp = self.app.get('/votes/blank.html?pvoteid=123456789&type=prev')
         self.assertEqual(resp.status_code, 200)
-        self.assertIn('Третий', resp.content.decode('utf-8'))
+        self.assertContains(resp, 'Третий')
 
         resp = self.app.get('/votes/blank.html?pvoteid={}&type=next'.format(poll.id))
         self.assertEqual(resp.status_code, 200)
-        self.assertIn('Третий', resp.content.decode('utf-8'))
+        self.assertContains(resp, 'Третий')
 
         resp = self.app.get('/votes/blank.html?pvoteid=123456789&type=next')
         self.assertEqual(resp.status_code, 404)
@@ -110,4 +110,4 @@ class PollTestCase(TestCase):
         # without type
         resp = self.app.get('/votes/blank.html?pvoteid={}'.format(poll.id))
         self.assertEqual(resp.status_code, 200)
-        self.assertIn('Второй', resp.content.decode('utf-8'))
+        self.assertContains(resp, 'Второй')

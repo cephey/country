@@ -23,11 +23,11 @@ class EntryTestCase(TestCase):
         self.assertEqual(resp.context['blogger_list'][0].id, blogger2.id)
         self.assertEqual(resp.context['blogger_list'][1].id, blogger1.id)
 
-        self.assertIn('Красный волк', resp.content.decode('utf-8'))
-        self.assertIn('Черная лиса', resp.content.decode('utf-8'))
-        self.assertIn('Белый петух', resp.content.decode('utf-8'))
-        self.assertNotIn('Синие цыплята', resp.content.decode('utf-8'))
-        self.assertNotIn('Желтый медведь', resp.content.decode('utf-8'))
+        self.assertContains(resp, 'Красный волк')
+        self.assertContains(resp, 'Черная лиса')
+        self.assertContains(resp, 'Белый петух')
+        self.assertNotContains(resp, 'Синие цыплята')
+        self.assertNotContains(resp, 'Желтый медведь')
 
     def test_blogger_entry_list_200(self):
         blogger = BloggerFactory()
@@ -39,9 +39,9 @@ class EntryTestCase(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.context['blogger_obj'].id, blogger.id)
 
-        self.assertIn('Ниф-Ниф', resp.content.decode('utf-8'))
-        self.assertIn('Наф-Наф', resp.content.decode('utf-8'))
-        self.assertNotIn('Нуф-Нуф', resp.content.decode('utf-8'))
+        self.assertContains(resp, 'Ниф-Ниф')
+        self.assertContains(resp, 'Наф-Наф')
+        self.assertNotContains(resp, 'Нуф-Нуф')
 
     def test_blogger_entry_list_404(self):
         blogger = BloggerFactory(is_active=False)

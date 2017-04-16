@@ -97,21 +97,21 @@ class ArticleDetailView(PageContextMixin, PaginatorMixin, DetailView):
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        comments = Comment.objects.filter(article=self.object, is_active=True)
-        kwargs.update(
-            art_comments=self.paginate_qs(comments, 3),
-            art_section=self.section or self.object.section
-        )
-        if not self.object.show_comments:
+        kwargs['art_section'] = self.section or self.object.section
+
+        if self.object.show_comments:
+            comments = Comment.objects.filter(article=self.object, is_active=True)
+            kwargs['art_comments'] = self.paginate_qs(comments, 3)
+        else:
             data = []
             for slug in NAVIGATE_SECTIONS:
-                data.append(
-                    (Article.objects.visible()
-                     .filter(section__slug=slug)
-                     .select_related('section')
-                     .order_by('-publish_date')
-                     .first())
-                )
+                article = (Article.objects.visible()
+                           .filter(section__slug=slug)
+                           .select_related('section')
+                           .order_by('-publish_date')
+                           .first())
+                if article:
+                    data.append(article)
             kwargs['in_sections'] = data
         return super().get_context_data(**kwargs)
 

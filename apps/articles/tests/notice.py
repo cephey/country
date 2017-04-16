@@ -20,9 +20,9 @@ class NoticeTestCase(TestCase):
         self.assertEqual(resp.context['object_list'][0].id, n2.id)
         self.assertEqual(resp.context['object_list'][1].id, n1.id)
 
-        self.assertIn('Еда', resp.content.decode('utf-8'))
-        self.assertIn('Воздух', resp.content.decode('utf-8'))
-        self.assertNotIn('Вода', resp.content.decode('utf-8'))
+        self.assertContains(resp, 'Еда')
+        self.assertContains(resp, 'Воздух')
+        self.assertContains(resp, 'Вода')
 
     def test_create_ok(self):
         data = {
@@ -32,8 +32,7 @@ class NoticeTestCase(TestCase):
         url, status_code = resp.redirect_chain[0]
         self.assertEqual(status_code, 302)
         self.assertEqual(url, '/notice/#send')
-        self.assertIn('Ваше объявление будет обязательно рассмотрено нашим редактором',
-                      resp.content.decode('utf-8'))
+        self.assertContains(resp, 'Ваше объявление будет обязательно рассмотрено нашим редактором')
 
         notices = Notice.objects.all()
         self.assertEqual(len(notices), 1)
@@ -46,6 +45,5 @@ class NoticeTestCase(TestCase):
         }
         resp = self.app.post('/notice/', data)
         self.assertEqual(resp.status_code, 200)
-        self.assertIn('Убедитесь, что это значение содержит не более 200 символов (сейчас 250)',
-                      resp.content.decode('utf-8'))
+        self.assertContains(resp, 'Убедитесь, что это значение содержит не более 200 символов (сейчас 250)')
         self.assertFalse(Notice.objects.exists())

@@ -9,7 +9,7 @@ from apps.authors.models import Author
 from apps.authors.factories import AuthorFactory
 from apps.articles.models import Section, Article, Notice, Comment, Multimedia
 from apps.articles.factories import (SectionFactory, ArticleFactory, NoticeFactory,
-                                     CommentFactory, MultimediaFactory)
+                                     CommentFactory, MultimediaFactory, VideoSectionFactory)
 from apps.bloggers.models import Blogger, Entry
 from apps.bloggers.factories import BloggerFactory, EntryFactory
 from apps.polls.models import Poll, Choice
@@ -140,18 +140,18 @@ class Command(BaseCommand):
             SectionFactory(name='Московский листок', slug='moscow'),
 
             # video
-            SectionFactory(name='Новости политики', slug='video_politic', is_video=True),
-            SectionFactory(name='Экономический расклад', slug='video_economic', is_video=True),
-            SectionFactory(name='Проиcшествия', slug='video_accidents', is_video=True),
-            SectionFactory(name='Внешняя политика', slug='video_fpolitic', is_video=True),
-            SectionFactory(name='Общество и его культура', slug='video_society', is_video=True),
-            SectionFactory(name='Народное видео', slug='video_national', is_video=True),
+            VideoSectionFactory(name='Новости политики', slug='video_politic'),
+            VideoSectionFactory(name='Экономический расклад', slug='video_economic'),
+            VideoSectionFactory(name='Проиcшествия', slug='video_accidents'),
+            VideoSectionFactory(name='Внешняя политика', slug='video_fpolitic'),
+            VideoSectionFactory(name='Общество и его культура', slug='video_society'),
+            VideoSectionFactory(name='Народное видео', slug='video_national'),
 
             # partner video
-            SectionFactory(name='Луганск 24', slug='video_partner_lugansk24', is_video=True),
-            SectionFactory(name='Программа Сергея Доренко', slug='video_partner_dorenko', is_video=True),
-            SectionFactory(name='Красное.ТВ', slug='video_partner_krasnoetv', is_video=True),
-            SectionFactory(name='Nevex.TV', slug='video_partner_nevextv', is_video=True)
+            VideoSectionFactory(name='Луганск 24', slug='video_partner_lugansk24'),
+            VideoSectionFactory(name='Программа Сергея Доренко', slug='video_partner_dorenko'),
+            VideoSectionFactory(name='Красное.ТВ', slug='video_partner_krasnoetv'),
+            VideoSectionFactory(name='Nevex.TV', slug='video_partner_nevextv')
         ]
         a_count_list = [2, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
@@ -177,9 +177,9 @@ class Command(BaseCommand):
 
             # source
             if not random.randint(0, 5):
-                params['source'] = Faker(locale='ru_RU').company()
+                params['with_source'] = True
                 if random.randint(0, 1):
-                    params['source_link'] = Faker().url()
+                    params['with_source_link'] = True
 
             if not random.randint(0, 20):
                 params['show_comments'] = False  # hide comments

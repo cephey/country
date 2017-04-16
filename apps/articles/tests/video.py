@@ -1,7 +1,5 @@
 from django.test import TestCase, Client
-
-from apps.articles.factories import NoticeFactory, SectionFactory, ArticleFactory
-from apps.articles.models import Notice, Section, Article
+from apps.articles.factories import SectionFactory, ArticleFactory, VideoSectionFactory
 
 
 class NoticeTestCase(TestCase):
@@ -10,9 +8,9 @@ class NoticeTestCase(TestCase):
         self.app = Client()
 
     def test_index_video_page(self):
-        section1 = SectionFactory(name='Политика', slug='video_politic', is_video=True)  # 3 item block
-        section2 = SectionFactory(name='ТВ', slug='video_partner_nevextv', is_video=True)  # 2 item block
-        section3 = SectionFactory(name='Народ', slug='video_national', is_video=True)  # 5 item block
+        section1 = VideoSectionFactory(name='Политика', slug='video_politic')  # 3 item block
+        section2 = VideoSectionFactory(name='ТВ', slug='video_partner_nevextv')  # 2 item block
+        section3 = VideoSectionFactory(name='Народ', slug='video_national')  # 5 item block
         SectionFactory(name='Экономика', slug='video_economic')  # non video
 
         for section in (section1, section2, section3):
@@ -48,7 +46,7 @@ class NoticeTestCase(TestCase):
         self.assertEqual(resp.url, '/video/123/')
 
     def test_detail_video_page(self):
-        section = SectionFactory(name='Политика', slug='video_politic', is_video=True)
+        section = VideoSectionFactory(name='Политика', slug='video_politic')
         article = ArticleFactory(title='Скорость света', section=section, image=None,
                                  video='https://www.youtube.com/watch?v=bob')
 
@@ -66,7 +64,7 @@ class NoticeTestCase(TestCase):
         self.assertContains(resp, '<iframe width="560" height="315" src="https://www.youtube.com/embed/bob"')
 
     def test_video_section_page(self):
-        section = SectionFactory(is_video=True)
+        section = VideoSectionFactory()
         ArticleFactory.create_batch(4, section=section)
 
         resp = self.app.get('/material/video/')
