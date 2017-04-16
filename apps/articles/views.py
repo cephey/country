@@ -151,7 +151,7 @@ class NoticeListView(PageContextMixin, CreateView):
 class VideoContextMixin(object):
 
     def get_context_data(self, **kwargs):
-        sections = Section.objects.filter(slug__in=VIDEO_SECTIONS)
+        sections = Section.objects.filter(slug__in=VIDEO_SECTIONS, is_video=True)
 
         materials = {}
         for section in sections:
