@@ -3,8 +3,6 @@ from django.contrib.sessions.models import Session
 
 from apps.votes.models import Vote
 from apps.votes.factories import VoteFactory
-from apps.polls.models import Poll, Choice
-from apps.polls.factories import PollFactory, ChoiceFactory
 from apps.articles.factories import ArticleFactory, CommentFactory
 from apps.users.factories import UserFactory
 
@@ -110,3 +108,107 @@ class RatingTestCase(TestCase):
         self.assertEqual(url, '/material/news/{}/'.format(article.id))
         self.assertFalse(Vote.objects.exists())
         self.assertContains(resp, 'Возможность оставить оценку временно недоступна')
+
+
+class LikeTestCase(TestCase):
+
+    def setUp(self):
+        self.app = Client()
+
+    def test_create_vote_comment_user(self):
+        comment = CommentFactory()
+
+        user = UserFactory(username='andrey')
+        user.set_password('secret')
+        user.save()
+        self.app.login(username='andrey', password='secret')
+
+        resp = self.app.post('/votes/comment/', {'object_id': comment.id, 'score': 1},
+                             HTTP_REFERER='/material/news/1/')
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp.url, '/material/news/1/')
+
+        votes = Vote.objects.all()
+        self.assertEqual(len(votes), 1)
+        self.assertEqual(votes[0].user, user)
+        self.assertEqual(votes[0].object_id, comment.id)
+        self.assertEqual(votes[0].score, 1)
+
+    def test_update_vote_comment_user(self):
+        comment = CommentFactory()
+
+        user = UserFactory(username='andrey')
+        user.set_password('secret')
+        user.save()
+        self.app.login(username='andrey', password='secret')
+
+        VoteFactory(content_object=comment, score=1, user=user)
+
+        resp = self.app.post('/votes/comment/', {'object_id': comment.id, 'score': -1},
+                             HTTP_REFERER='/material/news/1/')
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp.url, '/material/news/1/')
+
+        votes = Vote.objects.all()
+        self.assertEqual(len(votes), 1)
+        self.assertEqual(votes[0].user, user)
+        self.assertEqual(votes[0].object_id, comment.id)
+        self.assertEqual(votes[0].score, -1)
+
+    def test_create_vote_comment_anonymous(self):
+        comment = CommentFactory()
+
+        self.app.get('/')  # create session_key
+        token = Session.objects.first().session_key
+
+        resp = self.app.post('/votes/comment/', {'object_id': comment.id, 'score': -1},
+                             HTTP_REFERER='/material/news/1/')
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp.url, '/material/news/1/')
+
+        votes = Vote.objects.all()
+        self.assertEqual(len(votes), 1)
+        self.assertEqual(votes[0].token, token)
+        self.assertEqual(votes[0].object_id, comment.id)
+        self.assertEqual(votes[0].score, -1)
+
+    def test_update_vote_comment_anonymous(self):
+        comment = CommentFactory()
+
+        self.app.get('/')  # create session_key
+        token = Session.objects.first().session_key
+
+        VoteFactory(content_object=comment, score=2, token=token)
+
+        resp = self.app.post('/votes/comment/', {'object_id': comment.id, 'score': 1},
+                             HTTP_REFERER='/material/news/1/')
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp.url, '/material/news/1/')
+
+        votes = Vote.objects.all()
+        self.assertEqual(len(votes), 1)
+        self.assertEqual(votes[0].token, token)
+        self.assertEqual(votes[0].object_id, comment.id)
+        self.assertEqual(votes[0].score, 1)
+
+    def test_vote_atricle_fail(self):
+        self.app.get('/')  # create session_key
+
+        # fake comment id
+        resp = self.app.post('/votes/comment/', {'object_id': 999999999, 'score': 1},
+                             HTTP_REFERER='/material/news/1/')
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp.url, '/material/news/1/')
+        self.assertFalse(Vote.objects.exists())
+
+        article = ArticleFactory()
+        comment = CommentFactory(article=article)
+
+        # bad score
+        resp = self.app.post('/votes/comment/', {'object_id': comment.id, 'score': 2},
+                             HTTP_REFERER='/material/news/{}/'.format(article.id), follow=True)
+        url, status_code = resp.redirect_chain[0]
+        self.assertEqual(status_code, 302)
+        self.assertEqual(url, '/material/news/{}/'.format(article.id))
+        self.assertFalse(Vote.objects.exists())
+        self.assertContains(resp, 'Возможность оценить комментарий временно недоступна')

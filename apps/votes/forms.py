@@ -1,7 +1,7 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-from apps.articles.models import Article
+from apps.articles.models import Article, Comment
 from apps.votes.models import Vote
 
 
@@ -65,4 +65,19 @@ class RatingForm(VoteForm):
         score = self.cleaned_data['score']
         if score < 1 or score > 5:
             raise forms.ValidationError(_('Оценка должна быть от 1 до 5'))
+        return score
+
+
+class LikeForm(VoteForm):
+
+    def clean_object_id(self):
+        object_id = self.cleaned_data['object_id']
+        if not Comment.objects.active().filter(id=object_id).exists():
+            raise forms.ValidationError(_('Указанного комментария не найдено'))
+        return object_id
+
+    def clean_score(self):
+        score = self.cleaned_data['score']
+        if score not in (-1, 1):
+            raise forms.ValidationError(_('Оценка должна быть от +1 или -1'))
         return score

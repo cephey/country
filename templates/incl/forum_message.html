@@ -29,25 +29,38 @@
            href="{{ article.get_absolute_url }}?pf={{ page_num|default:1 }}&amp;mid={{ comment.id }}#comment"
            onClick="return makeForumReplyForm('comment_replay_{{ comment.id }}', 'Re: {{ comment.title|safe }}', '{{ comment.id }}');">Ответить</a>
         <div class="newscomment-reply-vote">
-            {% if request.session.session_key == comment.token or request.user == comment.user %}
-                <img src="{% static 'i/good.png' %}" width="10" height="10"
-                     alt="За свои комментарии голосовать запрещено."
-                     title="За свои комментарии голосовать запрещено.">&nbsp;
-                {% if comment.karma %}
-                    <span style="color:{% if comment.karma > 0 %}green{% else %}red{% endif %}">{{ comment.karma }}</span>&nbsp;
+            {% spaceless %}
+                {% if request.session.session_key == comment.token or request.user == comment.user %}
+                    <img src="{% static 'i/good.png' %}" width="10" height="10" title="За свои комментарии голосовать запрещено." alt="*">
+                    &nbsp;<span style="color:{% if comment.karma >= 0 %}green{% else %}red{% endif %}">{{ comment.karma }}</span>&nbsp;
+                    <img src="{% static 'i/bad.png' %}" width="10" height="10" title="За свои комментарии голосовать запрещено." alt="*">
                 {% else %}
-                    0&nbsp;
+                    <form action="{% url 'votes:comment' %}" method="POST" style="display:inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="object_id" value="{{ comment.id }}">
+                        <input type="hidden" name="score" value="1">
+                        <input type="hidden" name="next" value="{{ request.get_full_path }}#c{{ comment.id }}">
+                        <input type="image" src="{% static 'i/good.png' %}" width="10" height="10" title="Хороший комментарий" alt="*">
+                    </form>
+                    &nbsp;<span style="color:{% if comment.karma >= 0 %}green{% else %}red{% endif %}">{{ comment.karma }}</span>&nbsp;
+                    <form action="{% url 'votes:comment' %}" method="POST" style="display:inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="object_id" value="{{ comment.id }}">
+                        <input type="hidden" name="score" value="-1">
+                        <input type="hidden" name="next" value="{{ request.get_full_path }}#c{{ comment.id }}">
+                        <input type="image" src="{% static 'i/bad.png' %}" width="10" height="10" title="Плохой комментарий (комментарий скроется, если наберет -5)" alt="*">
+                    </form>
                 {% endif %}
-                <img src="{% static 'i/bad.png' %}" width="10" height="10"
-                     alt="За свои комментарии голосовать запрещено."
-                     title="За свои комментарии голосовать запрещено.">
-            {% else %}
-                <script>
-                    document.write('<a rel="nofollow" href="/dialog/karma.html?up=1&amp;mid={{ comment.id }}&amp;back={{ request.get_full_path }}#c{{ comment.id }}" title="Хороший комментарий"><img src="{% static 'i/good.png' %}" width="10" height="10" ></a>&nbsp;{% if comment.karma %}<span style="color:{% if comment.karma > 0 %}green{% else %}red{% endif %}">{{ comment.karma }}</span>&nbsp;{% else %}0&nbsp;{% endif %}<a rel="nofollow" href="/dialog/karma.html?down=1&amp;mid={{ comment.id }}&amp;back={{ request.get_full_path }}#c{{ comment.id }}" title="Плохой комментарий (комментарий скроется, если наберет -5)"><img src="{% static 'i/bad.png' %}" width="10" height="10" ></a>');
-                </script>
-            {% endif %}
+            {% endspaceless %}
         </div>
     </div>
+    {% for message in messages %}
+        {% with comment.id|stringformat:'s' as comment_id %}
+            {% if 'comment-'|add:comment_id in message.tags %}
+                <span style="float:right;font-size:80%">{{ message }}</span>
+            {% endif %}
+        {% endwith %}
+    {% endfor %}
 {% endif %}
 
 {% if request.user.is_staff %}

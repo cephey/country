@@ -8,7 +8,7 @@ from model_utils import Choices
 
 from apps.utils.models import TimeStampedModel
 from apps.utils.image import get_video_code, preview_for_video
-from apps.articles.managers import ArticleQuerySet, SectionQuerySet
+from apps.articles.managers import ArticleQuerySet, SectionQuerySet, CommentQuerySet
 
 Partition = namedtuple('Partition', ['slug', 'name', 'get_absolute_url'])
 BEST = 'best'
@@ -143,6 +143,8 @@ class Comment(models.Model):
 
     votes = GenericRelation('votes.Vote')
     karma = models.IntegerField(_('Оценка'), editable=False, default=0)
+
+    objects = models.Manager.from_queryset(CommentQuerySet)()
 
     class Meta:
         verbose_name = _('Комментарий')

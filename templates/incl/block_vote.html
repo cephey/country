@@ -2,7 +2,9 @@
 
 <table class="noborder">
     {% for message in messages %}
-        <tr>{{ message }}</tr>
+        {% if 'article' in message.tags %}
+            <tr>{{ message }}</tr>
+        {% endif %}
     {% endfor %}
     <tr>
         <td>
