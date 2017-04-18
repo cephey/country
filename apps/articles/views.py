@@ -12,6 +12,7 @@ from apps.articles.models import (Article, Section, Comment, Notice, BEST, NEWS,
                                   NAVIGATE_SECTIONS, VIDEO_SECTIONS, GENERIC_SECTIONS)
 from apps.utils.mixins.views import PageContextMixin
 from apps.utils.mixins.paginator import PaginatorMixin
+from apps.utils.mixins.access import StaffRequiredMixin
 
 
 class IndexView(PageContextMixin, TemplateView):
@@ -207,13 +208,16 @@ class VideoDetailView(VideoContextMixin, PageContextMixin, DetailView):
         return super().get_context_data(**kwargs)
 
 
-class ActionView(RedirectView):
+class ActionView(StaffRequiredMixin, RedirectView):
+
+    def get(self, request, *args, **kwargs):
+        (Article.objects.visible()
+         .filter(pk=kwargs.get('pk'))
+         .update(discussion_status=kwargs.get('action')))
+        return super().get(request, *args, **kwargs)
 
     def get_redirect_url(self, *args, **kwargs):
         return self.request.META.get('HTTP_REFERER')
-
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
 
 
 class RssView(TemplateView):

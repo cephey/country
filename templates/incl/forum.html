@@ -5,6 +5,7 @@
     <span>Комментарии не премодерируются и их можно оставлять анонимно</span>
 </div>
 
+{% if article.discussion_status == 'open' or request.user.is_staff %}
 <div class="newscomments-list">
     {% if request.user.is_staff %}
         <div class="normal">
@@ -24,7 +25,7 @@
     {% endfor %}
     <div class="normal">
         <div class="p_hv">
-            {% if not article.comment_set.exists %}
+            {% if not article.comment_set.exists and article.discussion_status == 'open' %}
                 Нет ни одного комментария, ваш ответ будет первым<br>
             {% endif %}
             {% include 'incl/paginator.html' with page_obj=art_comments page='pf' anchor='clist' %}
@@ -33,6 +34,7 @@
 
     <a id="comment"></a>
 </div>
+{% endif %}
 
 {% if article.discussion_status == 'open' %}
     <div class="big1 newscomments-header">Написать комментарий</div>

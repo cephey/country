@@ -7,6 +7,7 @@ from apps.articles.factories import (ArticleFactory, SectionFactory, CommentFact
                                      MultimediaFactory, VideoSectionFactory)
 from apps.tags.factories import TagFactory
 from apps.votes.factories import VoteFactory
+from apps.users.factories import UserFactory
 
 
 class AddArticleTestCase(TestCase):
@@ -137,3 +138,54 @@ class ArticleTestCase(TestCase):
         self.assertNotContains(resp, 'Всего комментариев к статье')
         self.assertNotContains(resp, 'Меня не видно')
         self.assertNotContains(resp, 'Я скрыт')
+
+    def test_discussion_status(self):
+        article = ArticleFactory()
+
+        # anonymous
+        resp = self.app.get('/material/news/{}/'.format(article.id))
+        self.assertNotContains(resp, 'закрыть обсуждение')
+
+        # auth user
+        user = UserFactory(username='andrey')
+        user.set_password('secret')
+        user.save()
+        self.app.login(username='andrey', password='secret')
+
+        resp = self.app.get('/material/news/{}/'.format(article.id))
+        self.assertNotContains(resp, 'закрыть обсуждение')
+
+        # admin
+        user.is_staff = True
+        user.save()
+        resp = self.app.get('/material/news/{}/'.format(article.id))
+        self.assertContains(resp, 'закрыть обсуждение')
+
+    def test_change_discussion_status(self):
+        article = ArticleFactory()
+
+        # anonymous
+        resp = self.app.get('/material/{}/close/'.format(article.id),
+                            HTTP_REFERER='/material/news/1/')
+        self.assertEqual(resp.status_code, 403)
+        self.assertEqual(Article.objects.first().discussion_status, 'open')
+
+        # auth user
+        user = UserFactory(username='andrey')
+        user.set_password('secret')
+        user.save()
+        self.app.login(username='andrey', password='secret')
+
+        resp = self.app.get('/material/{}/close/'.format(article.id),
+                            HTTP_REFERER='/material/news/1/')
+        self.assertEqual(resp.status_code, 403)
+        self.assertEqual(Article.objects.first().discussion_status, 'open')
+
+        # admin
+        user.is_staff = True
+        user.save()
+        resp = self.app.get('/material/{}/close/'.format(article.id),
+                            HTTP_REFERER='/material/news/1/')
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp.url, '/material/news/1/')
+        self.assertEqual(Article.objects.first().discussion_status, 'close')

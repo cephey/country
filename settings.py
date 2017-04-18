@@ -119,3 +119,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/storage/'
 
 AUTH_USER_MODEL = 'users.User'
+LOGIN_URL = '/users/login/'
