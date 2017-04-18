@@ -15,7 +15,7 @@ class BaseVoteCreateView(CreateView):
         raise Http404
 
     def get_form_kwargs(self):
-        kwargs = super(BaseVoteCreateView, self).get_form_kwargs()
+        kwargs = super().get_form_kwargs()
         kwargs['content_type'] = ContentType.objects.get_for_model(self.model)
 
         if self.request.user.is_authenticated:

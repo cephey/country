@@ -7,7 +7,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 from model_utils import Choices
 
 from apps.utils.models import TimeStampedModel
-from apps.utils.image import get_video_code, preview_for_video
+from apps.utils.image import get_video_code, preview_for_video, dummy_image
 from apps.articles.managers import ArticleQuerySet, SectionQuerySet, CommentQuerySet
 
 Partition = namedtuple('Partition', ['slug', 'name', 'get_absolute_url'])
@@ -165,7 +165,7 @@ class Comment(models.Model):
         if self.user_id:
             return self.user.get_avatar()
         if self.token:
-            return 'https://dummyimage.com/45x45/ff0066/000000.png&text={}'.format(self.username[0])
+            return dummy_image(self.username)
 
 
 class Multimedia(models.Model):

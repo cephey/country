@@ -13,3 +13,7 @@ def get_video_code(youtube_link):
 def preview_for_video(youtube_link):
     code = get_video_code(youtube_link)
     return 'http://img.youtube.com/vi/{}/default.jpg'.format(code)
+
+
+def dummy_image(text):
+    return 'https://dummyimage.com/45x45/ff0066/000000.png&text={}'.format(text[0])

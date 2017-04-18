@@ -4,12 +4,13 @@ from django.utils import timezone
 from django.contrib import messages
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponsePermanentRedirect
 from django.utils.translation import ugettext_lazy as _
+from django.http import Http404, HttpResponsePermanentRedirect, HttpResponseRedirect
 from django.views.generic import TemplateView, ListView, DetailView, RedirectView, CreateView
 
 from apps.articles.models import (Article, Section, Comment, Notice, BEST, NEWS, VIDEO,
                                   NAVIGATE_SECTIONS, VIDEO_SECTIONS, GENERIC_SECTIONS)
+from apps.articles.forms import CommentForm
 from apps.utils.mixins.views import PageContextMixin
 from apps.utils.mixins.paginator import PaginatorMixin
 from apps.utils.mixins.access import StaffRequiredMixin
@@ -217,6 +218,27 @@ class ActionView(StaffRequiredMixin, RedirectView):
         return super().get(request, *args, **kwargs)
 
     def get_redirect_url(self, *args, **kwargs):
+        return self.request.META.get('HTTP_REFERER')
+
+
+class CommentCreateView(PageContextMixin, CreateView):
+    template_name = 'articles/create_comment.html'
+
+    form_class = CommentForm
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+
+        if self.request.user.is_authenticated:
+            kwargs['user'] = self.request.user
+        else:
+            kwargs['token'] = self.request.session.session_key
+
+        return kwargs
+
+    def get_success_url(self):
+        if self.object:
+            return self.object.article.get_absolute_url()
         return self.request.META.get('HTTP_REFERER')
 
 

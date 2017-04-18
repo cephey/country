@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^addnews/$', views.CreateArticleView.as_view(), name='create'),
 
     url(r'^material/(?P<pk>\d+)/(?P<action>(open|close))/$', views.ActionView.as_view(), name='action'),
+    url(r'^comment/create/$', views.CommentCreateView.as_view(), name='create_comment'),
 
     url(r'^notice/$', views.NoticeListView.as_view(), name='notice'),
 

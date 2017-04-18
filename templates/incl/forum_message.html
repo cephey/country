@@ -7,7 +7,7 @@
     <img src="{{ comment.get_avatar|crop:'45x45' }}" width="45" height="45" alt="">
 </div>
 <div class="newscomment-meta">
-    <i>{{ comment.title|safe }}</i>
+    <i>{% if comment.title %}{{ comment.title|safe }}{% else %}(без названия){% endif %}</i>
     <br />
     <span class="newscomment-meta-author">{{ comment.username }}</span>
     <span class="newscomment-meta-date">написал {{ comment.created_at|date:'d.m.Y H:i' }}</span>
