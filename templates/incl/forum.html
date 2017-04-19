@@ -42,37 +42,3 @@
         {% include 'incl/forum_message_form.html' with article=article %}
     </div>
 {% endif %}
-
-{#<%args>#}
-{#	$news => undef#}
-{#</%args>#}
-{#<%init>#}
-{#	return undef unless ($news && ref($news) && $news->{id} && $news->can_comment());#}
-{#	my $thread = $news->get_news_thread();#}
-{#	return undef unless $thread && ref($thread);#}
-{##}
-{#	my $perpage = 20;#}
-{#	$ARGS{pf} = $ARGS{pf} !~ /^\d+$/ ? 1 : $ARGS{pf};#}
-{##}
-{#	my $total = $thread->get_count_messages();#}
-{##}
-{#	$ARGS{pf} = 1 if $perpage*($ARGS{pf}-1)>$total;#}
-{##}
-{#	my @messages = $thread->get_messages(#}
-{#		limit => $perpage,#}
-{#		offset => $perpage*($ARGS{pf}-1),#}
-{#		order_by => 'id desc',#}
-{#	);#}
-{##}
-{#	my ($mid, $subject);#}
-{#	if ($ARGS{mid} =~ /^\d+$/) {#}
-{#		if (my $doc_mid = $keeper->get_object_by_id( $ARGS{mid}, class => 'Forum::Message' ) ) {#}
-{#			if ($doc_mid && ref($doc_mid) && $doc_mid->id()) {#}
-{#				$mid = $doc_mid->{id};#}
-{#				$subject = 'Re: '.$doc_mid->name();#}
-{#			}#}
-{#		}#}
-{#	}#}
-{##}
-{#    my $karmed = $thread->ip_is_karmed_messages($request->ip, [ map { $_->id } @messages ]);#}
-{#</%init>#}

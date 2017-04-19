@@ -12,6 +12,9 @@ class ArticleQuerySet(models.QuerySet):
     def visible(self):
         return self.filter(is_active=True, status='approved')
 
+    def open(self):
+        return self.visible().filter(discussion_status='open')
+
 
 class CommentQuerySet(models.QuerySet):
 
