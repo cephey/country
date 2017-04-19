@@ -16,7 +16,12 @@ from apps.utils.mixins.paginator import PaginatorMixin
 from apps.utils.mixins.access import StaffRequiredMixin
 
 
-class BaseForumListView(HeaderContextMixin, ListView):
+class ForumIndexView(HeaderContextMixin, ListView):
+    template_name = 'forum/index.html'
+    paginate_by = 10
+    queryset = Article.objects.open().prefetch_related('authors')
+    page_kwarg = 'p'
+    ordering = '-id'
 
     def get_context_data(self, **kwargs):
         kwargs.update(
@@ -25,17 +30,22 @@ class BaseForumListView(HeaderContextMixin, ListView):
         return super().get_context_data(**kwargs)
 
 
-class ForumIndexView(BaseForumListView):
-    template_name = 'forum/index.html'
-    paginate_by = 10
-    queryset = Article.objects.open().prefetch_related('authors')
-    page_kwarg = 'p'
-    ordering = '-id'
-
-
-class ForumThreadView(BaseForumListView):
+class ForumThreadView(PageContextMixin, ListView):
     template_name = 'forum/thread.html'
     paginate_by = 3
     queryset = Comment.objects.active()
+    article = None
     page_kwarg = 'p'
-    ordering = '-id'
+    ordering = 'id'
+
+    def get(self, request, *args, **kwargs):
+        self.article = get_object_or_404(Article.objects.open(), pk=kwargs.get('pk'))
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        self.queryset = self.queryset.filter(article=self.article)
+        return super().get_queryset()
+
+    def get_context_data(self, **kwargs):
+        kwargs['thread'] = self.article
+        return super().get_context_data(**kwargs)

@@ -63,21 +63,6 @@
     {% endfor %}
 {% endif %}
 
-{% if request.user.is_staff %}
-    <a href="{% url 'articles:delete_comment' comment.id %}" class="uline"
-       onclick="return confirm('Вы уверены в удалении?');">Удалить</a>
-    {% if request.forum_banip %}
-%		if ($message->ip() && $request->{forum_banip}->{$message->ip()}) {
-			| <a href="/dialog/moderate.html?tid=<% $message->thread_id() %>&action=unban&ip=<% $message->ip() %>&back=<% $back %>" class="uline">Разбанить ip (<% $message->ip() %>)</a>
-%		} else {
-			| <a href="/dialog/moderate.html?tid=<% $message->thread_id() %>&action=ban&ip=<% $message->ip() %>&back=<% $back %>" class="uline">Забанить ip (<% $message->ip() %>)</a>
-%		}
-%		if ($request->{forum_bannick}->{ $message->trimed_username } ) {
-			| <a href="/dialog/moderate.html?tid=<% $message->thread_id() %>&action=unbannick&id=<% $message->id %>&back=<% $back %>" class="uline">Разбанить ник (<% $message->get_author() %>)</a>
-%		} else {
-			| <a href="/dialog/moderate.html?tid=<% $message->thread_id() %>&action=bannick&id=<% $message->id %>&back=<% $back %>" class="uline">Забанить ник (<% $message->get_author() %>)</a>
-%		}
-    {% endif %}
-{% endif %}
+{% include 'incl/forum_message_admin.html' %}
 
 <span id="comment_replay_{{ comment.id }}"></span>

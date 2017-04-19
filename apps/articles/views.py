@@ -237,9 +237,13 @@ class CommentCreateView(PageContextMixin, CreateView):
         return kwargs
 
     def get_success_url(self):
+        referer = self.request.META.get('HTTP_REFERER')
+        if referer and 'forum' in referer:
+            return referer
+
         if self.object:
             return self.object.article.get_absolute_url()
-        return self.request.META.get('HTTP_REFERER')
+        return referer
 
 
 class CommentDeleteView(StaffRequiredMixin, RedirectView):

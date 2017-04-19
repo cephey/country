@@ -1,9 +1,94 @@
-{% extends 'base_wide.html' %}
+{% extends 'base.html' %}
 
 {% load static %}
 
-{% block title %}Форум - Название - ФОРУМ.мск{% endblock %}
+{% block title %}Форум - {{ thread.title }} - ФОРУМ.мск{% endblock %}
 
 {% block content %}
-    lolo
+    <a id="comment"></a>
+    <div class="big1 bl"><a href="{% url 'forum:thread' thread.id %}">Форум</a> :: {{ thread.title }}</div>
+    <div style="width:1px; height:1px"><!-- --></div>
+    <div class="border_bl">
+        <div style="width:1px; height:7px"><!-- --></div>
+        <div class="normal">
+            <div class="p_l">
+                {% include 'incl/paginator.html' with page_obj=page_obj page='p' %}
+            </div>
+        </div>
+        <div style="width:1px; height:7px"><!-- --></div>
+        <div style="height:1px; background: #C1DAE6;"><!-- --></div>
+
+        <table width="100%" cellpadding="0" cellspacing="0" class="table">
+            <tr>
+                <th>#</th>
+                <th>Автор</th>
+                <th>Сообщение</th>
+            </tr>
+            <tr>
+                <td colspan=5 class="nopad"><div style="height:1px; background:#C1DAE6;"><!-- --></div></td>
+            </tr>
+            {% for comment in object_list %}
+                <tr>
+                    <td class="valign-top" align=center><b>{{ forloop.counter }}</b>&nbsp;</td>
+                    <td class="valign-top" width=10%>{{ comment.username }}</td>
+                    <td class="valign-top nopad">
+                        <table width="100%" cellpaddin=0 cellspacing=0>
+                            <tr>
+                                <td>
+                                    <div class="normal">Добавлено: {{ comment.created_at|date:'d.m.Y H:i' }}</div>
+                                </td>
+                                <td class="align-right">
+                                    <div class="normal">
+                                        <a onClick="return makeForumReplyForm('comment_replay_{{ comment.id }}', 'Re: {{ comment.title|safe }}', '{{ comment.id }}');"
+                                           href="{{ article.get_absolute_url }}?id={{ thread.id }}&p={{ page_num|default:1 }}&mid={{ comment.id }}#replay" class="uline">ответить</a> | <a href="#comment" class="uline">наверх</a> | <a href="{% url 'forum:index' %}" class="uline">все темы</a>
+                                        | {% include 'incl/forum_message_admin.html' %}
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        Заголовок: <b>{{ comment.title }}</b><br>
+                        <p>{{ comment.content|safe }}</p>
+                        <span id="comment_replay_{{ comment.id }}"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan=5 class="nopad">
+                        <div style="height:1px; background:#C1DAE6;"><!-- --></div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+
+        <div style="width:1px; height:7px"><!-- --></div>
+        <div class="normal">
+            <div class="p_l">
+                {% include 'incl/paginator.html' with page_obj=page_obj page='p' %}
+            </div>
+        </div>
+    </div>
+
+    <table class="full-table h7 bgFFF0E6">
+        <tr>
+            <td class="bg_blu_l w7"><div style="width:7px; height:7px"><!-- --></div></td>
+            <td class="wp100 bg_blu_c"><div style="width:1px; height:7px"><!-- --></div></td>
+            <td class="bg_blu_r w7"><div style="width:7px; height:7px"><!-- --></div></td>
+        </tr>
+    </table>
+
+    <a id="replay"></a>
+    <div class="big1 bl">Ответить</div>
+    <div style="width:1px; height:1px"><!-- --></div>
+    <div class="border_bl">
+        <div class="p_hv">
+            {% include 'incl/forum_message_form.html' with article=thread %}
+        </div>
+    </div>
+
+    <table class="h7 full-table bgFFF0E6">
+        <tr>
+            <td class="bg_blu_l w7"><div style="width:7px; height:7px"><!-- --></div></td>
+            <td class="wp100 bg_blu_c"><div style="width:1px; height:7px"><!-- --></div></td>
+            <td class="bg_blu_r w7"><div style="width:7px; height:7px"><!-- --></div></td>
+        </tr>
+    </table>
 {% endblock %}
