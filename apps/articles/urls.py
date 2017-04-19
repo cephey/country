@@ -21,6 +21,7 @@ urlpatterns = [
 
     url(r'^material/(?P<pk>\d+)/(?P<action>(open|close))/$', views.ActionView.as_view(), name='action'),
     url(r'^comment/create/$', views.CommentCreateView.as_view(), name='create_comment'),
+    url(r'^comment/(?P<pk>\d+)/delete/$', views.CommentDeleteView.as_view(), name='delete_comment'),
 
     url(r'^notice/$', views.NoticeListView.as_view(), name='notice'),
 

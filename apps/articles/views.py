@@ -242,5 +242,18 @@ class CommentCreateView(PageContextMixin, CreateView):
         return self.request.META.get('HTTP_REFERER')
 
 
+class CommentDeleteView(StaffRequiredMixin, RedirectView):
+
+    def get(self, request, *args, **kwargs):
+        comment = Comment.objects.filter(pk=kwargs.get('pk')).first()
+        if comment:
+            comment.is_active = False
+            comment.save(update_fields=['is_active'])
+        return super().get(request, *args, **kwargs)
+
+    def get_redirect_url(self, *args, **kwargs):
+        return self.request.META.get('HTTP_REFERER')
+
+
 class RssView(TemplateView):
     template_name = 'articles/rss.html'

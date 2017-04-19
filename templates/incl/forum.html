@@ -25,7 +25,7 @@
     {% endfor %}
     <div class="normal">
         <div class="p_hv">
-            {% if not article.comment_set.exists and article.discussion_status == 'open' %}
+            {% if not article.comment_set.active.exists and article.discussion_status == 'open' %}
                 Нет ни одного комментария, ваш ответ будет первым<br>
             {% endif %}
             {% include 'incl/paginator.html' with page_obj=art_comments page='pf' anchor='clist' %}

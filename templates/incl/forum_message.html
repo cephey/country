@@ -64,7 +64,8 @@
 {% endif %}
 
 {% if request.user.is_staff %}
-    <a href="/dialog/moderate.html?tid={{ article.id }}&action=deletemessage&mid={{ comment.id }}&back={{ request.get_full_path }}" class="uline" onclick="return confirm('Вы уверены в удалении?');">Удалить</a>
+    <a href="{% url 'articles:delete_comment' comment.id %}" class="uline"
+       onclick="return confirm('Вы уверены в удалении?');">Удалить</a>
     {% if request.forum_banip %}
 %		if ($message->ip() && $request->{forum_banip}->{$message->ip()}) {
 			| <a href="/dialog/moderate.html?tid=<% $message->thread_id() %>&action=unban&ip=<% $message->ip() %>&back=<% $back %>" class="uline">Разбанить ip (<% $message->ip() %>)</a>
