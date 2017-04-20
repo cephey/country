@@ -42,6 +42,36 @@ class AddArticleTestCase(TestCase):
         self.assertContains(resp, 'Обязательное поле')
         self.assertFalse(Article.objects.exists())
 
+    def test_add_video_ok(self):
+        data = {
+            'title': 'Звезды',
+            'content': 'На небе яркие звезды',
+            'video': 'https://www.youtube.com/watch?v=bob'
+        }
+        resp = self.app.post('/video/add/', data, follow=True)
+        url, status_code = resp.redirect_chain[0]
+        self.assertEqual(status_code, 302)
+        self.assertEqual(url, '/video/add/#res')
+        self.assertContains(resp, 'Материал успешно добавлен. После одобрения редактора')
+
+        articles = Article.objects.all()
+        self.assertEqual(len(articles), 1)
+        self.assertEqual(articles[0].title, 'Звезды')
+        self.assertEqual(articles[0].content, 'На небе яркие звезды')
+        self.assertEqual(articles[0].video, 'https://www.youtube.com/watch?v=bob')
+        self.assertEqual(articles[0].status, Article.STATUS.new)
+
+    def test_add_video_fail(self):
+        data = {
+            'title': 'Звезды',
+            'video': 'bob'
+        }
+        resp = self.app.post('/video/add/', data)
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'Произошла ошибка: неверно заполнены поля')
+        self.assertContains(resp, 'Введите правильный URL')
+        self.assertFalse(Article.objects.exists())
+
 
 class ArticleTestCase(TestCase):
 

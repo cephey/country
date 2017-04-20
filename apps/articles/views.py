@@ -10,7 +10,7 @@ from django.views.generic import TemplateView, ListView, DetailView, RedirectVie
 
 from apps.articles.models import (Article, Section, Comment, Notice, BEST, NEWS, VIDEO,
                                   NAVIGATE_SECTIONS, VIDEO_SECTIONS, GENERIC_SECTIONS)
-from apps.articles.forms import CommentForm
+from apps.articles.forms import CommentForm, AddVideoForm
 from apps.utils.mixins.views import PageContextMixin
 from apps.utils.mixins.paginator import PaginatorMixin
 from apps.utils.mixins.access import StaffRequiredMixin
@@ -207,6 +207,19 @@ class VideoDetailView(VideoContextMixin, PageContextMixin, DetailView):
     def get_context_data(self, **kwargs):
         kwargs['main_news'] = self.object
         return super().get_context_data(**kwargs)
+
+
+class AddVideoView(PageContextMixin, CreateView):
+    template_name = 'articles/add_video.html'
+    form_class = AddVideoForm
+
+    def get_success_url(self):
+        return reverse('articles:video_add') + '#res'
+
+    def form_valid(self, form):
+        messages.info(self.request, _('Материал успешно добавлен. '
+                                      'После одобрения редактора он появится на сайте.'))
+        return super().form_valid(form)
 
 
 class ActionView(StaffRequiredMixin, RedirectView):

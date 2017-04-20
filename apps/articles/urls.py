@@ -15,6 +15,8 @@ urlpatterns = [
 
     # video
     url(r'^video/$', views.VideoIndexView.as_view(), name='video'),
+    url(r'^video/add.html', views.AddVideoView.as_view()),  # deprecated
+    url(r'^video/add/$', views.AddVideoView.as_view(), name='video_add'),
     url(r'^video/(?P<pk>\d+)/$', views.VideoDetailView.as_view(), name='video_detail'),
 
     url(r'^addnews/$', views.CreateArticleView.as_view(), name='create'),

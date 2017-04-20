@@ -1,7 +1,7 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-from apps.articles.models import Comment
+from apps.articles.models import Comment, Article
 
 
 class CommentForm(forms.ModelForm):
@@ -30,3 +30,11 @@ class CommentForm(forms.ModelForm):
             self.instance.token = self.token
 
         return super().save(*args, **kwargs)
+
+
+class AddVideoForm(forms.ModelForm):
+    video = forms.URLField(required=True)
+
+    class Meta:
+        model = Article
+        fields = ('author_names', 'title', 'content', 'video')

@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 
-from apps.articles.factories import ArticleFactory
+from apps.articles.factories import ArticleFactory, CommentFactory
 from apps.authors.factories import AuthorFactory
 
 
@@ -18,8 +18,6 @@ class ForumTestCase(TestCase):
         ArticleFactory(title='Ватман', discussion_status='close')
 
         resp = self.app.get('/forum/')
-        with open('/Users/ptitsyn/Desktop/lolo.html', 'wb') as f:
-            f.write(resp.content.replace(b'\n', b'').replace(b'\t', b''))
         self.assertEqual(resp.status_code, 200)
 
         articles = resp.context['object_list']
@@ -31,3 +29,24 @@ class ForumTestCase(TestCase):
         self.assertContains(resp, 'Толстая тетрадь')
         self.assertContains(resp, 'Круглый Глеб')
         self.assertNotContains(resp, 'Плотный картон')
+
+    def test_thread_page(self):
+        article = ArticleFactory(title='Печенька')
+
+        CommentFactory(title='Круг', content='Яркий', article=article)
+        CommentFactory(title='Квадрат', content='Бледный', article=article)
+        CommentFactory(title='Ромб', content='Серый')
+
+        resp = self.app.get('/forum/{}/'.format(article.id))
+        self.assertEqual(resp.status_code, 200)
+
+        comments = resp.context['object_list']
+        self.assertEqual(len(comments), 2)
+        self.assertEqual(comments[0].title, 'Круг')
+        self.assertEqual(comments[1].title, 'Квадрат')
+
+        self.assertContains(resp, ':: Печенька')
+        self.assertContains(resp, 'Яркий')
+        self.assertContains(resp, 'Бледный')
+        self.assertNotContains(resp, 'Серый')
+        self.assertContains(resp, 'Ответить')

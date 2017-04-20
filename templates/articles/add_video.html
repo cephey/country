@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load htmlutils %}
+
+{% block title %}Добавление видео - ФОРУМ.мск{% endblock %}
+
+{% block content %}
+    <div class="big1 or">Добавление видео</div>
+    <div style="width:1px; height:1px"><!-- --></div>
+    <div class="border_or">
+        <div class="normal">
+            <div class="p_hv">
+                {% include 'articles/incl/add_material_recommends.html' %}
+            </div>
+        </div>
+    </div>
+    <table class="full-table h7 bgFFF0E6">
+        <tr>
+            <td class="bg_orange_l w7"><div style="width:7px; height:7px"><!-- --></div></td>
+            <td class="wp100 bg_orange_c"><div style="width:1px; height:7px"><!-- --></div></td>
+            <td class="bg_orange_r w7"><div style="width:7px; height:7px"><!-- --></div></td>
+        </tr>
+    </table>
+    <div style="width:1px; height:7px"><!-- --></div>
+
+    <a id="res"></a>
+    <div class="big1 bl">Добавление видео:</div>
+    <div style="width:1px; height:1px"><!-- --></div>
+
+    <form action="{% url 'articles:video_add' %}" method="POST">
+        {% csrf_token %}
+        <div class="border_bl">
+            <div class="p_hv">
+                {% if messages %}
+                    {% for message in messages %}
+                        <center>
+                            <h2>{{ message }}</h2>
+                        </center>
+                        <br>
+                    {% endfor %}
+                {% endif %}
+                {% if form.non_field_errors %}
+                    {% for error in form.non_field_errors %}
+                        <div class="big1 align-center" style="color:red">{{ error|safe }}</div>
+                    {% endfor %}
+                {% endif %}
+                {% if form.author_names.errors or form.title.errors or form.video.errors or form.content.errors %}
+                    <center>
+                        <h2>Произошла ошибка: неверно заполнены поля добавления материала.</h2>
+                    </center>
+                    <br>
+                {% endif %}
+                <table class="noborder wp90">
+                    <tr>
+                        <td class="normal w100"><b>Ваше имя:</b></td>
+                        <td>
+                            {% if form.author_names.errors %}
+                                {% for error in form.author_names.errors %}
+                                    <span class="normal" style="color:red">{{ error|escape }}</span>
+                                {% endfor %}
+                                <br>
+                            {% endif %}
+                            <input type="text" name="author_names" value="{{ form.author_names.value|default:'' }}" maxlength="255">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><div style="width:1px; height:7px"><!-- --></div></td>
+                    </tr>
+                    <tr>
+                        <td class="normal"><b>Заголовок:</b></td>
+                        <td>
+                            {% if form.title.errors %}
+                                {% for error in form.title.errors %}
+                                    <span class="normal" style="color:red">{{ error|escape }}</span>
+                                {% endfor %}
+                                <br>
+                            {% endif %}
+                            <input type="text" name="title" value="{{ form.title.value|default:'' }}" maxlength="100" style="width:100%">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><div style="width:1px; height:7px"><!-- --></div></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <span class="normal"><b>Текст статьи:</b></span>
+                            <div style="width:1px; height:7px"><!-- --></div>
+                            {% if form.content.errors %}
+                                {% for error in form.content.errors %}
+                                    <span class="normal" style="color:red">{{ error|escape }}</span>
+                                {% endfor %}
+                                <br>
+                            {% endif %}
+                            <textarea name="content" rows="8" cols="8" style="width:100%;">{{ form.content.value|default:'' }}</textarea>
+                            <div style="width:1px; height:7px"><!-- --></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><div style="width:1px; height:7px"><!-- --></div></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <span class="normal"><b>Ссылка на видео:</b>
+                                <br />
+                                Мы поддерживаем youtube.com, rutube.ru и vimeo.com.<br />
+                                Примеры:<br>
+                                http://www.youtube.com/watch?v=0Tl-xEGjvtg<br />
+                                http://rutube.ru/tracks/58504.html?v=213ed94d67c24002f41a46efcee4f96b<br />
+                                http://vimeo.com/5676816
+                            </span>
+                            <div style="width:1px; height:7px"><!-- --></div>
+                            {% if form.video.errors %}
+                                {% for error in form.video.errors %}
+                                    <span class="normal" style="color:red">{{ error|escape }}</span>
+                                {% endfor %}
+                                <br>
+                            {% endif %}
+                            <input type=text name="video" value="{{ form.video.value|default:'http://' }}" style="width:100%">
+                            <div style="width:1px; height:7px"><!-- --></div>
+                        </td>
+                    </tr>
+                    {% if not request.is_bot %}
+                        <tr>
+                            <td width="250" class="normal"><b>Введите число, указанное на картинке:</b></td>
+                            <td>
+                                <img src="/captcha/i.gif?<% $token %>" width="80" height="30" alt="">
+                                <br />
+                                <input type="text" name="captcha" value="" style="width:86px"><br />
+                            </td>
+                        </tr>
+                    {% endif %}
+                    <tr>
+                        <td colspan="2">
+                            <input type="submit" name="submit" value="добавить" class="but">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <table class="full-table h7 bgFFF0E6">
+            <tr>
+                <td class="bg_blu_l w7"><div style="width:7px; height:7px"><!-- --></div></td>
+                <td class="wp100 bg_blu_c"><div style="width:1px; height:7px"><!-- --></div></td>
+                <td class="bg_blu_r w7"><div style="width:7px; height:7px"><!-- --></div></td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}
