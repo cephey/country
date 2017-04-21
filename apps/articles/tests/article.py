@@ -1,4 +1,4 @@
-from django.utils import timezone
+from freezegun import freeze_time
 from django.test import TestCase, Client
 
 from apps.authors.factories import AuthorFactory
@@ -82,9 +82,11 @@ class ArticleTestCase(TestCase):
         section = SectionFactory(name='Политика', slug='politic')
         author = AuthorFactory(first_name='Денис', last_name='Белов')
         tags = [TagFactory(name='оон'), TagFactory(name='greenpeace')]
-        article = ArticleFactory(title='Зимний день', section=section, authors=[author],
-                                 tags=tags, source='Марс', source_link='http://mars.ru',
-                                 content='Однажды в студеную зимнюю пору')
+
+        with freeze_time('2017-04-20'):
+            article = ArticleFactory(title='Зимний день', section=section, authors=[author],
+                                     tags=tags, source='Марс', source_link='http://mars.ru',
+                                     content='Однажды в студеную зимнюю пору')
 
         for score in (2, 4, 5):
             VoteFactory(content_object=article, score=score)
@@ -105,7 +107,7 @@ class ArticleTestCase(TestCase):
         self.assertContains(resp, 'Зимний день')
         self.assertContains(resp, 'Однажды в студеную зимнюю пору')
 
-        self.assertContains(resp, 'Опубликовано {}'.format(timezone.now().strftime('%d.%m.%Y')))
+        self.assertContains(resp, 'Опубликовано 20.04.2017')
         self.assertContains(resp, 'Белов Денис')
         self.assertContains(resp, 'комментариев 2')
 
