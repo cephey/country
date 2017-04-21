@@ -11,7 +11,7 @@
                         <table class="wp100">
                             <tr>
                                 <td class="valign-top">
-                                    <img class="pwi" src="{{ article.icon }}" alt="{{ article.title }}">
+                                    {% include 'articles/incl/image.html' with article=article %}
                                 </td>
                             </tr>
                             <tr>

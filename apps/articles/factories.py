@@ -73,7 +73,15 @@ class ArticleFactory(factory.django.DjangoModelFactory):
     @factory.post_generation
     def with_video(obj, create, extracted, **kwargs):
         if extracted:
-            obj.video = 'https://www.youtube.com/watch?v=rzfIiyBASh8'
+            if isinstance(extracted, bool):
+                urls = (
+                    'https://vimeo.com/29884449',
+                    'https://www.youtube.com/watch?v=rzfIiyBASh8',
+                    'https://rutube.ru/video/d4831569ef7300edd847d3a41bc99d94/'
+                )
+                obj.video = random.choice(urls)
+            else:
+                obj.video = extracted
 
     @factory.post_generation
     def with_source(obj, create, extracted, **kwargs):

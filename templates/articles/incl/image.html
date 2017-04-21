@@ -1,0 +1,5 @@
+{% load htmlutils %}
+
+{% if article %}
+    <img class="pwi" src="{{ article.icon|crop:'100x100' }}" alt="{{ article.title|safe }}" width="100" height="100">
+{% endif %}

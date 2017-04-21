@@ -155,8 +155,11 @@ class Command(BaseCommand):
         a_count_list = [2, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
         self.stdout.write('Generate articles with comments and media...')
-        for i in range(len(sections) * STR['avg_art_count']):
+        for i in range(len(sections) * STR['avg_art_count'] * 2):
             section = random.choice(sections)
+            if section.is_video and not random.randint(0, 1):
+                continue
+
             # authors
             params = dict(
                 section=section,

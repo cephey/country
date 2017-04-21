@@ -1,6 +1,6 @@
 {% if article %}
     <div class="p_hv {% if color == 'orange' %}art_or{% elif color == 'blue' %}art_bl{% endif %}">
-        <img class="pwi" src="{{ article.icon }}" alt="{{ article.title }}">
+        {% include 'articles/incl/image.html' with article=article %}
         <div class="or2_normal">
             {% include 'articles/incl/link.html' with article=article strong=True %}
             <br>

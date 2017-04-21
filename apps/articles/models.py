@@ -7,7 +7,8 @@ from django.contrib.contenttypes.fields import GenericRelation
 from model_utils import Choices
 
 from apps.utils.models import TimeStampedModel
-from apps.utils.image import get_video_code, preview_for_video, dummy_image
+from apps.utils.image import dummy_image
+from apps.utils.video import VideoHelper
 from apps.articles.managers import ArticleQuerySet, SectionQuerySet, CommentQuerySet
 
 Partition = namedtuple('Partition', ['slug', 'name', 'get_absolute_url'])
@@ -71,8 +72,6 @@ class Article(TimeStampedModel):
                                     help_text=_('Список внешних авторов через запятую'))
     publish_date = models.DateTimeField(_('Дата публикации'), blank=True, null=True)
     is_active = models.BooleanField(default=True)
-    image = models.ImageField(_('Картинка'), upload_to='articles_image', max_length=255, blank=True, null=True)
-    video = models.URLField(_('Ссылка на youtube'), blank=True)
     source = models.CharField(_('Источник'), max_length=255, blank=True)
     source_link = models.URLField(_('Ссылка на источник'), blank=True)
     discussion_status = models.CharField(_('Статус обсуждения'), max_length=8, choices=DISCUSSION_STATUS,
@@ -81,6 +80,10 @@ class Article(TimeStampedModel):
     show_comments = models.BooleanField(_('Показывать комментарии'), default=True)
     comments_count = models.PositiveIntegerField(_('Кол-во комментариев'), editable=False, default=0)
     tags = GenericRelation('tags.TaggedItem')
+
+    image = models.ImageField(_('Картинка'), upload_to='articles_image', max_length=255, blank=True, null=True)
+    video = models.URLField(_('Ссылка на видео'), blank=True)
+    thumbnail = models.CharField(_('Ссылка на превью'), max_length=200, blank=True)
 
     votes = GenericRelation('votes.Vote')
     rating = models.FloatField(_('Рейтинг'), editable=False, default=0)
@@ -108,13 +111,11 @@ class Article(TimeStampedModel):
         if self.image:
             return settings.MEDIA_URL + self.image.name
         if self.video:
-            return preview_for_video(self.video)
+            return self.thumbnail
 
     @property
     def video_code(self):
-        code = get_video_code(self.video)
-        return '<iframe width="560" height="315" src="https://www.youtube.com/embed/{}" ' \
-               'frameborder="0" allowfullscreen></iframe>'.format(code)
+        return VideoHelper(self.video).iframe_code
 
     @property
     def preview(self):
@@ -128,6 +129,11 @@ class Article(TimeStampedModel):
     @property
     def keywords(self):
         return ','.join([ti.tag.name for ti in self.tags.all()])
+
+    def save(self, **kwargs):
+        if self.video:
+            self.thumbnail = VideoHelper(self.video).thumbnail
+        return super().save(**kwargs)
 
 
 class Comment(models.Model):

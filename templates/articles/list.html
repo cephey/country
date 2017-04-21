@@ -17,7 +17,7 @@
                 <td>
                     <div class="p_hv">
                         <div class="or2_normal">
-                            <img class="pwi" src="{{ article.icon }}" alt="{{ article.title }}">
+                            {% include 'articles/incl/image.html' with article=article %}
                             <strong class="black">
                                 <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
                             </strong>
