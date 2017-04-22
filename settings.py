@@ -29,7 +29,9 @@ INSTALLED_APPS = [
     'apps.tags',
     'apps.users',
     'apps.utils',
-    'apps.votes'
+    'apps.votes',
+
+    'captcha'
 ]
 
 MIDDLEWARE = [
@@ -106,6 +108,10 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale')
+]
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
@@ -121,3 +127,7 @@ MEDIA_URL = '/storage/'
 
 AUTH_USER_MODEL = 'users.User'
 LOGIN_URL = '/users/login/'
+
+
+if 'L' in os.environ:
+    CAPTCHA_TEST_MODE = True

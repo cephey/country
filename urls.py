@@ -18,6 +18,9 @@ urlpatterns = [
     url(r'^polls/', include('apps.polls.urls', namespace='polls')),
     url(r'^votes/blank.html', PollDetailView.as_view()),  # deprecated
 
-    url(r'^votes/', include('apps.votes.urls', namespace='votes'))
+    url(r'^votes/', include('apps.votes.urls', namespace='votes')),
+
+    # captcha
+    url(r'^captcha/', include('captcha.urls'))
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -18,7 +18,9 @@ class AddArticleTestCase(TestCase):
     def test_create_ok(self):
         data = {
             'title': 'Погода',
-            'content': 'В городе солнечная погода'
+            'content': 'В городе солнечная погода',
+            'captcha_0': '*',
+            'captcha_1': 'passed'
         }
         resp = self.app.post('/addnews/', data, follow=True)
         url, status_code = resp.redirect_chain[0]
@@ -34,7 +36,9 @@ class AddArticleTestCase(TestCase):
 
     def test_create_fail(self):
         data = {
-            'title': 'Погода'
+            'title': 'Погода',
+            'captcha_0': '*',
+            'captcha_1': 'passed'
         }
         resp = self.app.post('/addnews/', data)
         self.assertEqual(resp.status_code, 200)
@@ -46,7 +50,9 @@ class AddArticleTestCase(TestCase):
         data = {
             'title': 'Звезды',
             'content': 'На небе яркие звезды',
-            'video': 'https://www.youtube.com/watch?v=bob'
+            'video': 'https://www.youtube.com/watch?v=bob',
+            'captcha_0': '*',
+            'captcha_1': 'passed'
         }
         resp = self.app.post('/video/add/', data, follow=True)
         url, status_code = resp.redirect_chain[0]
@@ -64,7 +70,9 @@ class AddArticleTestCase(TestCase):
     def test_add_video_fail(self):
         data = {
             'title': 'Звезды',
-            'video': 'bob'
+            'video': 'bob',
+            'captcha_0': '*',
+            'captcha_1': 'passed'
         }
         resp = self.app.post('/video/add/', data)
         self.assertEqual(resp.status_code, 200)

@@ -39,6 +39,6 @@
 {% if article.discussion_status == 'open' %}
     <div class="big1 newscomments-header">Написать комментарий</div>
     <div class="newscomment-createform">
-        {% include 'incl/forum_message_form.html' with article=article %}
+        {% include 'incl/forum_message_form.html' with article=article form=comment_form %}
     </div>
 {% endif %}

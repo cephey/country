@@ -17,7 +17,7 @@
                         {% endfor %}
                         <br>
                     {% endif %}
-                    <input type="text" name="username" value="{{ form.username.value }}" maxlength="255" style="font-size:12px">
+                    <input type="text" name="username" value="{{ form.username.value|default:'' }}" maxlength="255" style="font-size:12px">
                 </td>
 			</tr>
 			<tr>
@@ -32,7 +32,7 @@
                         {% endfor %}
                         <br>
                     {% endif %}
-                    <input type="text" name="title" value="{{ form.title.value }}" maxlength="255" id="comment_body" style="font-size:12px;width:100%;">
+                    <input type="text" name="title" value="{{ form.title.value|default:'' }}" maxlength="255" id="comment_body" style="font-size:12px;width:100%;">
                 </td>
 			</tr>
 			<tr>
@@ -48,20 +48,22 @@
                         {% endfor %}
                         <br>
                     {% endif %}
-                    <textarea name="content" rows="8" cols="8" style="width:100%;">{{ form.content.value }}</textarea>
+                    <textarea name="content" rows="8" cols="8" style="width:100%;">{{ form.content.value|default:'' }}</textarea>
                     <div style="width:1px; height:7px"><!-- --></div>
                 </td>
 			</tr>
-            {% if not request.is_bot %}
-                <tr>
-                    <td class="w150 normal"><b>Введите число, указанное на картинке:</b></td>
-                    <td>
-                        <img src="/captcha/i.gif?<% $token %>" width="80" height="30" alt="">
-                        <br />
-                        <input type="text" name="captcha" value="" style="width:86px"><br />
-                    </td>
-                </tr>
-            {% endif %}
+            <tr>
+                <td width="250" class="normal"><b>Введите число, указанное на картинке:</b></td>
+                <td>
+                    {% if form.captcha.errors %}
+                        {% for error in form.captcha.errors %}
+                            <span class="normal" style="color:red">{{ error|escape }}</span>
+                        {% endfor %}
+                        <br>
+                    {% endif %}
+                    {{ form.captcha }}
+                </td>
+            </tr>
 			<tr>
 				<td colspan="2">
                     <input type="submit" name="submit" value="ответить" class="but" style="font-size:12px">

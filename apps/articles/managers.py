@@ -20,3 +20,9 @@ class CommentQuerySet(models.QuerySet):
 
     def active(self):
         return self.filter(is_active=True)
+
+
+class NoticeQuerySet(models.QuerySet):
+
+    def visible(self):
+        return self.filter(status='approved')

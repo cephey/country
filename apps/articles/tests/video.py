@@ -2,7 +2,7 @@ from django.test import TestCase, Client
 from apps.articles.factories import SectionFactory, ArticleFactory, VideoSectionFactory
 
 
-class NoticeTestCase(TestCase):
+class VideoTestCase(TestCase):
 
     def setUp(self):
         self.app = Client()

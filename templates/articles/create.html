@@ -110,30 +110,33 @@
                         <div style="width:1px; height:7px"><!-- --></div>
                     </td>
                 </tr>
-                <td colspan="2">
-                    <span class="normal"><b>Полный текст статьи:</b></span>
-                    <div style="width:1px; height:7px"><!-- --></div>
-                    {% if form.content.errors %}
-                            {% for error in form.content.errors %}
-                                <span class="normal" style="color:red">
-                                    <b>{{ error|escape }}</b>
-                                </span>
-                            {% endfor %}
-                        {% endif %}
-                    <textarea name="content" rows="8" style="width:100%;">{{ form.content.value|default:'' }}</textarea>
-                    <div style="width:1px; height:7px"><!-- --></div>
-                </td>
+                <tr>
+                    <td colspan="2">
+                        <span class="normal"><b>Полный текст статьи:</b></span>
+                        <div style="width:1px; height:7px"><!-- --></div>
+                        {% if form.content.errors %}
+                                {% for error in form.content.errors %}
+                                    <span class="normal" style="color:red">
+                                        <b>{{ error|escape }}</b>
+                                    </span>
+                                {% endfor %}
+                            {% endif %}
+                        <textarea name="content" rows="8" style="width:100%;">{{ form.content.value|default:'' }}</textarea>
+                        <div style="width:1px; height:7px"><!-- --></div>
+                    </td>
                 </tr>
-                {% if not request.is_bot %}
-                    <tr>
-                        <td width="250" class="normal"><b>Введите число, указанное на картинке:</b></td>
-                        <td>
-                            <img src="/captcha/i.gif?<% $token %>" width="80" height="30" alt="">
-                            <br />
-                            <input type="text" name="captcha" value="" style="width:86px"><br />
-                        </td>
-                    </tr>
-                {% endif %}
+                <tr>
+                    <td width="250" class="normal"><b>Введите число, указанное на картинке:</b></td>
+                    <td>
+                        {% if form.captcha.errors %}
+                            {% for error in form.captcha.errors %}
+                                <span class="normal" style="color:red">{{ error|escape }}</span>
+                            {% endfor %}
+                            <br>
+                        {% endif %}
+                        {{ form.captcha }}
+                    </td>
+                </tr>
                 <tr>
                     <td colspan="2">
                         <input type="submit" value="добавить" class="but">

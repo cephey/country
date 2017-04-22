@@ -18,7 +18,9 @@ class CommentTestCase(TestCase):
             'parent': '',
             'username': 'Колобок',
             'title': 'История начинается',
-            'content': 'Жили-были старик со старухой'
+            'content': 'Жили-были старик со старухой',
+            'captcha_0': '*',
+            'captcha_1': 'passed'
         }
         resp = self.app.post('/comment/create/', data, follow=True)
         url, status_code = resp.redirect_chain[0]
@@ -44,7 +46,9 @@ class CommentTestCase(TestCase):
             'parent': '',
             'username': 'Ряба',
             'title': '',
-            'content': ''
+            'content': '',
+            'captcha_0': '*',
+            'captcha_1': 'passed'
         }
         resp = self.app.post('/comment/create/', data)
         self.assertEqual(resp.status_code, 200)
@@ -61,7 +65,9 @@ class CommentTestCase(TestCase):
             'article': article.id,
             'parent': comment.id,
             'username': 'Шапочка',
-            'content': 'Бабушка и волки'
+            'content': 'Бабушка и волки',
+            'captcha_0': '*',
+            'captcha_1': 'passed'
         }
         resp = self.app.post('/comment/create/', data, follow=True)
         url, status_code = resp.redirect_chain[0]

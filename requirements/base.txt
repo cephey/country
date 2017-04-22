@@ -3,6 +3,7 @@
 # django and batteries
 Django==1.11
 django-model-utils==2.6.1
+django-simple-captcha==0.5.5
 
 # misc
 Pillow==3.3.2

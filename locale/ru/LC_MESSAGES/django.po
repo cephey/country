@@ -1,0 +1,375 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-04-22 23:44+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
+
+msgid "This field is required."
+msgstr "Обязательное поле."
+
+#: apps/articles/apps.py:7 apps/articles/models.py:96
+msgid "Статьи"
+msgstr ""
+
+#: apps/articles/forms.py:21 apps/votes/forms.py:52
+msgid "Не указан пользователь или токен"
+msgstr ""
+
+#: apps/articles/models.py:23
+msgid "Лучшие статьи ФОРУМ.мск за последнюю неделю"
+msgstr ""
+
+#: apps/articles/models.py:25
+msgid "Новости"
+msgstr ""
+
+#: apps/articles/models.py:27
+msgid "Видео"
+msgstr ""
+
+#: apps/articles/models.py:37 apps/pages/models.py:11 apps/pages/models.py:30
+#: apps/tags/models.py:11
+msgid "Название"
+msgstr ""
+
+#: apps/articles/models.py:38
+msgid "Слаг"
+msgstr ""
+
+#: apps/articles/models.py:45 apps/articles/models.py:68
+msgid "Раздел"
+msgstr ""
+
+#: apps/articles/models.py:46
+msgid "Разделы"
+msgstr ""
+
+#: apps/articles/models.py:65 apps/articles/models.py:145
+#: apps/bloggers/models.py:37
+msgid "Заголовок"
+msgstr ""
+
+#: apps/articles/models.py:66 apps/articles/models.py:180
+#: apps/authors/models.py:13 apps/bloggers/models.py:38
+msgid "Описание"
+msgstr ""
+
+#: apps/articles/models.py:67 apps/articles/models.py:146
+#: apps/articles/models.py:194
+msgid "Содержание"
+msgstr ""
+
+#: apps/articles/models.py:69
+msgid "Новость"
+msgstr ""
+
+#: apps/articles/models.py:70 apps/articles/models.py:71 apps/authors/apps.py:7
+#: apps/authors/models.py:19
+msgid "Авторы"
+msgstr ""
+
+#: apps/articles/models.py:72
+msgid "Список внешних авторов через запятую"
+msgstr ""
+
+#: apps/articles/models.py:73
+msgid "Дата публикации"
+msgstr ""
+
+#: apps/articles/models.py:75
+msgid "Источник"
+msgstr ""
+
+#: apps/articles/models.py:76
+msgid "Ссылка на источник"
+msgstr ""
+
+#: apps/articles/models.py:77
+msgid "Статус обсуждения"
+msgstr ""
+
+#: apps/articles/models.py:79 apps/articles/models.py:195
+msgid "Статус"
+msgstr ""
+
+#: apps/articles/models.py:80
+msgid "Показывать комментарии"
+msgstr ""
+
+#: apps/articles/models.py:81
+msgid "Кол-во комментариев"
+msgstr ""
+
+#: apps/articles/models.py:84
+msgid "Картинка"
+msgstr ""
+
+#: apps/articles/models.py:85
+msgid "Ссылка на видео"
+msgstr ""
+
+#: apps/articles/models.py:86
+msgid "Ссылка на превью"
+msgstr ""
+
+#: apps/articles/models.py:89 apps/pages/models.py:33
+msgid "Рейтинг"
+msgstr ""
+
+#: apps/articles/models.py:90
+msgid "Кол-во проголосовавших"
+msgstr ""
+
+#: apps/articles/models.py:95 apps/articles/models.py:142
+#: apps/articles/models.py:178
+msgid "Статья"
+msgstr ""
+
+#: apps/articles/models.py:140 apps/votes/models.py:11
+msgid "Идентификатор"
+msgstr ""
+
+#: apps/articles/models.py:143
+msgid "Родительский комментарий"
+msgstr ""
+
+#: apps/articles/models.py:144 apps/authors/models.py:10
+#: apps/bloggers/models.py:10
+msgid "Имя"
+msgstr ""
+
+#: apps/articles/models.py:147 apps/articles/models.py:181
+#: apps/utils/models.py:11
+msgid "Дата создания"
+msgstr ""
+
+#: apps/articles/models.py:151 apps/votes/models.py:16
+msgid "Оценка"
+msgstr ""
+
+#: apps/articles/models.py:156
+msgid "Комментарий"
+msgstr ""
+
+#: apps/articles/models.py:157
+msgid "Комментарии"
+msgstr ""
+
+#: apps/articles/models.py:179
+msgid "Ссылка на youtube"
+msgstr ""
+
+#: apps/articles/models.py:184 apps/articles/models.py:185
+msgid "Мультимедиа"
+msgstr ""
+
+#: apps/articles/models.py:198
+msgid "Анонс"
+msgstr ""
+
+#: apps/articles/models.py:199
+msgid "Анонсы"
+msgstr ""
+
+#: apps/articles/views.py:129 apps/articles/views.py:219
+msgid ""
+"Материал успешно добавлен. После одобрения редактора он появится на сайте."
+msgstr ""
+
+#: apps/articles/views.py:143
+msgid ""
+"Ваше объявление будет обязательно рассмотрено нашим редактором в самое "
+"ближайшее время."
+msgstr ""
+
+#: apps/authors/models.py:11 apps/bloggers/models.py:11
+msgid "Фамилия"
+msgstr ""
+
+#: apps/authors/models.py:12 apps/bloggers/models.py:12
+msgid "Отчество"
+msgstr ""
+
+#: apps/authors/models.py:14 apps/bloggers/models.py:14
+msgid "Фото"
+msgstr ""
+
+#: apps/authors/models.py:18
+msgid "Автор"
+msgstr ""
+
+#: apps/bloggers/apps.py:7 apps/bloggers/models.py:21
+msgid "Блогеры"
+msgstr ""
+
+#: apps/bloggers/models.py:13
+msgid "Ссылка на блог"
+msgstr ""
+
+#: apps/bloggers/models.py:20 apps/bloggers/models.py:39
+msgid "Блогер"
+msgstr ""
+
+#: apps/bloggers/models.py:40
+msgid "Ссылка на запись"
+msgstr ""
+
+#: apps/bloggers/models.py:46
+msgid "Запись"
+msgstr ""
+
+#: apps/bloggers/models.py:47
+msgid "Записи"
+msgstr ""
+
+#: apps/forum/apps.py:7
+msgid "Форум"
+msgstr ""
+
+#: apps/pages/apps.py:7
+msgid "Страницы"
+msgstr ""
+
+#: apps/pages/models.py:17 apps/pages/models.py:29
+msgid "Тип"
+msgstr ""
+
+#: apps/pages/models.py:18
+msgid "Типы"
+msgstr ""
+
+#: apps/pages/models.py:31
+msgid "Логотип"
+msgstr ""
+
+#: apps/pages/models.py:32
+msgid "Адрес"
+msgstr ""
+
+#: apps/pages/models.py:39
+msgid "Сайт"
+msgstr ""
+
+#: apps/pages/models.py:40
+msgid "Сайты"
+msgstr ""
+
+#: apps/polls/apps.py:7 apps/polls/models.py:15
+msgid "Опросы"
+msgstr ""
+
+#: apps/polls/models.py:10
+msgid "Вопрос"
+msgstr ""
+
+#: apps/polls/models.py:11
+msgid "Всего голосов"
+msgstr ""
+
+#: apps/polls/models.py:14 apps/polls/models.py:26
+msgid "Опрос"
+msgstr ""
+
+#: apps/polls/models.py:27 apps/polls/models.py:31
+msgid "Ответ"
+msgstr ""
+
+#: apps/polls/models.py:28
+msgid "Количество проголосовавших"
+msgstr ""
+
+#: apps/polls/models.py:32
+msgid "Ответы"
+msgstr ""
+
+#: apps/tags/apps.py:7 apps/tags/models.py:15
+msgid "Теги"
+msgstr ""
+
+#: apps/tags/models.py:14
+msgid "Тег"
+msgstr ""
+
+#: apps/tags/models.py:28 apps/votes/models.py:13
+msgid "ID объекта"
+msgstr ""
+
+#: apps/tags/models.py:29 apps/votes/models.py:14
+msgid "Тип объекта"
+msgstr ""
+
+#: apps/users/admin.py:13
+msgid "Personal info"
+msgstr ""
+
+#: apps/users/admin.py:14
+msgid "Permissions"
+msgstr ""
+
+#: apps/users/admin.py:16
+msgid "Important dates"
+msgstr ""
+
+#: apps/users/apps.py:7
+msgid "Пользователи"
+msgstr ""
+
+#: apps/users/models.py:10
+msgid "Аватар"
+msgstr ""
+
+#: apps/utils/models.py:12
+msgid "Дата обновления"
+msgstr ""
+
+#: apps/votes/apps.py:7 apps/votes/models.py:20
+msgid "Голоса"
+msgstr ""
+
+#: apps/votes/forms.py:50
+msgid "Не указан тип объекта"
+msgstr ""
+
+#: apps/votes/forms.py:61
+msgid "Указанной статьи не найдено"
+msgstr ""
+
+#: apps/votes/forms.py:67
+msgid "Оценка должна быть от 1 до 5"
+msgstr ""
+
+#: apps/votes/forms.py:76
+msgid "Указанного комментария не найдено"
+msgstr ""
+
+#: apps/votes/forms.py:82
+msgid "Оценка должна быть от +1 или -1"
+msgstr ""
+
+#: apps/votes/models.py:19
+msgid "Голос"
+msgstr ""
+
+#: apps/votes/views.py:40
+msgid "Возможность оставить оценку временно недоступна"
+msgstr ""
+
+#: apps/votes/views.py:51
+msgid "Возможность оценить комментарий временно недоступна"
+msgstr ""

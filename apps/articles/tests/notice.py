@@ -22,7 +22,7 @@ class NoticeTestCase(TestCase):
 
         self.assertContains(resp, 'Еда')
         self.assertContains(resp, 'Воздух')
-        self.assertContains(resp, 'Вода')
+        self.assertNotContains(resp, 'Вода')
 
     def test_create_ok(self):
         data = {

@@ -1,10 +1,12 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from captcha.fields import CaptchaField
 
 from apps.articles.models import Comment, Article
 
 
 class CommentForm(forms.ModelForm):
+    captcha = CaptchaField()
 
     class Meta:
         model = Comment
@@ -32,8 +34,17 @@ class CommentForm(forms.ModelForm):
         return super().save(*args, **kwargs)
 
 
+class CreateArticleForm(forms.ModelForm):
+    captcha = CaptchaField()
+
+    class Meta:
+        model = Article
+        fields = ('title', 'description', 'content', 'author_names')
+
+
 class AddVideoForm(forms.ModelForm):
     video = forms.URLField(required=True)
+    captcha = CaptchaField()
 
     class Meta:
         model = Article

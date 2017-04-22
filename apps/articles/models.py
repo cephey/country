@@ -9,7 +9,7 @@ from model_utils import Choices
 from apps.utils.models import TimeStampedModel
 from apps.utils.image import dummy_image
 from apps.utils.video import VideoHelper
-from apps.articles.managers import ArticleQuerySet, SectionQuerySet, CommentQuerySet
+from apps.articles.managers import ArticleQuerySet, SectionQuerySet, CommentQuerySet, NoticeQuerySet
 
 Partition = namedtuple('Partition', ['slug', 'name', 'get_absolute_url'])
 BEST = 'best'
@@ -193,6 +193,8 @@ class Notice(TimeStampedModel):
     )
     content = models.CharField(_('Содержание'), max_length=200)
     status = models.CharField(_('Статус'), max_length=8, choices=STATUS, default=STATUS.new)
+
+    objects = models.Manager.from_queryset(NoticeQuerySet)()
 
     class Meta:
         verbose_name = _('Анонс')

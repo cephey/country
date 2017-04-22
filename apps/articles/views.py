@@ -10,7 +10,7 @@ from django.views.generic import TemplateView, ListView, DetailView, RedirectVie
 
 from apps.articles.models import (Article, Section, Comment, Notice, BEST, NEWS, VIDEO,
                                   NAVIGATE_SECTIONS, VIDEO_SECTIONS, GENERIC_SECTIONS)
-from apps.articles.forms import CommentForm, AddVideoForm
+from apps.articles.forms import CommentForm, AddVideoForm, CreateArticleForm
 from apps.utils.mixins.views import PageContextMixin
 from apps.utils.mixins.paginator import PaginatorMixin
 from apps.utils.mixins.access import StaffRequiredMixin
@@ -100,6 +100,7 @@ class ArticleDetailView(PageContextMixin, PaginatorMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         kwargs['art_section'] = self.section or self.object.section
+        kwargs['comment_form'] = CommentForm()
 
         if self.object.show_comments:
             comments = Comment.objects.filter(article=self.object, is_active=True)
@@ -120,8 +121,7 @@ class ArticleDetailView(PageContextMixin, PaginatorMixin, DetailView):
 
 class CreateArticleView(PageContextMixin, CreateView):
     template_name = 'articles/create.html'
-    model = Article
-    fields = ('title', 'description', 'content', 'author_names')
+    form_class = CreateArticleForm
 
     def get_success_url(self):
         return reverse('articles:create') + '#res'
@@ -146,7 +146,7 @@ class NoticeListView(PageContextMixin, CreateView):
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
-        kwargs['object_list'] = Notice.objects.filter(status=Notice.STATUS.approved)[:20]
+        kwargs['object_list'] = Notice.objects.visible()[:20]
         return super().get_context_data(**kwargs)
 
 
