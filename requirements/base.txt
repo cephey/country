@@ -17,3 +17,6 @@ responses==0.5.1
 
 # debug
 ipython==5.3.0
+
+# production
+gunicorn==19.7.1
