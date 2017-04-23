@@ -6,7 +6,7 @@
         {% else %}
             <input type=hidden name="article" value="{{ form.article.value }}">
         {% endif %}
-        <input type=hidden name="parent" value="{{ form.parent.value }}" id="comment_parent">
+        <input type=hidden name="parent" value="{{ form.parent.value|default:'' }}" id="comment_parent">
         <table class="noborder wp90">
             <tr>
 				<td class="normal w100"><b>Ваше имя:</b></td>
