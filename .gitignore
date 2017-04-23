@@ -94,6 +94,7 @@ db.sqlite3
 
 # Django
 media/
+static/
 
 # OSX
 .DS_Store
