@@ -7,10 +7,13 @@ from apps.polls.views import PollDetailView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+
+    url(r'^pda/', include('apps.pda.urls', namespace='pda')),
+
     url(r'', include('apps.articles.urls', namespace='articles')),
     url(r'', include('apps.pages.urls', namespace='pages')),
     url(r'', include('apps.forum.urls', namespace='forum')),
-    url(r'bloggers/', include('apps.bloggers.urls', namespace='bloggers')),
+    url(r'^bloggers/', include('apps.bloggers.urls', namespace='bloggers')),
     url(r'^author/', include('apps.authors.urls', namespace='authors')),
     url(r'^tags/', include('apps.tags.urls', namespace='tags')),
 

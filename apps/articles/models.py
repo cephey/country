@@ -11,7 +11,7 @@ from apps.utils.image import dummy_image
 from apps.utils.video import VideoHelper
 from apps.articles.managers import ArticleQuerySet, SectionQuerySet, CommentQuerySet, NoticeQuerySet
 
-Partition = namedtuple('Partition', ['slug', 'name', 'get_absolute_url'])
+Partition = namedtuple('Partition', ['slug', 'name', 'get_absolute_url', 'get_pda_url'])
 BEST = 'best'
 NEWS = 'news'
 VIDEO = 'video'
@@ -21,11 +21,14 @@ NAVIGATE_SECTIONS = [
 ]
 GENERIC_SECTIONS = {
     BEST: Partition(slug=BEST, name=_('Лучшие статьи ФОРУМ.мск за последнюю неделю'),
-                    get_absolute_url=reverse_lazy('articles:section', kwargs={'slug': BEST})),
+                    get_absolute_url=reverse_lazy('articles:section', kwargs={'slug': BEST}),
+                    get_pda_url=reverse_lazy('pda:section', kwargs={'slug': BEST})),
     NEWS: Partition(slug=NEWS, name=_('Новости'),
-                    get_absolute_url=reverse_lazy('articles:section', kwargs={'slug': NEWS})),
+                    get_absolute_url=reverse_lazy('articles:section', kwargs={'slug': NEWS}),
+                    get_pda_url=reverse_lazy('pda:section', kwargs={'slug': NEWS})),
     VIDEO: Partition(slug=VIDEO, name=_('Видео'),
-                     get_absolute_url=reverse_lazy('articles:section', kwargs={'slug': VIDEO}))
+                     get_absolute_url=reverse_lazy('articles:section', kwargs={'slug': VIDEO}),
+                     get_pda_url=reverse_lazy('pda:section', kwargs={'slug': VIDEO}))
 }
 VIDEO_SECTIONS = [
     'video_politic', 'video_economic', 'video_accidents', 'video_fpolitic', 'video_society', 'video_national',
@@ -51,6 +54,9 @@ class Section(models.Model):
 
     def get_absolute_url(self):
         return reverse('articles:section', kwargs={'slug': self.slug})
+
+    def get_pda_url(self):
+        return reverse('pda:section', kwargs={'slug': self.slug})
 
 
 class Article(TimeStampedModel):
@@ -105,6 +111,13 @@ class Article(TimeStampedModel):
         if self.section.is_video:
             return reverse('articles:detail', kwargs={'slug': VIDEO, 'pk': self.id})
         return reverse('articles:detail', kwargs={'slug': self.section.slug, 'pk': self.id})
+
+    def get_pda_url(self):
+        if self.is_news:
+            return reverse('pda:detail', kwargs={'slug': NEWS, 'pk': self.id})
+        if self.section.is_video:
+            return reverse('pda:detail', kwargs={'slug': VIDEO, 'pk': self.id})
+        return reverse('pda:detail', kwargs={'slug': self.section.slug, 'pk': self.id})
 
     @property
     def icon(self):

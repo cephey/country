@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'apps.users',
     'apps.utils',
     'apps.votes',
+    'apps.pda',
 
     'captcha'
 ]

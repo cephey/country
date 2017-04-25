@@ -23,7 +23,7 @@ class HeaderContextMixin(object):
         return {
             'header_rating_news': Article.objects.visible().filter(is_news=True).order_by('?')[:3],  # order by vote_sum?
             'marquee': Article.objects.visible().order_by('-publish_date').first(),
-            'sections': Section.objects.filter(slug__in=NAVIGATE_SECTIONS).order_by('id'),
+            'sections': Section.objects.navigate()
         }
 
 
@@ -35,5 +35,15 @@ class PageContextMixin(HeaderContextMixin, SidebarContextMixin):
         )
         kwargs.update(
             self.get_sidebar_context()
+        )
+        return super().get_context_data(**kwargs)
+
+
+class PdaPageContextMixin(object):
+
+    def get_context_data(self, **kwargs):
+        from apps.articles.models import GENERIC_SECTIONS, NEWS
+        kwargs.update(
+            sections=[GENERIC_SECTIONS[NEWS]] + list(Section.objects.navigate())
         )
         return super().get_context_data(**kwargs)
