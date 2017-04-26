@@ -1,13 +1,10 @@
 from datetime import timedelta
-from itertools import chain
 
-from django.db.models import Case, When, Value, IntegerField
 from django.utils import timezone
-from django.views.generic import TemplateView, DetailView
+from django.views.generic import TemplateView, DetailView, ListView
 from django.shortcuts import get_object_or_404
 
-from apps.articles.views import BaseArticleListView
-from apps.articles.models import Article, Section, Comment, NAVIGATE_SECTIONS, GENERIC_SECTIONS, BEST, NEWS, VIDEO
+from apps.articles.models import Article, Section, Comment, GENERIC_SECTIONS, BEST, NEWS, VIDEO
 from apps.articles.forms import CommentForm
 from apps.utils.mixins.views import PdaPageContextMixin
 from apps.utils.mixins.paginator import PaginatorMixin
@@ -47,7 +44,12 @@ class IndexView(PdaPageContextMixin, TemplateView):
         return super().get_context_data(**kwargs)
 
 
-class SectionView(BaseArticleListView):
+class SectionView(PdaPageContextMixin, ListView):
+    template_name = 'pda/articles/list.html'
+    paginate_by = 5
+    queryset = Article.objects.visible().select_related('section')
+    page_kwarg = 'p'
+    ordering = '-id'
     section = None
 
     def get(self, request, *args, **kwargs):
@@ -75,14 +77,13 @@ class SectionView(BaseArticleListView):
 
     def get_context_data(self, **kwargs):
         kwargs.update(
-            partition=self.section,
-            nav_section=None if self.section.slug in GENERIC_SECTIONS else self.section
+            partition=self.section
         )
         return super().get_context_data(**kwargs)
 
 
 class ArticleDetailView(PdaPageContextMixin, PaginatorMixin, DetailView):
-    template_name = 'articles/detail.html'
+    template_name = 'pda/articles/detail.html'
     queryset = Article.objects.visible().select_related('section').prefetch_related('multimedia_set')
     section = None
 
@@ -102,15 +103,5 @@ class ArticleDetailView(PdaPageContextMixin, PaginatorMixin, DetailView):
         if self.object.show_comments:
             comments = Comment.objects.filter(article=self.object, is_active=True)
             kwargs['art_comments'] = self.paginate_qs(comments, 3)
-        else:
-            data = []
-            for slug in NAVIGATE_SECTIONS:
-                article = (Article.objects.visible()
-                           .filter(section__slug=slug)
-                           .select_related('section')
-                           .order_by('-publish_date')
-                           .first())
-                if article:
-                    data.append(article)
-            kwargs['in_sections'] = data
+
         return super().get_context_data(**kwargs)

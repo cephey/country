@@ -7,6 +7,25 @@
 
 {% block description %}{{ object.preview }}{% endblock %}
 
+{% block keywords %}
+    {% if object.tags.all %}
+        <meta content="{% for ti in object.tags.all %}{{ ti.tag.name }}{% if not forloop.last %},{% endif %}{% endfor %}"
+              name="keywords">
+    {% endif %}
+{% endblock %}
+
+{% block mobile_url %}
+    <link rel="alternate" media="only screen and (max-width: 640px)" href="{{ request.scheme }}://{{ request.get_host }}{{ object.get_pda_url }}" />
+    <link rel="alternate" media="handheld" href="{{ request.scheme }}://{{ request.get_host }}{{ object.get_pda_url }}" />
+{% endblock %}
+
+{% block meta_url %}
+    <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ object.get_absolute_url }}" />
+{% endblock %}
+{% block meta_image %}
+    <meta property="og:image" content="{% if object.image %}{{ request.scheme }}://{{ request.get_host }}{% endif %}{{ object.icon }}" />
+{% endblock %}
+
 {% block content %}
 <div style="width:1px; height:1px"><!-- --></div>
 <div class="border_or">
@@ -85,7 +104,7 @@
                     {% include 'incl/adv/ads_by_google.html' %}
                 {% endif %}
                 <!--content-->
-                {{ object.content }}
+                {{ object.content|safe }}
                 <!--/content-->
                 <br />
                 <br />
@@ -163,39 +182,4 @@
 
 {% endif %}
 
-
-{#my $url = $news->get_url;#}
-{#if (exists $ARGS{'p'}) {#}
-{#    return $request->redirect($url);#}
-{#}#}
-{#my $fav_url = $state->forum->http_server_url.$url;#}
-{##}
-{#$request->{mobile_url} = $news->get_pda_url(abs => 1);#}
-{##}
-{#$request->{title} = $news->{name};#}
-{#if ($section) {#}
-{#    $request->{title} .= ' - '.$section->name;#}
-{#}#}
-{#$request->{keywords} = $news->{keywords};#}
-{#$request->{description} = $news->{note};#}
-{#$request->{meta_url} = $fav_url;#}
-{##}
-{#my $image = $news->get_multimedia_first_image;#}
-{#if ( $image && ref($image) ) {#}
-{#    my $src = $image->get_pimage('405x270');#}
-{#    $request->{meta_image} = $state->forum->http_server_url.$src if $src;#}
-{#}#}
-{##}
-{#my $show_comment = 1;#}
-{#$show_comment = 0 if $news->id eq '2964210';#}
-{#$show_comment = 0 unless $news->{can_comment};#}
-{##}
-{#if (($ARGS{pf} && $ARGS{pf} =~ /^\d+$/) || $request->r()->uri() ne $url) {#}
-{#    $request->{'canonical'} = '<link rel="canonical" href="'. $fav_url .'" />';#}
-{#}#}
-{##}
-{#my @tags = $news->get_tags();#}
-{#if (@tags) {#}
-{#    $request->{tags} = '<meta name="news_keywords" content="'.join(', ', map { $_->name } @tags).'">';#}
-{#}#}
 {% endblock %}

@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <title>{% block title %}ФОРУМ.мск{% endblock %}</title>
     <meta content="{% block description %}{% endblock %}" name="description">
-    {% if canonical %}{{ canonical }}{% endif %}
+
     {% block head_css %}
         <link type="text/css" href="{% static 'css/default.css' %}" rel="stylesheet" media="all" />
     {% endblock %}
@@ -15,26 +15,18 @@
         <script type="text/javascript" src="{% static 'js/site.js' %}"></script>
     {% endblock %}
     <link rel="alternate" type="application/rss+xml" title="RSS" href="{% url 'articles:rss' %}">
-    {% if keywords %}
-        <meta content="{{ keywords|join:', ' }}" name="keywords">
-    {% endif %}
-    {% if tags %}
-        {{ tags }}
-    {% endif %}
+
+    {% block keywords %}{% endblock %}
+
     <meta name="robots" content="all">
     <link rel="SHORTCUT ICON" href="{% static 'favicon.ico' %}">
     <meta name="verify-v1" content="dsT1m/eSeA9r4Qxao30/oQ81XA5xU89pRqzu1W6yB/s=">
-    {% if meta_url %}
-        <meta property="og:url" content="{{ meta_url }}" />
-    {% endif %}
-    {% if meta_image %}
-        <meta property="og:image" content="{{ meta_image }}" />
-    {% endif %}
+
+    {% block meta_url %}{% endblock %}
+    {% block meta_image %}{% endblock %}
     <meta property="og:locale" content="ru_RU" />
-    {% if mobile_url %}
-        <link rel="alternate" media="only screen and (max-width: 640px)" href="{{ mobile_url }}" />
-        <link rel="alternate" media="handheld" href="{{ mobile_url }}" />
-    {% endif %}
+
+    {% block mobile_url %}{% endblock %}
 
     <meta name="viewport" content="width=device-width">
     <meta name="viewport" content="maximum-scale=1">

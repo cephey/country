@@ -116,6 +116,9 @@
         {% endif %}
 
         {% for section in sections %}
+            <td>
+                <img src="{% static 'i/sep2.gif' %}" width="1" height="21" alt="">
+            </td>
             {% if nav_section and nav_section == section %}
                 <th>
                     <div class="p_h">
@@ -123,9 +126,6 @@
                     </div>
                 </th>
             {% else %}
-                {% if not nav_section %}
-                    <td><img src="{% static 'i/sep2.gif' %}" width="1" height="21" alt=""></td>
-                {% endif %}
                 <td class="align-center">
                     <div class="p_h">
                         <a href="{% url 'articles:section' section.slug %}">{{ section.name }}</a>

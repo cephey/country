@@ -1,175 +1,65 @@
-{% load static %}
+{% extends 'pda/base.html' %}
+
 {% load htmlutils %}
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>{% block title %}ФОРУМ.мск{% endblock %}</title>
-    <meta content="{% block description %}{% endblock %}" name="description">
+{% block canonical %}
     <link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}" />
+{% endblock %}
 
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0" />
+{% block content %}
 
-    {% block head_css %}
-        <link rel="stylesheet" href="{% static 'bootstrap3.3.2/bootstrap.min.css' %}">
-        <link rel="stylesheet" href="{% static 'bootstrap3.3.2/bootstrap-theme.min.css' %}">
-        <link rel="stylesheet" type="text/css" href="{% static 'bootstrap3.3.2/pda.css' %}" />
-    {% endblock %}
-
-    {% block head_js %}
-        <script type="text/javascript" src="{% static 'js/site.js' %}"></script>
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-        <script src="{% static 'bootstrap3.3.2/bootstrap.min.js' %}"></script>
-        <script type="text/javascript" src="{% static 'js/pda.js' %}"></script>
-    {% endblock %}
-
-    <link rel="alternate" type="application/rss+xml" title="RSS" href="{% url 'articles:rss' %}">
-    <link rel="SHORTCUT ICON" href="{% static 'favicon.ico' %}">
-    <meta name="verify-v1" content="dsT1m/eSeA9r4Qxao30/oQ81XA5xU89pRqzu1W6yB/s=">
-
-    {% if meta_url %}
-        <meta property="og:url" content="{{ meta_url }}" />
-    {% endif %}
-    {% if meta_image %}
-        <meta property="og:image" content="{{ meta_image }}" />
-    {% endif %}
-    <meta property="og:locale" content="ru_RU" />
-</head>
-<body>
-    <!-- Fixed navbar -->
-    <nav class="navbar navbar-static-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                    <span class="sr-only">Навигация</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="{% url 'pda:index' %}">ФОРУМ.мск</a>
+    <div class="media">
+        {% with article=main_news %}
+            <div class="media-left">
+                {% if article.icon %}
+                    <a href="{{ article.get_pda_url }}">
+                        <img class="media-object" data-src="holder.js/64x64" src="{{ article.icon|crop:'64x64' }}"
+                             data-holder-rendered="true" alt="64x64" style="width: 64px; height: 64px;">
+                    </a>
+                {% endif %}
             </div>
-            <div id="navbar" class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li class="active">
-                        <a href="{% url 'pda:index' %}">Главная</a>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">Разделы <span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="{% url 'pda:section' 'news' %}">Новости</a></li>
-                            {% for section in sections %}
-                                <li><a href="{% url 'pda:section' section.slug %}">{{ section.name }}</a></li>
-                            {% endfor %}
-                        </ul>
-                    </li>
-                </ul>
+            <div class="media-body">
+                <h4 class="media-heading">
+                    <a href="{{ article.get_pda_url }}">{{ article.title|safe }}</a>
+                </h4>
+                {{ article.preview|safe }}
             </div>
-        </div>
-    </nav>
+        {% endwith %}
+    </div>
+    <hr>
+    {% for article in last_news %}
+        <h4>
+            <small>{{ article.publish_date|date:'d.m.Y' }}</small>
+            <a href="{{ article.get_pda_url }}">{{ article.title|safe }}</a>
+            {% if article.show_comments %}
+                <span class="badge">{{ article.comments_count }}</span>
+            {% endif %}
+        </h4>
+        <hr>
+    {% endfor %}
 
-    <div class="container">
-
+    {% for section, article in materials %}
         <div class="media">
-            {% with article=main_news %}
+            {% if article.icon %}
                 <div class="media-left">
-                    {% if article.icon %}
-                        <a href="{{ article.get_pda_url }}">
-                            <img class="media-object" data-src="holder.js/64x64" src="{{ article.icon|crop:'64x64' }}"
-                                 data-holder-rendered="true" alt="64x64" style="width: 64px; height: 64px;">
-                        </a>
+                    <a href="{{ article.get_pda_url }}">
+                        <img class="media-object" data-src="holder.js/64x64" src="{{ article.icon|crop:'64x64' }}"
+                             data-holder-rendered="true" alt="64x64" style="width: 64px; height: 64px;">
+                    </a>
+                </div>
+            {% endif %}
+            <div class="media-body">
+                <span class="media-heading">
+                    <span class="label label-section">{{ section.name }}</span>
+                    <br />
+                    <a href="{{ article.get_pda_url }}">{{ article.title|safe }}</a>
+                    {% if article.show_comments %}
+                        <span class="badge">{{ article.comments_count }}</span>
                     {% endif %}
-                </div>
-                <div class="media-body">
-                    <h4 class="media-heading">
-                        <a href="{{ article.get_pda_url }}">{{ article.title|safe }}</a>
-                    </h4>
-                    {{ article.preview|safe }}
-                </div>
-            {% endwith %}
+                </span>
+            </div>
         </div>
         <hr>
-        {% for article in last_news %}
-            <h4>
-                <small>{{ article.publish_date|date:'d.m.Y' }}</small>
-                <a href="{{ article.get_pda_url }}">{{ article.title|safe }}</a>
-                {% if article.show_comments %}
-                    <span class="badge">{{ article.comments_count }}</span>
-                {% endif %}
-            </h4>
-            <hr>
-        {% endfor %}
+    {% endfor %}
 
-        {% for section, article in materials %}
-            <div class="media">
-                {% if article.icon %}
-                    <div class="media-left">
-                        <a href="{{ article.get_pda_url }}">
-                            <img class="media-object" data-src="holder.js/64x64" src="{{ article.icon|crop:'64x64' }}"
-                                 data-holder-rendered="true" alt="64x64" style="width: 64px; height: 64px;">
-                        </a>
-                    </div>
-                {% endif %}
-                <div class="media-body">
-                    <span class="media-heading">
-                        <span class="label label-section">{{ section.name }}</span>
-                        <br />
-                        <a href="{{ article.get_pda_url }}">{{ article.title|safe }}</a>
-                        {% if article.show_comments %}
-                            <span class="badge">{{ article.comments_count }}</span>
-                        {% endif %}
-                    </span>
-                </div>
-            </div>
-            <hr>
-        {% endfor %}
-
-        <div class="list-group">
-            {% for section in sections %}
-                <a href="{{ section.get_pda_url }}" class="list-group-item">{{ section.name }}</a>
-            {% endfor %}
-        </div>
-
-    </div>
-
-    <div class="footer">
-        <div class="container">
-            <p class="text-muted">&copy; 1998-2016 ФОРУМ.мск <span class="pull-right"><a id="desktop_version" href="{% url 'articles:index' %}">Полная версия сайта</a></span></p>
-        </div>
-    </div>
-
-    <img src="http://counter.rambler.ru/top100.cnt?24858" width="1" height="1" />
-    <img height="1" width="1" src="http://da.c1.b0.a0.top.list.ru/counter?id=6902"/>
-    <script type="text/javascript">document.write("<img src='http://counter.yadro.ru/hit?r" + escape(document.referrer) + ((typeof(screen)=="undefined")?"":";s"+screen.width+"*"+screen.height+"*"+(screen.colorDepth?screen.colorDepth:screen.pixelDepth)) + ";u" + escape(document.URL) + ";" + Math.random() + "' width=1 height=1 alt=''>")</script>
-
-    <script type="text/javascript">
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-1566987-1']);
-      _gaq.push(['_trackPageview']);
-
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript';
-    ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' :
-    'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(ga, s);
-      })();
-    </script>
-
-    <!-- Yandex.Metrika counter --><script type="text/javascript">(function (d,
-    w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter17515558 =
-    new Ya.Metrika({id:17515558, enableAll: true}); } catch(e) { } }); var n =
-    d.getElementsByTagName("script")[0], s = d.createElement("script"), f =
-    function () { n.parentNode.insertBefore(s, n); }; s.type =
-    "text/javascript"; s.async = true; s.src = (d.location.protocol == "https:"
-    ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js"; if (w.opera ==
-    "[object Opera]") { d.addEventListener("DOMContentLoaded", f); } else { f();
-    } })(document, window,
-    "yandex_metrika_callbacks");</script><noscript><div><img
-    src="//mc.yandex.ru/watch/17515558" style="position:absolute; left:-9999px;"
-    alt="" /></div></noscript><!-- /Yandex.Metrika counter -->
-
-</body>
-</html>
+{% endblock %}

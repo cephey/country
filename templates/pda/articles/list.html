@@ -1,0 +1,48 @@
+{% extends 'pda/base.html' %}
+
+{% load htmlutils %}
+
+{% block title %}
+    {{ partition.name }}{% if page_obj.number > 1 %}, страница {{ page_obj.number }}{% endif %} - ФОРУМ.мск
+{% endblock %}
+
+{% block canonical %}
+    <link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ partition.get_absolute_url }}" />
+{% endblock %}
+
+{% block content %}
+
+    <ol class="breadcrumb">
+        <li><a href="{% url 'pda:index' %}">Главная</a></li>
+        <li><a href="{{ partition.get_pda_url }}">{{ partition.name }}</a></li>
+    </ol>
+
+    {% for article in object_list %}
+        <div class="media">
+            {% if article.icon %}
+                <div class="media-left">
+                    <a href="{{ article.get_pda_url }}">
+                        <img class="media-object" data-src="holder.js/64x64" src="{{ article.icon|crop:'64x64' }}"
+                             data-holder-rendered="true" alt="64x64" style="width: 64px; height: 64px;">
+                    </a>
+                </div>
+            {% endif %}
+            <div class="media-body">
+                <span class="media-heading">
+                    <a href="{{ article.get_pda_url }}">{{ article.title|safe }}</a>
+                    {% if article.show_comments %}
+                        <span class="badge">{{ article.comments_count }}</span>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+        <hr>
+    {% endfor %}
+
+    <nav>
+        <ul class="pager">
+            {% include 'pda/incl/paginator.html' with page_obj=page_obj page='p' %}
+        </ul>
+    </nav>
+
+{% endblock %}

@@ -7,6 +7,11 @@
 
 {% block description %}{{ partition.name }}{% endblock %}
 
+{% block mobile_url %}
+    <link rel="alternate" media="only screen and (max-width: 640px)" href="{{ request.scheme }}://{{ request.get_host }}{{ partition.get_pda_url }}" />
+    <link rel="alternate" media="handheld" href="{{ request.scheme }}://{{ request.get_host }}{{ partition.get_pda_url }}" />
+{% endblock %}
+
 {% block content %}
 <div class="big1 or">{{ partition.name }}</div>
 <div style="width:1px; height:1px"><!-- --></div>

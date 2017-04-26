@@ -1,0 +1,92 @@
+{% extends 'pda/base.html' %}
+
+{% load htmlutils %}
+
+{% block title %}{{ object.title }} - {{ art_section.name }} - ФОРУМ.мск{% endblock %}
+
+{% block description %}{{ object.preview }}{% endblock %}
+
+{% block keywords %}
+    {% if object.tags.all %}
+        <meta content="{% for ti in object.tags.all %}{{ ti.tag.name }}{% if not forloop.last %},{% endif %}{% endfor %}"
+              name="keywords">
+    {% endif %}
+{% endblock %}
+
+{% block canonical %}
+    <link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ object.get_absolute_url }}" />
+{% endblock %}
+
+{% block meta_url %}
+    <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ object.get_pda_url }}" />
+{% endblock %}
+{% block meta_image %}
+    <meta property="og:image" content="{% if object.image %}{{ request.scheme }}://{{ request.get_host }}{% endif %}{{ object.icon }}" />
+{% endblock %}
+
+{% block content %}
+
+    <h3>{{ object.title }}</h3>
+    <span>Опубликовано {{ object.publish_date|date:'d.m.Y' }}</span>
+
+    {% if article.main_author or article.author_names %}
+        <span>
+            автором
+            {% if article.main_author %}
+                {{ article.main_author.cover_name }}
+            {% else %}
+                {{ article.author_names }}
+            {% endif %}
+        </span>
+    {% endif %}
+
+    {% if art_section %}
+        <span>
+            в разделе
+            <a href="{% if object.is_news %}{% url 'pda:section' 'news' %}{% else %}{{ art_section.get_pda_url }}{% endif %}">
+                <em>{{ art_section.name }}</em>
+            </a>
+        </span>
+    {% endif %}
+    <hr>
+
+    {% if not object.video %}
+        <table class="noborder align-left" style="float:left">
+            <tr>
+                <td>
+                    <img itemprop="thumbnailUrl" class="pwi" src="{{ object.icon|crop:'100x100' }}"
+                         alt="{{ object.title }}">
+                </td>
+            </tr>
+        </table>
+    {% endif %}
+
+    {% if object.multimedia_set.all %}
+        <br>&nbsp;Прикреплено:
+        {% for media in object.multimedia_set.all %}
+            <a href="{{ media.link }}" target="_blank">{{ media.description }}</a>&nbsp;
+        {% endfor %}
+        <br>
+    {% endif %}
+
+    <div style="clear:both"></div>
+    {{ object.content|safe }}
+    <hr>
+
+    <script type="text/javascript" src="//yastatic.net/share/share.js" charset="utf-8"></script>
+    <div class="yashare-auto-init" data-yashareL10n="ru" data-yashareQuickServices="vkontakte,facebook,twitter,odnoklassniki,moimir" data-yashareTheme="counter"></div>
+    <hr>
+
+    <div style="margin-top: 5px;align: center">
+        <!-- R-59310-3 Яндекс.RTB-блок  -->
+        <div id="yandex_ad_R-59310-3"></div>
+        {% include 'incl/adv/ya_context.html' with block_id='R-59310-3' %}
+    </div>
+
+    {% if object.show_comments %}
+        <!--noindex-->
+        {% include 'incl/forum.html' with article=object %}
+        <!--/noindex-->
+    {% endif %}
+
+{% endblock %}
