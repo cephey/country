@@ -20,12 +20,14 @@ class IndexView(PdaPageContextMixin, TemplateView):
                          .filter(is_news=True)
                          .order_by('-publish_date')[:5])
 
+        exclude_ids = {article.id for article in main_news}
+
         main_material = (Article.objects.visible()
                          .filter(is_news=False)
                          .order_by('-publish_date', '-comments_count')
                          .first())
-
-        exclude_ids = {article.id for article in main_news} | {main_material.id}
+        if main_material:
+            exclude_ids |= {main_material.id}
 
         materials = []
         for section in sections:
@@ -37,7 +39,7 @@ class IndexView(PdaPageContextMixin, TemplateView):
         materials.insert(0, (GENERIC_SECTIONS[NEWS], article))
 
         kwargs.update(
-            main_news=main_news[0],
+            main_news=main_news[0] if main_news else None,
             last_news=[main_material] + main_news[1:],
             materials=materials
         )
