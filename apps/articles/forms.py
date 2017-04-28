@@ -1,6 +1,7 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from captcha.fields import CaptchaField
+from ckeditor.fields import RichTextFormField
 
 from apps.articles.models import Comment, Article
 
@@ -49,3 +50,25 @@ class AddVideoForm(forms.ModelForm):
     class Meta:
         model = Article
         fields = ('author_names', 'title', 'content', 'video')
+
+
+class AdminArticleForm(forms.ModelForm):
+    content = RichTextFormField(label=Article._meta.get_field('content').verbose_name)
+
+    class Meta:
+        model = Article
+        fields = '__all__'
+        widgets = {
+            'status': forms.RadioSelect,
+            'discussion_status': forms.RadioSelect
+        }
+
+
+class AdminNoticeForm(forms.ModelForm):
+
+    class Meta:
+        model = Comment
+        fields = '__all__'
+        widgets = {
+            'status': forms.RadioSelect
+        }

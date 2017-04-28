@@ -13,3 +13,8 @@ class User(AbstractUser):
         if self.avatar:
             return settings.MEDIA_URL + self.avatar.name
         return dummy_image(self.username)
+
+    def display(self):
+        if self.first_name or self.last_name:
+            return ' '.join([self.first_name, self.last_name])
+        return self.email

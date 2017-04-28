@@ -1,4 +1,5 @@
 from collections import namedtuple
+
 from django.conf import settings
 from django.db import models
 from django.urls import reverse, reverse_lazy
@@ -174,11 +175,14 @@ class Comment(models.Model):
         data = []
         if self.username:
             data.append(self.username)
-        if self.title:
-            data.append(self.title[:50])
-        else:
-            data.append(self.content[:50])
+        data.append(self.subject)
         return ': '.join(data + [self.created_at.isoformat()])
+
+    @property
+    def subject(self):
+        if self.title:
+            return self.title[:50]
+        return self.content[:50]
 
     def get_avatar(self):
         if self.user_id:

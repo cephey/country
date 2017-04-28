@@ -1,18 +1,76 @@
 from django.contrib import admin
-from apps.articles.models import Section, Article, Notice
+
+from apps.articles.models import Section, Article, Notice, Comment
+from apps.articles.forms import AdminArticleForm, AdminNoticeForm
 
 
 @admin.register(Section)
 class SectionAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'is_active')
+    list_display = ('__str__', 'is_video', 'is_active')
 
 
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
-    list_display = ('title', 'section', 'publish_date', 'is_active', 'comments_count')
+    form = AdminArticleForm
+    list_display = ('title', 'is_active', 'is_video', 'section', 'publish_date', 'comments_count')
+    list_select_related = ('section',)
+    fieldsets = (
+        (None, {
+            'fields': ('title', 'section')
+        }),
+        ('Тело статьи', {
+            'fields': ('description', 'content')
+        }),
+        ('Переключатели', {
+            'fields': ('is_active', 'is_news', 'show_comments', 'status', 'discussion_status')
+        }),
+        ('Дополнительно', {
+            'fields': ('publish_date', 'authors', 'author_names', 'source', 'source_link')
+        }),
+        ('Изображения и видео', {
+            'fields': ('image', 'video')
+        }),
+    )
+
+    def is_video(self, obj):
+        return obj.section.is_video
+    is_video.short_description = 'is video'
+    is_video.boolean = True
+
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('id', 'article', 'subject')
+    list_select_related = ('article',)
+    readonly_fields = ('article', 'owner', 'created_at')
+    fieldsets = (
+        (None, {
+            'fields': ('article', 'owner')
+        }),
+        ('Основная информация', {
+            'fields': ('username', 'title', 'content')
+        }),
+        ('Дополнительно', {
+            'fields': ('is_active', 'created_at')
+        }),
+    )
+
+    def subject(self, obj):
+        return obj.subject
+    subject.short_description = 'Содержание'
+
+    def owner(self, obj):
+        if obj.user:
+            return obj.user.display()
+        if obj.token:
+            return 'Аноним: {}'.format(obj.token)
+    owner.short_description = 'Владелец'
 
 
 @admin.register(Notice)
 class NoticeAdmin(admin.ModelAdmin):
+    form = AdminNoticeForm
     list_display = ('__str__', 'status')
     list_filter = ('status',)
+    readonly_fields = ('content',)
+    fields = ('content', 'status')

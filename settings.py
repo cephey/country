@@ -34,7 +34,8 @@ INSTALLED_APPS = [
     'apps.votes',
     'apps.pda',
 
-    'captcha'
+    'captcha',
+    'ckeditor',
 ]
 
 MIDDLEWARE = [
