@@ -59,7 +59,7 @@
         </p>
         {% if object.tags.all %}
             {% for tag_item in object.tags.all %}
-                <a href="{% url 'tags:detail' tag_item.tag_id %}" class="news-tag">{{ tag_item.tag.name }}</a>
+                <a href="{{ tag_item.tag.get_absolute_url }}" class="news-tag">{{ tag_item.tag.name }}</a>
             {% endfor %}
             <meta itemprop="keywords" content="{{ object.keywords }}"/>
         {% endif %}

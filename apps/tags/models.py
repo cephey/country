@@ -18,8 +18,8 @@ class Tag(TimeStampedModel):
     def __str__(self):
         return self.name
 
-    # def get_absolute_url(self):
-    #     return reverse('web:author-detail', kwargs={'pk': self.pk, 'slug': self.slug})
+    def get_absolute_url(self):
+        return reverse('tags:detail', kwargs={'pk': self.pk})
 
 
 class TaggedItem(models.Model):

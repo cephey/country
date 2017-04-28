@@ -3,12 +3,16 @@ from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 
+from apps.polls.managers import PollQuerySet
 from apps.utils.models import TimeStampedModel
 
 
 class Poll(TimeStampedModel):
     question = models.CharField(_('Вопрос'), max_length=255)
     sum_votes = models.PositiveIntegerField(_('Всего голосов'), editable=False, default=0)
+    is_active = models.BooleanField(default=True)
+
+    objects = models.Manager.from_queryset(PollQuerySet)()
 
     class Meta:
         verbose_name = _('Опрос')
@@ -16,7 +20,7 @@ class Poll(TimeStampedModel):
         ordering = ('-pk',)
 
     def __str__(self):
-        return self.question
+        return self.question[:50]
 
     def get_absolute_url(self):
         return reverse('polls:detail', kwargs={'pk': self.pk})
@@ -33,4 +37,4 @@ class Choice(models.Model):
         ordering = ('-pk',)
 
     def __str__(self):
-        return self.answer
+        return self.answer[:50]
