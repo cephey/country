@@ -3,3 +3,4 @@ from .main_page import *
 from .notice import *
 from .video import *
 from .comment import *
+from .rss import *

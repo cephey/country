@@ -27,5 +27,6 @@ urlpatterns = [
 
     url(r'^notice/$', views.NoticeListView.as_view(), name='notice'),
 
-    url(r'^export/rss.html', views.RssView.as_view(), name='rss')
+    url(r'^export/rss.html', views.RssView()),  # deprecated
+    url(r'^export/rss/$', views.RssView(), name='rss')
 ]

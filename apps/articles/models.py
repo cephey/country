@@ -4,6 +4,7 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse, reverse_lazy
 from django.utils.translation import ugettext_lazy as _
+from django.utils.feedgenerator import RssFeed, rfc2822_date
 from django.contrib.contenttypes.fields import GenericRelation
 from model_utils import Choices
 
@@ -220,3 +221,30 @@ class Notice(TimeStampedModel):
 
     def __str__(self):
         return self.content[:50]
+
+
+class Rss201rev2Feed(RssFeed):
+    # Spec: http://blogs.law.harvard.edu/tech/rss
+    _version = "2.0"
+
+    def add_root_elements(self, handler):
+        super().add_root_elements(handler)
+        handler.addQuickElement('pubDate', rfc2822_date(self.latest_post_date()))
+
+    def add_item_elements(self, handler, item):
+        handler.addQuickElement('title', item['title'])
+        handler.addQuickElement('link', item['link'])
+        if item['description'] is not None:
+            handler.addQuickElement('description', item['description'])
+
+        if item['pubdate'] is not None:
+            handler.addQuickElement('pubDate', rfc2822_date(item['pubdate']))
+        if item['unique_id'] is not None:
+            handler.addQuickElement('guid', item['unique_id'])
+
+        if 'custom_category' in item:
+            handler.addQuickElement(
+                'category',
+                item['custom_category']['content'],
+                item['custom_category']['extra']
+            )

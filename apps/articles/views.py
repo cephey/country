@@ -1,4 +1,5 @@
 from datetime import timedelta
+from collections import namedtuple
 
 from django.utils import timezone
 from django.contrib import messages
@@ -7,9 +8,11 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.http import HttpResponsePermanentRedirect
 from django.views.generic import TemplateView, ListView, DetailView, RedirectView, CreateView
+from django.contrib.syndication.views import Feed, add_domain
 
 from apps.articles.models import (Article, Section, Comment, Notice, BEST, NEWS, VIDEO,
-                                  NAVIGATE_SECTIONS, VIDEO_SECTIONS, GENERIC_SECTIONS)
+                                  NAVIGATE_SECTIONS, VIDEO_SECTIONS, GENERIC_SECTIONS,
+                                  Rss201rev2Feed)
 from apps.articles.forms import CommentForm, AddVideoForm, CreateArticleForm
 from apps.utils.mixins.views import PageContextMixin
 from apps.utils.mixins.paginator import PaginatorMixin
@@ -273,5 +276,32 @@ class CommentDeleteView(StaffRequiredMixin, RedirectView):
         return self.request.META.get('HTTP_REFERER')
 
 
-class RssView(TemplateView):
-    template_name = 'articles/rss.html'
+class RssView(Feed):
+    feed_type = Rss201rev2Feed
+    link = 'http://forum-msk.org'
+    title = 'ФОРУМ.мск'
+    description = 'ФОРУМ.мск - Интернет-портал объединяющейся оппозиции'
+
+    def __call__(self, request, *args, **kwargs):
+        self.domain = request.scheme + '://' + request.get_host()
+        return super().__call__(request, *args, **kwargs)
+
+    def items(self):
+        return Article.objects.visible().order_by('-id')[:50]
+
+    def item_title(self, item):
+        return item.title
+
+    def item_description(self, item):
+        return item.description
+
+    def item_pubdate(self, item):
+        return item.publish_date
+
+    def item_extra_kwargs(self, item):
+        return {
+            'custom_category': {
+                'content': item.section.name,
+                'extra': {'domain': self.domain + item.section.get_absolute_url()}
+            }
+        }
