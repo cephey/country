@@ -1,5 +1,4 @@
 from datetime import timedelta
-from collections import namedtuple
 
 from django.utils import timezone
 from django.contrib import messages
@@ -8,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.http import HttpResponsePermanentRedirect
 from django.views.generic import TemplateView, ListView, DetailView, RedirectView, CreateView
-from django.contrib.syndication.views import Feed, add_domain
+from django.contrib.syndication.views import Feed
 
 from apps.articles.models import (Article, Section, Comment, Notice, BEST, NEWS, VIDEO,
                                   NAVIGATE_SECTIONS, VIDEO_SECTIONS, GENERIC_SECTIONS,
