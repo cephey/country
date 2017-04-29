@@ -27,6 +27,9 @@ class ArticleQuerySet(models.QuerySet):
     def open(self):
         return self.visible().filter(discussion_status='open')
 
+    def with_authors(self):
+        return self.prefetch_related('authors')
+
 
 class CommentQuerySet(models.QuerySet):
 

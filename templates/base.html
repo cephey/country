@@ -227,10 +227,6 @@
 {% include 'incl/adv/ga.html' %}
 {% include 'incl/adv/ya_metrika.html' %}
 
-{% if share %}
-    <script type="text/javascript" src="//yastatic.net/share/share.js" charset="utf-8"></script>
-{% endif %}
-
 {% if request.path != '/' %}
     {% include 'incl/adv/ya_context.html' with block_id='R-59310-1' %}
 {% endif %}

@@ -11,6 +11,7 @@ class AuthorDetailView(PageContextMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         kwargs['obj_atricles'] = (Article.objects.visible()
+                                  .select_related('section')
                                   .filter(authors=self.object)
                                   .order_by('-id')[:10])
         return super().get_context_data(**kwargs)

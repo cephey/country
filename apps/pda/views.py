@@ -17,12 +17,14 @@ class IndexView(PdaPageContextMixin, TemplateView):
         sections = Section.objects.navigate()
 
         main_news = list(Article.objects.visible()
+                         .select_related('section')
                          .filter(is_news=True)
                          .order_by('-publish_date')[:5])
 
         exclude_ids = {article.id for article in main_news}
 
         main_material = (Article.objects.visible()
+                         .select_related('section')
                          .filter(is_news=False)
                          .order_by('-publish_date', '-comments_count')
                          .first())
@@ -31,11 +33,19 @@ class IndexView(PdaPageContextMixin, TemplateView):
 
         materials = []
         for section in sections:
-            article = Article.objects.visible().filter(section=section).exclude(id__in=exclude_ids).first()
+            article = (Article.objects.visible()
+                       .select_related('section')
+                       .filter(section=section)
+                       .exclude(id__in=exclude_ids)
+                       .first())
             exclude_ids.add(article.id)
             materials.append((section, article))
 
-        article = Article.objects.visible().filter(is_news=True).exclude(id__in=exclude_ids).first()
+        article = (Article.objects.visible()
+                   .select_related('section')
+                   .filter(is_news=True)
+                   .exclude(id__in=exclude_ids)
+                   .first())
         materials.insert(0, (GENERIC_SECTIONS[NEWS], article))
 
         kwargs.update(
@@ -86,7 +96,9 @@ class SectionView(PdaPageContextMixin, ListView):
 
 class ArticleDetailView(PdaPageContextMixin, PaginatorMixin, DetailView):
     template_name = 'pda/articles/detail.html'
-    queryset = Article.objects.visible().select_related('section').prefetch_related('multimedia_set')
+    queryset = (Article.objects.visible().with_authors()
+                .select_related('section')
+                .prefetch_related('multimedia_set', 'tags__tag'))
     section = None
 
     def get(self, request, *args, **kwargs):
@@ -103,7 +115,7 @@ class ArticleDetailView(PdaPageContextMixin, PaginatorMixin, DetailView):
             comment_form=CommentForm()
         )
         if self.object.show_comments:
-            comments = Comment.objects.filter(article=self.object, is_active=True)
+            comments = Comment.objects.filter(article=self.object, is_active=True).select_related('user')
             kwargs['art_comments'] = self.paginate_qs(comments, 3)
 
         return super().get_context_data(**kwargs)

@@ -39,7 +39,7 @@
             <meta itemprop="articleSection" content="{{ art_section.name }}">
             <span>
                 автором
-                {% include 'authors/incl/cover_name.html' with article=object incl_microdata=True %}
+                {% include 'authors/incl/cover_name.html' with article=object microdata=True %}
             </span>
             <span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
                 в разделе
@@ -119,6 +119,7 @@
                                     <tr>
                                         <td>
                                             <span class="newshare">Поделиться</span>
+                                            <script type="text/javascript" src="//yastatic.net/share/share.js" charset="utf-8"></script>
                                             <div class="yashare-auto-init" data-yashareL10n="ru" data-yashareQuickServices="vkontakte,facebook,twitter,odnoklassniki,moimir,gplus" data-yashareTheme="counter"></div>
                                         </td>
                                     </tr>

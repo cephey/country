@@ -1,4 +1,4 @@
-{% if incl_microdata %}
+{% if microdata %}
     <em itemscope itemtype="http://schema.org/Person">
         {% if article.main_author %}
             <a rel="author" itemprop="url" href="{% url 'authors:detail' article.main_author.id %}">

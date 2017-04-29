@@ -29,15 +29,19 @@ class IndexView(PageContextMixin, TemplateView):
         for section in sections:
             materials[section.slug] = {
                 'section': section,
-                'articles': Article.objects.visible().filter(section=section)[:6]
+                'articles': (Article.objects.visible().with_authors()
+                             .select_related('section')
+                             .filter(section=section)[:6])
             }
 
         kwargs.update(
-            main_news=(Article.objects.visible()
+            main_news=(Article.objects.visible().with_authors()
+                       .select_related('section')
                        .filter(is_news=True)
                        .order_by('-publish_date')
                        .first()),
-            main_material=(Article.objects.visible()
+            main_material=(Article.objects.visible().with_authors()
+                           .select_related('section')
                            .filter(is_news=False)
                            .order_by('-publish_date', '-comments_count')
                            .first()),
@@ -49,7 +53,7 @@ class IndexView(PageContextMixin, TemplateView):
 class BaseArticleListView(PageContextMixin, ListView):
     template_name = 'articles/list.html'
     paginate_by = 5
-    queryset = Article.objects.visible().select_related('section')
+    queryset = Article.objects.visible().with_authors().select_related('section')
     page_kwarg = 'p'
     ordering = '-id'
 
@@ -90,7 +94,9 @@ class SectionView(BaseArticleListView):
 
 class ArticleDetailView(PageContextMixin, PaginatorMixin, DetailView):
     template_name = 'articles/detail.html'
-    queryset = Article.objects.visible().select_related('section').prefetch_related('multimedia_set')
+    queryset = (Article.objects.visible().with_authors()
+                .select_related('section')
+                .prefetch_related('multimedia_set', 'tags__tag'))
     section = None
 
     def get(self, request, *args, **kwargs):
@@ -107,7 +113,7 @@ class ArticleDetailView(PageContextMixin, PaginatorMixin, DetailView):
             comment_form=CommentForm()
         )
         if self.object.show_comments:
-            comments = Comment.objects.filter(article=self.object, is_active=True)
+            comments = Comment.objects.filter(article=self.object, is_active=True).select_related('user')
             kwargs['art_comments'] = self.paginate_qs(comments, 3)
         else:
             data = []
@@ -169,7 +175,9 @@ class VideoContextMixin(object):
                 n = 3
             materials[section.slug] = {
                 'section': section,
-                'articles': Article.objects.visible().filter(section=section)[:n]
+                'articles': (Article.objects.visible().with_authors()
+                             .select_related('section')
+                             .filter(section=section)[:n])
             }
         kwargs['materials'] = materials
         return super().get_context_data(**kwargs)
@@ -192,11 +200,13 @@ class VideoIndexView(VideoContextMixin, PageContextMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         kwargs.update(
-            main_news=(Article.objects.visible()
+            main_news=(Article.objects.visible().with_authors()
+                       .select_related('section')
                        .filter(is_news=True, section__is_video=True)
                        .order_by('-publish_date')
                        .first()),
-            main_material=(Article.objects.visible()
+            main_material=(Article.objects.visible().with_authors()
+                           .select_related('section')
                            .filter(is_news=False, section__is_video=True)
                            .order_by('-publish_date', '-comments_count')
                            .first())
@@ -206,7 +216,7 @@ class VideoIndexView(VideoContextMixin, PageContextMixin, TemplateView):
 
 class VideoDetailView(VideoContextMixin, PageContextMixin, DetailView):
     template_name = 'articles/video.html'
-    queryset = Article.objects.visible().select_related('section')
+    queryset = Article.objects.visible().with_authors().select_related('section')
 
     def get_context_data(self, **kwargs):
         kwargs['main_news'] = self.object

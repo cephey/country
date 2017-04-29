@@ -9,6 +9,7 @@ DEBUG = True
 if 'PROD' in os.environ:
     DEBUG = False
 
+INTERNAL_IPS = ['127.0.0.1']
 ALLOWED_HOSTS = ['95.85.18.34', 'localhost']
 
 
@@ -36,6 +37,8 @@ INSTALLED_APPS = [
 
     'captcha',
     'ckeditor',
+
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -48,6 +51,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+if 'PROD' not in os.environ:
+    MIDDLEWARE = [
+        'debug_toolbar.middleware.DebugToolbarMiddleware'
+    ] + MIDDLEWARE
 
 ROOT_URLCONF = 'urls'
 
@@ -132,6 +139,35 @@ MEDIA_URL = '/storage/'
 
 AUTH_USER_MODEL = 'users.User'
 LOGIN_URL = '/users/login/'
+
+LOGGING_PATH = os.path.join(BASE_DIR, '../django_error.log')
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': LOGGING_PATH,
+        },
+        'console':{
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file', 'console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'django.template': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
 
 
 if 'L' in os.environ:
