@@ -5,6 +5,7 @@ from django.http import HttpResponsePermanentRedirect
 
 from apps.utils.mixins.views import PageContextMixin, HeaderContextMixin
 from apps.pages.models import Partition, Resource
+from apps.pages.jobs import IndexOppositionPartitionResourcesJob
 
 
 class AboutView(PageContextMixin, TemplateView):
@@ -39,14 +40,8 @@ class OppositionView(BaseOppositionView):
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        partitions = []
-        for partition in Partition.objects.active().order_by('id'):
-            partitions.append({
-                'partition': partition,
-                'resources': Resource.objects.active().filter(partition=partition).order_by('-rating')[:5]
-            })
         kwargs.update(
-            partitions=partitions,
+            partitions=IndexOppositionPartitionResourcesJob().get(),
             new_resources=Resource.objects.active().order_by('-id')[:10]
         )
         return super().get_context_data(**kwargs)

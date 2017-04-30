@@ -10,10 +10,9 @@ from django.views.generic import TemplateView, ListView, DetailView, RedirectVie
 from django.contrib.syndication.views import Feed
 
 from apps.articles.models import (Article, Section, Comment, Notice, BEST, NEWS, VIDEO,
-                                  NAVIGATE_SECTIONS, VIDEO_SECTIONS, GENERIC_SECTIONS,
-                                  Rss201rev2Feed)
+                                  NAVIGATE_SECTIONS, GENERIC_SECTIONS, Rss201rev2Feed)
 from apps.articles.forms import CommentForm, AddVideoForm, CreateArticleForm
-from apps.articles.jobs import IndexSectionArticlesJob
+from apps.articles.jobs import IndexSectionArticlesJob, VideoArticlesJob, InSectionJob
 from apps.utils.mixins.views import PageContextMixin
 from apps.utils.mixins.paginator import PaginatorMixin
 from apps.utils.mixins.access import StaffRequiredMixin
@@ -105,16 +104,7 @@ class ArticleDetailView(PageContextMixin, PaginatorMixin, DetailView):
             comments = Comment.objects.filter(article=self.object, is_active=True).select_related('user')
             kwargs['art_comments'] = self.paginate_qs(comments, 3)
         else:
-            data = []
-            for slug in NAVIGATE_SECTIONS:
-                article = (Article.objects.visible()
-                           .filter(section__slug=slug)
-                           .select_related('section')
-                           .order_by('-publish_date')
-                           .first())
-                if article:
-                    data.append(article)
-            kwargs['in_sections'] = data
+            kwargs['in_sections'] = InSectionJob().get()
         return super().get_context_data(**kwargs)
 
 
@@ -152,23 +142,7 @@ class NoticeListView(PageContextMixin, CreateView):
 class VideoContextMixin(object):
 
     def get_context_data(self, **kwargs):
-        sections = Section.objects.filter(slug__in=VIDEO_SECTIONS, is_video=True)
-
-        materials = {}
-        for section in sections:
-            if section.slug in ('video_fpolitic', 'video_national'):
-                n = 5
-            elif section.slug.startswith('video_partner'):
-                n = 2
-            else:
-                n = 3
-            materials[section.slug] = {
-                'section': section,
-                'articles': (Article.objects.visible().with_authors()
-                             .select_related('section')
-                             .filter(section=section)[:n])
-            }
-        kwargs['materials'] = materials
+        kwargs['materials'] = VideoArticlesJob().get()
         return super().get_context_data(**kwargs)
 
 
