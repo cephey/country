@@ -169,6 +169,25 @@ LOGGING = {
     },
 }
 
+# REDIS
+REDIS_DB = 0 if 'PROD' in os.environ else 3
+REDIS_LOCATION = 'redis://127.0.0.1:6379/{}'.format(REDIS_DB)
+
+DJANGO_CACHE_VERSION = 1
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': REDIS_LOCATION,
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        },
+        'VERSION': DJANGO_CACHE_VERSION,
+    }
+}
+
+# CELERY
+CELERY_BROKER_URL = REDIS_LOCATION
+
 
 if 'L' in os.environ:
     CAPTCHA_TEST_MODE = True
