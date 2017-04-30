@@ -12,6 +12,8 @@ if 'PROD' in os.environ:
 
 INTERNAL_IPS = ['127.0.0.1']
 ALLOWED_HOSTS = ['95.85.18.34', 'localhost']
+if 'PROD' in os.environ:
+    ALLOWED_HOSTS.append('forum-msk.org')
 
 
 # Application definition
