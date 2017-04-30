@@ -1,4 +1,5 @@
 import os
+import forum.celery  # noqa
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -37,6 +38,7 @@ INSTALLED_APPS = [
 
     'captcha',
     'ckeditor',
+    'cacheback',
 
     'debug_toolbar',
 ]
@@ -186,7 +188,7 @@ CACHES = {
 }
 
 # CELERY
-CELERY_BROKER_URL = REDIS_LOCATION
+BROKER_URL = REDIS_LOCATION
 
 
 if 'L' in os.environ:

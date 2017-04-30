@@ -7,5 +7,5 @@ from django.conf import settings
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings')
 
 app = Celery('forum')
-app.config_from_object('django.conf:settings', namespace='CELERY')
+app.config_from_object('django.conf:settings')
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)

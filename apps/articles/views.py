@@ -13,6 +13,7 @@ from apps.articles.models import (Article, Section, Comment, Notice, BEST, NEWS,
                                   NAVIGATE_SECTIONS, VIDEO_SECTIONS, GENERIC_SECTIONS,
                                   Rss201rev2Feed)
 from apps.articles.forms import CommentForm, AddVideoForm, CreateArticleForm
+from apps.articles.jobs import IndexSectionArticlesJob
 from apps.utils.mixins.views import PageContextMixin
 from apps.utils.mixins.paginator import PaginatorMixin
 from apps.utils.mixins.access import StaffRequiredMixin
@@ -22,17 +23,6 @@ class IndexView(PageContextMixin, TemplateView):
     template_name = 'articles/index.html'
 
     def get_context_data(self, **kwargs):
-        sections = Section.objects.filter(slug__in=NAVIGATE_SECTIONS)
-
-        materials = {}
-        for section in sections:
-            materials[section.slug] = {
-                'section': section,
-                'articles': (Article.objects.visible().with_authors()
-                             .select_related('section')
-                             .filter(section=section)[:6])
-            }
-
         kwargs.update(
             main_news=(Article.objects.visible().with_authors()
                        .select_related('section')
@@ -44,7 +34,7 @@ class IndexView(PageContextMixin, TemplateView):
                            .filter(is_news=False)
                            .order_by('-publish_date', '-comments_count')
                            .first()),
-            materials=materials
+            materials=IndexSectionArticlesJob().get()
         )
         return super().get_context_data(**kwargs)
 
