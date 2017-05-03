@@ -40,7 +40,7 @@
                         </div>
                         <div class="p_t">
                             <div class="normal">
-                                <a href="{{ article.get_absolute_url }}">{{ article.preview }}</a>
+                                <a href="{{ article.get_absolute_url }}">{{ article.preview|striptags }}</a>
                                 <span class="active_or">
                                     <a href="{{ article.get_absolute_url }}">&gt;&gt;</a>
                                 </span>

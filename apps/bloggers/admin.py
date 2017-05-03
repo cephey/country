@@ -8,6 +8,7 @@ from apps.bloggers.models import Blogger, Entry
 @admin.register(Blogger)
 class BloggerAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'link_url', 'is_active')
+    list_filter = ('is_active',)
 
     def link_url(self, obj):
         return format_html('<a href="{url}">{url}</a>', url=obj.link)
@@ -18,6 +19,7 @@ class BloggerAdmin(admin.ModelAdmin):
 class EntryAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'blogger', 'link_url', 'is_active')
     list_select_related = ('blogger',)
+    list_filter = ('is_active',)
     readonly_fields = ('title', 'description', 'blogger', 'link_url', 'created_at')
     fields = ('title', 'blogger', 'description', 'link_url', 'is_active', 'created_at')
 

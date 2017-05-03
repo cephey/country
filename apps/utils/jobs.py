@@ -21,7 +21,7 @@ class SidebarContextJob(Job):
                                .filter(section__is_video=True)[:2]),
             'sidebar_news': Article.objects.visible().filter(is_news=True).order_by('?')[:10],  # order by vote_sum?
             'notices': Notice.objects.filter(status=Notice.STATUS.approved)[:3],
-            'entries': Entry.objects.active().select_related('blogger').order_by('?')[:5],
+            'entries': Entry.objects.active().select_related('blogger').order_by('-publish_date')[:5],
             'authors': Author.objects.order_by('last_name')[:15],
         }
 

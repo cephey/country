@@ -15,12 +15,12 @@
                                 <a href="{{ entry.link }}">{{ entry.title }}</a>
                             </strong>
                             <br>
-                            <span>{{ entry.created_at|date:'Y-m-d H:i' }}</span>
+                            <span>{{ entry.publish_date|date:'Y-m-d H:i' }}</span>
                         </div>
                         <div class="p_t">
                             <div class="normal">
                                 {% if entry.description %}
-                                    {{ entry.description }}
+                                    {{ entry.description|truncatechars:"1000" }}
                                     <a href="{{ entry.link }}" target="_blank" class="rarr">&rarr;</a>
                                 {% endif %}
                             </div>

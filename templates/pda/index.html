@@ -22,7 +22,7 @@
                 <h4 class="media-heading">
                     <a href="{{ article.get_pda_url }}">{{ article.title|safe }}</a>
                 </h4>
-                {{ article.preview|safe }}
+                {{ article.preview|striptags }}
             </div>
         {% endwith %}
     </div>

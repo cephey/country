@@ -9,6 +9,7 @@ class BaseEntryListView(PageContextMixin, ListView):
     paginate_by = 6
     page_kwarg = 'p'
     model = Entry
+    ordering = ('-publish_date',)
 
     def get_queryset(self):
         return super().get_queryset().active().select_related('blogger')

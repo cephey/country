@@ -4,7 +4,7 @@
 
 {% block title %}{{ object.title }} - {{ art_section.name }} - ФОРУМ.мск{% endblock %}
 
-{% block description %}{{ object.preview }}{% endblock %}
+{% block description %}{{ object.preview|striptags }}{% endblock %}
 
 {% block keywords %}
     {% if object.tags.all %}

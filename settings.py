@@ -1,5 +1,6 @@
 import os
 import forum.celery  # noqa
+from celery.schedules import crontab
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -191,6 +192,15 @@ CACHES = {
 
 # CELERY
 BROKER_URL = REDIS_LOCATION
+if 'PROD' not in os.environ:
+    CELERY_ALWAYS_EAGER = True
+
+CELERYBEAT_SCHEDULE = {
+    'download_latest_entries': {
+        'task': 'download_latest_entries',
+        'schedule': crontab(minute=11),
+    }
+}
 
 
 if 'L' in os.environ:

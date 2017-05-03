@@ -5,6 +5,7 @@ from django.db import models
 from django.urls import reverse, reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.utils.feedgenerator import RssFeed, rfc2822_date
+from django.template.defaultfilters import truncatechars_html
 from django.contrib.contenttypes.fields import GenericRelation
 from model_utils import Choices
 
@@ -134,7 +135,7 @@ class Article(TimeStampedModel):
 
     @property
     def preview(self):
-        return self.description or (self.content[:400] + '...')
+        return self.description or truncatechars_html(self.content, 400)
 
     @property
     def main_author(self):

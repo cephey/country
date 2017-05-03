@@ -7,12 +7,16 @@ from apps.bloggers.managers import BloggerQuerySet, EntryQuerySet
 
 
 class Blogger(TimeStampedModel):
+    RSS_PATH = '/data/rss/'
+
     first_name = models.CharField(_('Имя'), max_length=255, blank=True)
     last_name = models.CharField(_('Фамилия'), max_length=255, blank=True)
     middle_name = models.CharField(_('Отчество'), max_length=255, blank=True)
     link = models.CharField(_('Ссылка на блог'), max_length=255, blank=True)
     photo = models.ImageField(_('Фото'), upload_to='bloggers', max_length=255, blank=True, null=True)
     is_active = models.BooleanField(default=True)
+
+    ext_id = models.IntegerField(_('Внешний ID'), editable=False, default=0, db_index=True)
 
     objects = models.Manager.from_queryset(BloggerQuerySet)()
 
@@ -38,6 +42,7 @@ class Entry(TimeStampedModel):
     description = models.TextField(_('Описание'), blank=True)
     blogger = models.ForeignKey('bloggers.Blogger', verbose_name=_('Блогер'))
     link = models.CharField(_('Ссылка на запись'), max_length=255, blank=True)
+    publish_date = models.DateTimeField(_('Дата публикации'), blank=True, null=True)
     is_active = models.BooleanField(default=True)
 
     objects = models.Manager.from_queryset(EntryQuerySet)()
