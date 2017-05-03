@@ -80,6 +80,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('--middle', action='store_true')
         parser.add_argument('--height', action='store_true')
+        parser.add_argument('--dev', action='store_true')
 
     def handle(self, *args, **kwargs):
         STR = LOW
@@ -101,8 +102,9 @@ class Command(BaseCommand):
         Section.objects.all().delete()
 
         Author.objects.all().delete()
-        Blogger.objects.all().delete()
-        Entry.objects.all().delete()
+        if kwargs.get('dev'):
+            Blogger.objects.all().delete()
+            Entry.objects.all().delete()
 
         Choice.objects.all().delete()
         Poll.objects.all().delete()
@@ -264,10 +266,11 @@ class Command(BaseCommand):
                     choice.id, choice_ct, STR['max_choice_vote_count'], tokens, users, lambda: 1
                 )
 
-        self.stdout.write('Generate bloggers with entries...')
-        bloggers = BloggerFactory.create_batch(10)
-        for blogger in bloggers:
-            EntryFactory.create_batch(random.randint(STR['min_entry_count'], STR['max_entry_count']), blogger=blogger)
+        if kwargs.get('dev'):
+            self.stdout.write('Generate bloggers with entries...')
+            bloggers = BloggerFactory.create_batch(10)
+            for blogger in bloggers:
+                EntryFactory.create_batch(random.randint(STR['min_entry_count'], STR['max_entry_count']), blogger=blogger)
 
     def create_votes_for(self, obj_id, obj_ct, max_count, tokens, users, score_fun):
         vote_count = random.randint(0, max_count)
