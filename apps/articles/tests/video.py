@@ -1,4 +1,5 @@
 from django.test import TestCase, Client
+from django.core.cache import cache
 from apps.articles.factories import SectionFactory, ArticleFactory, VideoSectionFactory
 
 
@@ -6,6 +7,9 @@ class VideoTestCase(TestCase):
 
     def setUp(self):
         self.app = Client()
+
+    def tearDown(self):
+        cache.clear()
 
     def test_index_video_page(self):
         section1 = VideoSectionFactory(name='Политика', slug='video_politic')  # 3 item block
