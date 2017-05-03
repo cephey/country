@@ -1,6 +1,7 @@
 import random
 import factory
 from faker import Faker
+from django.utils import timezone
 from apps.bloggers.models import Blogger, Entry
 
 
@@ -23,6 +24,7 @@ class EntryFactory(factory.django.DjangoModelFactory):
     title = factory.Faker('sentence', nb_words=3, locale='ru_RU')
     blogger = factory.SubFactory('apps.bloggers.factories.BloggerFactory')
     link = factory.Faker('uri')
+    publish_date = factory.LazyFunction(timezone.now)
 
     @factory.post_generation
     def description(obj, create, extracted, **kwargs):

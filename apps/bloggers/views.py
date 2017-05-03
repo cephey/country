@@ -28,7 +28,12 @@ class BloggerEntryListView(BaseEntryListView):
     blogger = None
 
     def get(self, request, *args, **kwargs):
-        self.blogger = get_object_or_404(Blogger.objects.active(), id=kwargs.get('pk'))
+        if 'pk' in kwargs:
+            params = {'id': kwargs['pk']}
+        elif 'legacy_pk' in kwargs:
+            params = {'ext_id': kwargs['legacy_pk']}
+
+        self.blogger = get_object_or_404(Blogger.objects.active(), **params)
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):

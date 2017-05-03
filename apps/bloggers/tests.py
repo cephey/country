@@ -1,5 +1,10 @@
+import pytz
+import responses
+from datetime import datetime
 from django.test import TestCase, Client
 from apps.bloggers.factories import EntryFactory, BloggerFactory
+from apps.bloggers.tasks import download_latest_entries
+from apps.bloggers.models import Blogger, Entry
 
 
 class EntryTestCase(TestCase):
@@ -47,3 +52,35 @@ class EntryTestCase(TestCase):
         blogger = BloggerFactory(is_active=False)
         resp = self.app.get('/bloggers/{}/'.format(blogger.id))
         self.assertEqual(resp.status_code, 404)
+
+    def test_deprecated_url(self):
+        blogger = BloggerFactory(ext_id=454540)
+        resp = self.app.get('/bloggers/454540.html')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.context['blogger_obj'].id, blogger.id)
+
+
+class TaskTestCase(TestCase):
+
+    @responses.activate
+    def test_lolo(self):
+        responses.add(responses.GET, 'http://anna.country.com/data/rss/',
+                      body=open('fixtures/xml/blogger_rss.xml').read())
+
+        blogger = BloggerFactory(link='http://anna.country.com')
+        download_latest_entries()
+
+        entries = Entry.objects.order_by('id')
+        self.assertEqual(len(entries), 2)
+
+        self.assertEqual(entries[0].blogger, blogger)
+        self.assertEqual(entries[0].title, 'Национальная валюта')
+        self.assertEqual(entries[0].link, 'http://anna.country.com/260976.html')
+        self.assertEqual(entries[0].publish_date, datetime(2017, 5, 3, 4, 5, 30, tzinfo=pytz.utc))
+        self.assertTrue(entries[0].description.startswith('Сказать же публично правду о том, чем на самом деле'))
+
+        self.assertEqual(entries[1].blogger, blogger)
+        self.assertEqual(entries[1].title, 'Это круто!')
+        self.assertEqual(entries[1].link, 'http://anna.country.com/260710.html')
+        self.assertEqual(entries[1].publish_date, datetime(2017, 5, 2, 3, 43, 48, tzinfo=pytz.utc))
+        self.assertIn('Первое\n\nи основное', entries[1].description)
