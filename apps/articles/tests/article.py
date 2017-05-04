@@ -1,10 +1,15 @@
+import pytz
+import responses
+from datetime import datetime
 from freezegun import freeze_time
 from django.test import TestCase, Client
 
 from apps.authors.factories import AuthorFactory
 from apps.articles.models import Article
 from apps.articles.factories import (ArticleFactory, SectionFactory, CommentFactory,
-                                     MultimediaFactory, VideoSectionFactory)
+                                     MultimediaFactory, VideoSectionFactory,
+                                     PartnerVideoSectionFactory)
+from apps.articles.tasks import download_latest_partners_videos
 from apps.tags.factories import TagFactory
 from apps.votes.factories import VoteFactory
 from apps.users.factories import UserFactory
@@ -229,3 +234,29 @@ class ArticleTestCase(TestCase):
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(resp.url, '/material/news/1/')
         self.assertEqual(Article.objects.first().discussion_status, 'close')
+
+
+class TasksTestCase(TestCase):
+
+    @responses.activate
+    def test_download_latest_video(self):
+        responses.add(responses.GET, 'https://www.youtube.com/feeds/videos.xml',
+                      body=open('fixtures/xml/video_rss.xml').read())
+
+        section = PartnerVideoSectionFactory(channel='radio')
+        download_latest_partners_videos()
+
+        articles = Article.objects.order_by('id')
+        self.assertEqual(len(articles), 2)
+
+        self.assertEqual(articles[0].section, section)
+        self.assertEqual(articles[0].title, 'Невзоровские среды 03 05 2017')
+        self.assertEqual(articles[0].status, 'approved')
+        self.assertEqual(articles[0].video, 'https://www.youtube.com/watch?v=gB-tmfPfPmw')
+        self.assertEqual(articles[0].publish_date, datetime(2017, 5, 3, 23, 2, 8, tzinfo=pytz.utc))
+
+        self.assertEqual(articles[1].section, section)
+        self.assertEqual(articles[1].title, 'Милонов #надоел - Питер, 1 мая 2017')
+        self.assertEqual(articles[1].status, 'approved')
+        self.assertEqual(articles[1].video, 'https://www.youtube.com/watch?v=3VsBEIid21g')
+        self.assertEqual(articles[1].publish_date, datetime(2017, 5, 1, 13, 47, 43, tzinfo=pytz.utc))

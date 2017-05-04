@@ -36,6 +36,7 @@ class CommentForm(forms.ModelForm):
 
 
 class CreateArticleForm(forms.ModelForm):
+    content = forms.CharField(widget=forms.Textarea, required=True)
     captcha = CaptchaField()
 
     class Meta:
