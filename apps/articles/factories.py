@@ -19,6 +19,16 @@ class VideoSectionFactory(SectionFactory):
     is_video = True
 
 
+class PartnerVideoSectionFactory(VideoSectionFactory):
+
+    @factory.post_generation
+    def channel(obj, create, extracted, **kwargs):
+        if extracted:
+            obj.channel = extracted
+        else:
+            obj.channel = Faker().slug()
+
+
 class ArticleFactory(factory.django.DjangoModelFactory):
 
     class Meta:

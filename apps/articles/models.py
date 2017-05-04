@@ -43,7 +43,11 @@ class Section(models.Model):
     name = models.CharField(_('Название'), max_length=255)
     slug = models.CharField(_('Слаг'), max_length=255, unique=True)
     is_video = models.BooleanField(default=False)
+    channel = models.CharField(_('Канал'), max_length=100, blank=True,
+                               help_text='Идентификатор канала на youtube')
     is_active = models.BooleanField(default=True)
+
+    ext_id = models.IntegerField(_('Внешний ID'), editable=False, default=0, db_index=True)
 
     objects = models.Manager.from_queryset(SectionQuerySet)()
 
@@ -73,7 +77,7 @@ class Article(TimeStampedModel):
     )
     title = models.CharField(_('Заголовок'), max_length=255)
     description = models.TextField(_('Описание'), blank=True)
-    content = models.TextField(_('Содержание'))
+    content = models.TextField(_('Содержание'), blank=True)
     section = models.ForeignKey('articles.Section', verbose_name=_('Раздел'), blank=True, null=True)
     is_news = models.BooleanField(_('Новость'), default=False)
     authors = models.ManyToManyField('authors.Author', verbose_name=_('Авторы'), blank=True)

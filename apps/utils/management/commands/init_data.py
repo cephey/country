@@ -8,7 +8,8 @@ from apps.authors.models import Author
 from apps.authors.factories import AuthorFactory
 from apps.articles.models import Section, Article, Notice, Comment, Multimedia
 from apps.articles.factories import (SectionFactory, ArticleFactory, NoticeFactory,
-                                     CommentFactory, MultimediaFactory, VideoSectionFactory)
+                                     CommentFactory, MultimediaFactory, VideoSectionFactory,
+                                     PartnerVideoSectionFactory)
 from apps.bloggers.models import Blogger, Entry
 from apps.bloggers.factories import BloggerFactory, EntryFactory
 from apps.polls.models import Poll, Choice
@@ -98,13 +99,18 @@ class Command(BaseCommand):
         Notice.objects.all().delete()
         Comment.objects.all().delete()
         Multimedia.objects.all().delete()
-        Article.objects.all().delete()
-        Section.objects.all().delete()
+
+        if kwargs.get('dev'):
+            Article.objects.all().delete()
+            Section.objects.all().delete()
+        else:
+            Article.objects.filter(section__channel='').delete()
+            Section.objects.filter(channel='').delete()
 
         Author.objects.all().delete()
         if kwargs.get('dev'):
-            Blogger.objects.all().delete()
             Entry.objects.all().delete()
+            Blogger.objects.all().delete()
 
         Choice.objects.all().delete()
         Poll.objects.all().delete()
@@ -146,19 +152,25 @@ class Command(BaseCommand):
             VideoSectionFactory(name='Проиcшествия', slug='video_accidents'),
             VideoSectionFactory(name='Внешняя политика', slug='video_fpolitic'),
             VideoSectionFactory(name='Общество и его культура', slug='video_society'),
-            VideoSectionFactory(name='Народное видео', slug='video_national'),
-
-            # partner video
-            VideoSectionFactory(name='Луганск 24', slug='video_partner_lugansk24'),
-            VideoSectionFactory(name='Программа Сергея Доренко', slug='video_partner_dorenko'),
-            VideoSectionFactory(name='Красное.ТВ', slug='video_partner_krasnoetv'),
-            VideoSectionFactory(name='Nevex.TV', slug='video_partner_nevextv')
+            VideoSectionFactory(name='Народное видео', slug='video_national')
         ]
+        if kwargs.get('dev'):
+            sections += [
+                # partner video
+                PartnerVideoSectionFactory(name='Луганск 24', slug='video_partner_lugansk24'),
+                PartnerVideoSectionFactory(name='Программа Сергея Доренко', slug='video_partner_dorenko'),
+                PartnerVideoSectionFactory(name='Красное.ТВ', slug='video_partner_krasnoetv'),
+                PartnerVideoSectionFactory(name='Nevex.TV', slug='video_partner_nevextv')
+            ]
         a_count_list = [2, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
         self.stdout.write('Generate articles with comments and media...')
         for i in range(len(sections) * STR['avg_art_count'] * 2):
             section = random.choice(sections)
+
+            if not kwargs.get('dev') and section.channel:
+                continue
+
             if section.is_video and not random.randint(0, 1):
                 continue
 

@@ -7,6 +7,16 @@ from apps.articles.forms import AdminArticleForm, AdminNoticeForm
 @admin.register(Section)
 class SectionAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'is_video', 'is_active')
+    list_filter = ('is_active', 'is_video')
+
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'slug', 'channel')
+        }),
+        ('Переключатели', {
+            'fields': ('is_active', 'is_video')
+        }),
+    )
 
 
 @admin.register(Article)
@@ -14,6 +24,7 @@ class ArticleAdmin(admin.ModelAdmin):
     form = AdminArticleForm
     list_display = ('title', 'is_active', 'is_video', 'section', 'publish_date', 'comments_count')
     list_select_related = ('section',)
+    list_filter = ('is_active', 'section')
     fieldsets = (
         (None, {
             'fields': ('title', 'section')
