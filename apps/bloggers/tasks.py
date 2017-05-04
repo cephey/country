@@ -6,6 +6,7 @@ import xmltodict
 import email.utils
 from io import BytesIO
 from urllib.parse import urljoin
+from django.utils import timezone
 from django.core.files import File
 
 from forum.celery import app
@@ -32,6 +33,8 @@ def download_latest_blogger_entries(blogger_id):
         }
         if 'pubDate' in item:
             defaults['publish_date'] = email.utils.parsedate_to_datetime(item['pubDate'])
+        else:
+            defaults['publish_date'] = timezone.now()
 
         entry, created = Entry.objects.get_or_create(link=item['link'], blogger_id=blogger_id, defaults=defaults)
         if created:

@@ -65,6 +65,11 @@ class Section(models.Model):
     def get_pda_url(self):
         return reverse('pda:section', kwargs={'slug': self.slug})
 
+    @property
+    def rss_link(self):
+        if self.channel:
+            return 'https://www.youtube.com/feeds/videos.xml?user={}&orderby=published'.format(self.channel)
+
 
 class Article(TimeStampedModel):
     DISCUSSION_STATUS = Choices(

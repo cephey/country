@@ -198,7 +198,11 @@ if 'PROD' not in os.environ:
 CELERYBEAT_SCHEDULE = {
     'download_latest_entries': {
         'task': 'download_latest_entries',
-        'schedule': crontab(minute=11),
+        'schedule': crontab(minute=11)
+    },
+    'download_latest_partners_videos': {
+        'task': 'download_latest_partners_videos',
+        'schedule': crontab(minute=41)
     }
 }
 
