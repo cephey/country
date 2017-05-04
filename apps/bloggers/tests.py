@@ -3,7 +3,7 @@ import responses
 from datetime import datetime
 from django.test import TestCase, Client
 from apps.bloggers.factories import EntryFactory, BloggerFactory
-from apps.bloggers.tasks import download_latest_entries
+from apps.bloggers.tasks import download_latest_entries, update_bloggers_photos
 from apps.bloggers.models import Blogger, Entry
 
 
@@ -63,7 +63,7 @@ class EntryTestCase(TestCase):
 class TaskTestCase(TestCase):
 
     @responses.activate
-    def test_lolo(self):
+    def test_download_latest_entries(self):
         responses.add(responses.GET, 'http://anna.country.com/data/rss/',
                       body=open('fixtures/xml/blogger_rss.xml').read())
 
@@ -84,3 +84,17 @@ class TaskTestCase(TestCase):
         self.assertEqual(entries[1].link, 'http://anna.country.com/260710.html')
         self.assertEqual(entries[1].publish_date, datetime(2017, 5, 2, 3, 43, 48, tzinfo=pytz.utc))
         self.assertIn('Первое\n\nи основное', entries[1].description)
+
+    @responses.activate
+    def test_download_blogger_photo(self):
+        responses.add(responses.GET, 'http://anna.country.com/data/rss/',
+                      body=open('fixtures/xml/blogger_rss.xml').read())
+        responses.add(responses.GET, 'http://anna.country.com/12345678/87654321',
+                      body=open('fixtures/i/flag.jpg', 'rb').read())
+
+        blogger = BloggerFactory(link='http://anna.country.com', photo=None)
+        update_bloggers_photos()
+
+        blogger.refresh_from_db()
+        self.assertTrue(blogger.photo)
+        self.assertIn('bloggers/', blogger.photo.name)
