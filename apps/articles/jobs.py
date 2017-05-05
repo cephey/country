@@ -35,7 +35,8 @@ class VideoArticlesJob(Job):
                 'section': section,
                 'articles': (Article.objects.visible().with_authors()
                              .select_related('section')
-                             .filter(section=section)[:n])
+                             .filter(section=section)
+                             .order_by('-publish_date')[:n])
             }
         return materials
 
