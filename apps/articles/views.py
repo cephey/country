@@ -43,7 +43,7 @@ class BaseArticleListView(PageContextMixin, ListView):
     paginate_by = 5
     queryset = Article.objects.visible().with_authors().select_related('section')
     page_kwarg = 'p'
-    ordering = '-id'
+    ordering = '-publish_date'
 
 
 class SectionView(BaseArticleListView):
