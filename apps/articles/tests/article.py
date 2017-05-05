@@ -1,11 +1,15 @@
+import os
 import pytz
 import responses
 from datetime import datetime
 from freezegun import freeze_time
+
+from django.conf import settings
 from django.test import TestCase, Client
+from django.core.management import call_command
 
 from apps.authors.factories import AuthorFactory
-from apps.articles.models import Article
+from apps.articles.models import Article, Section
 from apps.articles.factories import (ArticleFactory, SectionFactory, CommentFactory,
                                      MultimediaFactory, VideoSectionFactory,
                                      PartnerVideoSectionFactory)
@@ -260,3 +264,51 @@ class TasksTestCase(TestCase):
         self.assertEqual(articles[1].status, 'approved')
         self.assertEqual(articles[1].video, 'https://www.youtube.com/watch?v=3VsBEIid21g')
         self.assertEqual(articles[1].publish_date, datetime(2017, 5, 1, 13, 47, 43, tzinfo=pytz.utc))
+
+
+class ImportTestCase(TestCase):
+
+    def test_import_channels(self):
+        call_command(
+            'migrate_channels',
+            path=os.path.join(settings.BASE_DIR, 'fixtures/csv/import_video_importer.csv')
+        )
+        sections = Section.objects.order_by('id')
+        self.assertEqual(len(sections), 4)
+
+        self.assertEqual(sections[0].name, 'Nevex.TV')
+        self.assertEqual(sections[0].slug, 'video_partner_nevextv')
+        self.assertTrue(sections[0].is_video)
+        self.assertEqual(sections[0].channel, 'Nevextv')
+        self.assertEqual(sections[0].ext_id, 8221862)
+
+        self.assertEqual(sections[1].slug, 'video_partner_dorenko')
+        self.assertEqual(sections[1].ext_id, 10025524)
+
+        self.assertEqual(sections[2].name, 'Красное.ТВ')
+        self.assertEqual(sections[2].channel, 'krasnoetv')
+
+        self.assertEqual(sections[3].name, 'lugansk24')
+        self.assertEqual(sections[3].slug, 'video_partner_lugansk24')
+
+    def test_import_video(self):
+        section1 = PartnerVideoSectionFactory(ext_id=123456)
+        section2 = PartnerVideoSectionFactory(ext_id=200300)
+        call_command(
+            'migrate_videos',
+            path=os.path.join(settings.BASE_DIR, 'fixtures/csv/import_video_news.csv')
+        )
+        articles = Article.objects.order_by('id')
+        self.assertEqual(len(articles), 3)
+
+        self.assertEqual(articles[0].title, 'Остальная Россия')
+        self.assertEqual(articles[0].section, section2)
+        self.assertEqual(articles[0].publish_date, datetime(2012, 1, 30, 14, 20, 30, 533001, tzinfo=pytz.utc))
+        self.assertEqual(articles[0].video, 'http://www.youtube.com/watch?v=y39Z_4V1A9c&feature=youtube_gdata')
+        self.assertEqual(articles[0].status, 'approved')
+
+        self.assertEqual(articles[1].title, 'Новая Сила')
+        self.assertEqual(articles[1].section, section1)
+
+        self.assertEqual(articles[2].section, section1)
+        self.assertEqual(articles[2].video, 'http://www.youtube.com/watch?v=tX_MY6xVvlg&feature=youtube_gdata')

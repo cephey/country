@@ -1,7 +1,12 @@
+import os
 import pytz
 import responses
 from datetime import datetime
+
+from django.conf import settings
 from django.test import TestCase, Client
+from django.core.management import call_command
+
 from apps.bloggers.factories import EntryFactory, BloggerFactory
 from apps.bloggers.tasks import download_latest_entries, update_bloggers_photos
 from apps.bloggers.models import Blogger, Entry
@@ -98,3 +103,52 @@ class TaskTestCase(TestCase):
         blogger.refresh_from_db()
         self.assertTrue(blogger.photo)
         self.assertIn('bloggers/', blogger.photo.name)
+
+
+class ImportTestCase(TestCase):
+
+    def test_import_bloggers(self):
+        call_command(
+            'migrate_bloggers',
+            path=os.path.join(settings.BASE_DIR, 'fixtures/csv/forum_bloggers.csv')
+        )
+        bloggers = Blogger.objects.order_by('id')
+        self.assertEqual(len(bloggers), 5)
+
+        self.assertEqual(bloggers[0].first_name, 'Дарья')
+        self.assertEqual(bloggers[0].last_name, 'Митина')
+        self.assertEqual(bloggers[0].link, 'http://kolobok1973.livejournal.com/')
+        self.assertTrue(bloggers[0].is_active)
+        self.assertEqual(bloggers[0].ext_id, 2373877)
+
+        self.assertEqual(bloggers[1].first_name, 'Илья')
+        self.assertFalse(bloggers[2].is_active)
+        self.assertEqual(bloggers[3].link, 'http://m-kalashnikov.livejournal.com/')
+        self.assertEqual(bloggers[4].ext_id, 2373893)
+
+    def test_import_entries(self):
+        blogger1 = BloggerFactory(ext_id=11299)
+        blogger2 = BloggerFactory(ext_id=14500)
+        call_command(
+            'migrate_entries',
+            path=os.path.join(settings.BASE_DIR, 'fixtures/csv/forum_bloggers_news.csv')
+        )
+        entries = Entry.objects.order_by('id')
+        self.assertEqual(len(entries), 4)
+
+        self.assertEqual(entries[0].title, 'К киприотам России')
+        self.assertTrue(entries[0].description.startswith('итак, г-н Медведев сообщил, что на Кипре заблокированы '
+                                                          'деньги российских\nгосударственных структур.'))
+        self.assertEqual(entries[0].blogger, blogger2)
+        self.assertEqual(entries[0].link, 'http://denis-bilunov.livejournal.com/193383.html')
+        self.assertEqual(entries[0].publish_date, datetime(2013, 3, 21, 7, 50, 35, tzinfo=pytz.utc))
+
+        self.assertEqual(entries[1].title, 'Жанаозен: неизвестная трагедия')
+        self.assertEqual(entries[1].blogger, blogger2)
+
+        self.assertEqual(entries[2].description, 'Так так )))\n\n')
+        self.assertEqual(entries[2].blogger, blogger1)
+
+        self.assertEqual(entries[3].blogger, blogger1)
+        self.assertEqual(entries[3].publish_date, datetime(2014, 4, 11, 9, 48, 39, tzinfo=pytz.utc))
+
