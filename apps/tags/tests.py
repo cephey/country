@@ -1,3 +1,5 @@
+import xmltodict
+from freezegun import freeze_time
 from django.test import TestCase, Client
 
 from apps.articles.factories import ArticleFactory
@@ -29,3 +31,30 @@ class TagTestCase(TestCase):
 
         self.assertContains(resp, 'колибри')
         self.assertNotContains(resp, 'воробей')
+
+
+class SitemapTestCase(TestCase):
+
+    def setUp(self):
+        self.app = Client()
+
+    def test_tags_sitemap(self):
+        with freeze_time('2017-05-04 09:11:12'):
+            tag1 = TagFactory()
+        with freeze_time('2017-05-03 10:11:12'):
+            tag2 = TagFactory()
+
+        resp = self.app.get('/sitemap-tags.xml')
+        self.assertEqual(resp.status_code, 200)
+
+        data = xmltodict.parse(resp.content)
+        urls = data['urlset']['url']
+        self.assertEqual(len(urls), 2)
+
+        self.assertTrue(urls[0]['loc'].endswith('/tags/{}/'.format(tag1.id)))
+        self.assertEqual(urls[0]['lastmod'], '2017-05-04')
+        self.assertEqual(urls[0]['changefreq'], 'daily')
+        self.assertEqual(urls[0]['priority'], '0.8')
+
+        self.assertTrue(urls[1]['loc'].endswith('/tags/{}/'.format(tag2.id)))
+        self.assertEqual(urls[1]['lastmod'], '2017-05-03')

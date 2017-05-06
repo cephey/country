@@ -1,5 +1,6 @@
 import os
 import pytz
+import xmltodict
 import responses
 from datetime import datetime
 from freezegun import freeze_time
@@ -312,3 +313,63 @@ class ImportTestCase(TestCase):
 
         self.assertEqual(articles[2].section, section1)
         self.assertEqual(articles[2].video, 'http://www.youtube.com/watch?v=tX_MY6xVvlg&feature=youtube_gdata')
+
+
+class SitemapTestCase(TestCase):
+
+    def setUp(self):
+        self.app = Client()
+
+    def test_index_sitemap(self):
+        resp = self.app.get('/sitemap.xml')
+        self.assertEqual(resp.status_code, 200)
+
+        data = xmltodict.parse(resp.content)
+        sitemaps = data['sitemapindex']['sitemap']
+        self.assertEqual(len(sitemaps), 3)
+
+        paths = sorted([s['loc'] for s in sitemaps])
+        self.assertTrue(paths[0].endswith('/sitemap-news.xml'))
+        self.assertTrue(paths[1].endswith('/sitemap-sections.xml'))
+        self.assertTrue(paths[2].endswith('/sitemap-tags.xml'))
+
+    def test_articles_sitemap(self):
+        section = SectionFactory(name='Политика', slug='politic')
+        with freeze_time('2017-05-02 09:11:12'):
+            article1 = ArticleFactory(section=section)
+        with freeze_time('2017-05-01 10:11:12'):
+            article2 = ArticleFactory(section=section, is_news=True)
+
+        resp = self.app.get('/sitemap-news.xml')
+        self.assertEqual(resp.status_code, 200)
+
+        data = xmltodict.parse(resp.content)
+        urls = data['urlset']['url']
+        self.assertEqual(len(urls), 2)
+
+        self.assertTrue(urls[0]['loc'].endswith('/material/politic/{}/'.format(article1.id)))
+        self.assertEqual(urls[0]['lastmod'], '2017-05-02')
+        self.assertEqual(urls[0]['changefreq'], 'daily')
+        self.assertEqual(urls[0]['priority'], '0.8')
+
+        self.assertTrue(urls[1]['loc'].endswith('/material/news/{}/'.format(article2.id)))
+        self.assertEqual(urls[1]['lastmod'], '2017-05-01')
+
+    def test_sections_sitemap(self):
+        SectionFactory(name='Политика', slug='politic')
+
+        with freeze_time('2017-05-06 07:07:59'):
+            resp = self.app.get('/sitemap-sections.xml')
+        self.assertEqual(resp.status_code, 200)
+
+        data = xmltodict.parse(resp.content)
+        urls = data['urlset']['url']
+        self.assertEqual(len(urls), 2)
+
+        self.assertTrue(urls[0]['loc'].endswith('/material/news/'))
+        self.assertEqual(urls[0]['lastmod'], '2017-05-06')
+        self.assertEqual(urls[0]['changefreq'], 'daily')
+        self.assertEqual(urls[0]['priority'], '0.7')
+
+        self.assertTrue(urls[1]['loc'].endswith('/material/politic/'))
+        self.assertEqual(urls[1]['lastmod'], '2017-05-06')

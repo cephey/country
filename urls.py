@@ -1,9 +1,13 @@
 from django.conf import settings
 from django.conf.urls import url, include
-from django.contrib import admin
 from django.conf.urls.static import static
+from django.contrib import admin
+from django.contrib.sitemaps import views
 
+from apps.articles.sitemaps import ArticleSitemap, SectionSitemap
 from apps.polls.views import PollDetailView
+from apps.tags.sitemaps import TagSitemap
+
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -28,6 +32,21 @@ urlpatterns = [
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
+
+# sitemaps
+sitemaps = {
+    'news': ArticleSitemap,
+    'sections': SectionSitemap,
+    'tags': TagSitemap
+}
+urlpatterns = [
+    url(r'^sitemap\.xml$', views.index, {'sitemaps': sitemaps}),
+    url(r'^sitemap-(?P<section>.+)\.xml$', views.sitemap, {'sitemaps': sitemaps},
+        name='django.contrib.sitemaps.views.sitemap')
+] + urlpatterns
+
+
+# debug_toolbar
 if settings.DEBUG:
     import debug_toolbar
     urlpatterns = [
