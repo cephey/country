@@ -1,0 +1,24 @@
+<table class="full-table {% block height_class %}{% endblock %}">
+    {% if not hide_tile_title %}
+        <tr>
+            <td colspan="3">
+                <div class="big1 rl">
+                    {% block title %}{% endblock %}
+                </div>
+                <div style="width:1px; height:1px"><!-- --></div>
+            </td>
+        </tr>
+    {% endif %}
+    <tr>
+        <td colspan="3" class="valign-top hp100 bgE6F0F5">
+            <div class="border_bl">
+                {% block content %}{% endblock %}
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td class="bg_blu_l w7"><div style="width:7px; height:7px"><!-- --></div></td>
+        <td class="wp100 bg_blu_c"><div style="width:1px; height:7px"><!-- --></div></td>
+        <td class="bg_blu_r w7"><div style="width:7px; height:7px"><!-- --></div></td>
+    </tr>
+</table>

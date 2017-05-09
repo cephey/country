@@ -6,75 +6,23 @@
         {% if main_material %}
             <table class="full-table">
                 <tr>
-                    <td>
-                        <div class="big1 or">Репортаж дня</div>
-                        <div style="width:1px; height:1px"><!-- --></div>
-                    </td>
-                    <td>&nbsp;</td>
-                    <td>
-                        <div class="big1 or">Главный сюжет</div>
-                        <div style="width:1px; height:1px"><!-- --></div>
-                    </td>
-                </tr>
-                <tr>
                     <td class="valign-top wp50 hp100">
-                        {% include 'incl/article_block.html' with article=main_news color='bgFFF0E6' %}
+                        {% include 'articles/incl/tile/article_short.html' with title='Репортаж дня' article=main_news %}
                     </td>
-                    <td class="w7">
-                        <div style="width:7px; height:1px"><!-- --></div>
-                    </td>
+                    <td class="w7"><div style="width:7px; height:1px"><!-- --></div></td>
                     <td class="valign-top wp50 hp100">
-                        {% include 'incl/article_block.html' with article=main_material color='bgFFF0E6' %}
+                        {% include 'articles/incl/tile/article_short.html' with title='Главный сюжет' article=main_material %}
                     </td>
                 </tr>
             </table>
         {% else %}
-            {% with article=main_news %}
-                <table class="full-table">
-                    <tr>
-                        <td>
-                            <div class="big1 or">{{ article.title }}</div>
-                            <div style="width:1px; height:1px"><!-- --></div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="valign-top hp100 wp100">
-                            <table class="full-table hp100 bgFFF0E6">
-                                <tr>
-                                    <td colspan="3" class="hp100 valign-top border_or">
-                                        <table width="100%">
-                                            <tr>
-                                                <td class="valign-top">{{ article.video_code|safe }}</td>
-                                                <td class="valign-top">
-                                                    <div class="normal">
-                                                        <span>
-                                                            {% include 'authors/incl/cover_name.html' with article=article %}
-                                                            {{ article.publish_date|date:'d.m.Y' }}<br>
-                                                        </span>
-                                                    </div>
-                                                    <div class="p_t">
-                                                        <div class="normal">
-                                                            <a href="{{ article.get_absolute_url }}">{{ article.preview|striptags }}</a>
-                                                            <span class="active">
-                                                                <a href="{{ article.get_absolute_url }}">&gt;&gt;</a>
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="bg_orange_l w7"><div style="width:7px; height:7px"><!-- --></div></td>
-                                    <td class="wp100 bg_orange_c"><div style="width:1px; height:7px"><!-- --></div></td>
-                                    <td class="bg_orange_r w7"><div style="width:7px; height:7px"><!-- --></div></td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                </table>
-            {% endwith %}
+            <table class="full-table">
+                <tr>
+                    <td class="valign-top hp100">
+                        {% include 'articles/incl/tile/video_short_wide.html' with title=main_news.title article=main_news %}
+                    </td>
+                </tr>
+            </table>
         {% endif %}
     {% endif %}
 

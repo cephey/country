@@ -27,160 +27,47 @@
 {% endblock %}
 
 {% block content %}
-<div style="width:1px; height:1px"><!-- --></div>
-<div class="border_or">
-    <div class="p_hv" itemscope itemtype="http://schema.org/NewsArticle">
-        <div class="big1 ortext newstitle">
-            <h1 itemprop="headline">{{ object.title }}</h1>
-        </div>
-        <p class="news-meta">
-            <span>Опубликовано {{ object.publish_date|date:'d.m.Y' }}</span>
-            <meta itemprop="datePublished" content="{{ object.publish_date|date:'Y-m-d' }}"/>
-            <meta itemprop="articleSection" content="{{ art_section.name }}">
-            <span>
-                автором
-                {% include 'authors/incl/cover_name.html' with article=object microdata=True %}
-            </span>
-            <span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
-                в разделе
-                <a itemprop="url" href="{% if object.is_news %}{% url 'articles:section' 'news' %}{% else %}{{ art_section.get_absolute_url }}{% endif %}">
-                    <em itemprop="title">
-                        {{ art_section.name }}
-                    </em>
-                </a>
-            </span>
-            {% if object.show_comments %}
-                <span>
-                    <a href="#clist" itemprop="discussionUrl" content="{{ article.get_absolute_url }}#clist">
-                        комментариев {{ object.comments_count }}
-                    </a>
-                </span>
-            {% endif %}
-        </p>
-        {% if object.tags.all %}
-            {% for tag_item in object.tags.all %}
-                <a href="{{ tag_item.tag.get_absolute_url }}" class="news-tag">{{ tag_item.tag.name }}</a>
-            {% endfor %}
-            <meta itemprop="keywords" content="{{ object.keywords }}"/>
-        {% endif %}
-        {% if not object.video %}
-            <table class="noborder align-left" style="float:left">
-                <tr>
-                    <td>
-                        <img itemprop="thumbnailUrl" class="pwi" src="{{ object.icon|crop:'100x100' }}"
-                             alt="{{ object.title }}">
-                    </td>
-                </tr>
-            </table>
-        {% endif %}
-        <div class="or2_normal">
-            {% if object.source %}
-                <br>
-                <span>
-                    Источник:
-                    {% if object.source_link and object.source_link|slice:':4' == 'http' %}
-                        <a href="{{ object.source_link }}">{{ object.source }}</a>
-                    {% else %}
-                        {{ object.source }}
-                    {% endif %}
-                </span>
-            {% endif %}
+    {% include 'articles/incl/tile/article_detail.html' with hide_tile_title=True %}
 
-            {% if object.multimedia_set.all %}
-                <br>&nbsp;Прикреплено:
-                {% for media in object.multimedia_set.all %}
-                    <a href="{{ media.link }}" target="_blank">{{ media.description }}</a>&nbsp;
-                {% endfor %}
-                <br>
-            {% endif %}
-        </div>
-        <div class="p_t">
-            <div class="normal newsbody" itemprop="articleBody">
-                {% if object.video %}
-                    {{ object.video_code|safe }}
-                    <br>
-                {% endif %}
-                {% if object.content|length > 1990 %}
-                    {% include 'incl/adv/ads_by_google.html' %}
-                {% endif %}
-                <!--content-->
-                {{ object.content|safe }}
-                <!--/content-->
-                <br />
-                <br />
-                <div class="normal">
-                    <table class="full-table">
+    <div style="margin-top: 5px;" class="normal align-center">
+        {% include 'incl/adv/ya_direct.html' %}
+    </div>
+
+    <div style="width:1px; height:7px"><!-- --></div>
+
+    {% if object.show_comments %}
+
+        <!--noindex-->
+        {% include 'incl/forum.html' with article=object %}
+        <!--/noindex-->
+        <div style="width:1px; height:5px"><!-- --></div>
+        <div id="yandex_ad_R-59310-2"></div>
+        {% include 'incl/adv/ya_context.html' with block_id='R-59310-2' %}
+        <div style="width:1px; height:5px"><!-- --></div>
+
+    {% elif in_sections %}
+
+        <div style="width:1px; height:5px"><!-- --></div>
+        {% with articles=in_sections %}
+            <div class="big1 bl">В разделах:</div>
+            <div style="width:1px; height:1px"><!-- --></div>
+            <div class="border_bl">
+                <table cellpadding=0 cellspacing=0 width="100%" class="border_t_bl">
+                    {% for article in articles %}
                         <tr>
-                            <td class="align-left">
-                                {% include 'incl/block_vote.html' with article=object %}
+                            <td>
+                                <div class="normal align-right">
+                                    <a href="{% url 'articles:section' article.section.slug %}">{{ article.section.name }}</a>
+                                </div>
                             </td>
-                            <td class="align-right">
-                                <table class="noborder">
-                                    <tr>
-                                        <td>
-                                            <span class="newshare">Поделиться</span>
-                                            <script type="text/javascript" src="//yastatic.net/share/share.js" charset="utf-8"></script>
-                                            <div class="yashare-auto-init" data-yashareL10n="ru" data-yashareQuickServices="vkontakte,facebook,twitter,odnoklassniki,moimir,gplus" data-yashareTheme="counter"></div>
-                                        </td>
-                                    </tr>
-                                </table>
+                            <td>
+                                {% include 'incl/tile/content.html' with color='blue' %}
                             </td>
                         </tr>
-                    </table>
-                </div>
+                    {% endfor %}
+                </table>
             </div>
-        </div>
-    </div>
-</div>
+        {% endwith %}
 
-<table class="full-table h7 bgFFF0E6">
-    <tr>
-        <td class="bg_orange_l w7"><div style="width:7px; height:7px"><!-- --></div></td>
-        <td class="wp100 bg_orange_c"><div style="width:1px; height:7px"><!-- --></div></td>
-        <td class="bg_orange_r w7"><div style="width:7px; height:7px"><!-- --></div></td>
-    </tr>
-</table>
-
-<div style="margin-top: 5px;" class="normal align-center">
-    {% include 'incl/adv/ya_direct.html' %}
-</div>
-
-<div style="width:1px; height:7px"><!-- --></div>
-
-{% if object.show_comments %}
-
-    <!--noindex-->
-    {% include 'incl/forum.html' with article=object %}
-    <!--/noindex-->
-    <div style="width:1px; height:5px"><!-- --></div>
-    <div id="yandex_ad_R-59310-2"></div>
-    {% include 'incl/adv/ya_context.html' with block_id='R-59310-2' %}
-    <div style="width:1px; height:5px"><!-- --></div>
-
-{% elif in_sections %}
-
-    <div style="width:1px; height:5px"><!-- --></div>
-    {% with articles=in_sections %}
-        <div class="big1 bl">В разделах:</div>
-        <div style="width:1px; height:1px"><!-- --></div>
-        <div class="border_bl">
-            <table cellpadding=0 cellspacing=0 width="100%" class="border_t_bl">
-                {% for article in articles %}
-                    <tr>
-                        <td>
-                            <div class="normal align-right">
-                                <a href="{% url 'articles:section' article.section.slug %}">{{ article.section.name }}</a>
-                            </div>
-                        </td>
-                        <td>
-                            {% include 'incl/tile/content.html' with color='blue' %}
-                        </td>
-                    </tr>
-                {% endfor %}
-            </table>
-        </div>
-    {% endwith %}
-
-{% endif %}
-
+    {% endif %}
 {% endblock %}

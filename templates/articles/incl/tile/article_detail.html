@@ -1,0 +1,112 @@
+{% extends 'incl/tile/base_or.html' %}
+
+{% load htmlutils %}
+
+{% block height_class %}{% endblock %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+    <div class="p_hv" itemscope itemtype="http://schema.org/NewsArticle">
+        <div class="big1 ortext newstitle">
+            <h1 itemprop="headline">{{ object.title }}</h1>
+        </div>
+        <p class="news-meta">
+            <span>Опубликовано {{ object.publish_date|date:'d.m.Y' }}</span>
+            <meta itemprop="datePublished" content="{{ object.publish_date|date:'Y-m-d' }}"/>
+            <meta itemprop="articleSection" content="{{ art_section.name }}">
+            <span>
+                автором
+                {% include 'authors/incl/cover_name.html' with article=object microdata=True %}
+            </span>
+            <span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
+                в разделе
+                <a itemprop="url" href="{% if object.is_news %}{% url 'articles:section' 'news' %}{% else %}{{ art_section.get_absolute_url }}{% endif %}">
+                    <em itemprop="title">
+                        {{ art_section.name }}
+                    </em>
+                </a>
+            </span>
+            {% if object.show_comments %}
+                <span>
+                    <a href="#clist" itemprop="discussionUrl" content="{{ article.get_absolute_url }}#clist">
+                        комментариев {{ object.comments_count }}
+                    </a>
+                </span>
+            {% endif %}
+        </p>
+        {% if object.tags.all %}
+            {% for tag_item in object.tags.all %}
+                <a href="{{ tag_item.tag.get_absolute_url }}" class="news-tag">{{ tag_item.tag.name }}</a>
+            {% endfor %}
+            <meta itemprop="keywords" content="{{ object.keywords }}"/>
+        {% endif %}
+        {% if not object.video %}
+            <table class="noborder align-left" style="float:left">
+                <tr>
+                    <td>
+                        <img itemprop="thumbnailUrl" class="pwi" src="{{ object.icon|crop:'100x100' }}"
+                             alt="{{ object.title }}">
+                    </td>
+                </tr>
+            </table>
+        {% endif %}
+        <div class="or2_normal">
+            {% if object.source %}
+                <br>
+                <span>
+                    Источник:
+                    {% if object.source_link and object.source_link|slice:':4' == 'http' %}
+                        <a href="{{ object.source_link }}">{{ object.source }}</a>
+                    {% else %}
+                        {{ object.source }}
+                    {% endif %}
+                </span>
+            {% endif %}
+
+            {% if object.multimedia_set.all %}
+                <br>&nbsp;Прикреплено:
+                {% for media in object.multimedia_set.all %}
+                    <a href="{{ media.link }}" target="_blank">{{ media.description }}</a>&nbsp;
+                {% endfor %}
+                <br>
+            {% endif %}
+        </div>
+        <div class="p_t">
+            <div class="normal newsbody" itemprop="articleBody">
+                {% if object.video %}
+                    {{ object.video_code|safe }}
+                    <br>
+                {% endif %}
+                {% if object.content|length > 1990 %}
+                    {% include 'incl/adv/ads_by_google.html' %}
+                {% endif %}
+                <!--content-->
+                {{ object.content|safe }}
+                <!--/content-->
+                <br />
+                <br />
+                <div class="normal">
+                    <table class="full-table">
+                        <tr>
+                            <td class="align-left">
+                                {% include 'incl/block_vote.html' with article=object %}
+                            </td>
+                            <td class="align-right">
+                                <table class="noborder">
+                                    <tr>
+                                        <td>
+                                            <span class="newshare">Поделиться</span>
+                                            <script type="text/javascript" src="//yastatic.net/share/share.js" charset="utf-8"></script>
+                                            <div class="yashare-auto-init" data-yashareL10n="ru" data-yashareQuickServices="vkontakte,facebook,twitter,odnoklassniki,moimir,gplus" data-yashareTheme="counter"></div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

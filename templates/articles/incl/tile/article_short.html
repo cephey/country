@@ -1,0 +1,15 @@
+{% extends 'incl/tile/base_or.html' %}
+
+{% block height_class %}hp100{% endblock %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <table class="full-table">
+        <tr>
+            <td>
+                {% include 'incl/tile/content.html' with color='orange' %}
+            </td>
+        </tr>
+    </table>
+{% endblock %}
