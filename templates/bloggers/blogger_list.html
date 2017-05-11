@@ -2,15 +2,15 @@
 
 {% load static %}
 {% load htmlutils %}
+{% load capture_tags %}
 
 {% block title %}{{ blogger_obj.cover_name }} - ФОРУМ.мск{% endblock %}
 
 {% block content %}
-<div class="or">
-    <div class="big1">{{ blogger_obj.cover_name }}</div>
-</div>
 
-<div style="width:1px; height:1px"><!-- --></div>
+    {% capture as entry_list_tmpl silent %}
+        {% include 'bloggers/incl/entry.html' %}
+    {% endcapture %}
+    {% include 'incl/tile/base.html' with title=blogger_obj.cover_name content=entry_list_tmpl %}
 
-{% include 'bloggers/incl/entry.html' %}
 {% endblock %}

@@ -2,13 +2,13 @@
 
 {% load static %}
 {% load htmlutils %}
+{% load capture_tags %}
 
 {% block title %}Публикации {{ object.cover_name }} - ФОРУМ.мск{% endblock %}
 
 {% block content %}
-    <div class="big1 or">Автор - {{ object.cover_name }}</div>
-    <div style="width:1px; height:1px"><!-- --></div>
-    <div class="border_or">
+
+    {% capture as about_author_tmpl silent %}
         <table class="full-table">
             <tr>
                 <td>
@@ -20,21 +20,12 @@
                 </td>
             </tr>
         </table>
-    </div>
-
-    <table class="full-table h7 bgFFF0E6">
-        <tr>
-            <td class="bg_orange_l w7"><div style="width:7px; height:7px"><!-- --></div></td>
-            <td class="wp100 bg_orange_c"><div style="width:1px; height:7px"><!-- --></div></td>
-            <td class="bg_orange_r w7"><div style="width:7px; height:7px"><!-- --></div></td>
-        </tr>
-    </table>
+    {% endcapture %}
+    {% include 'incl/tile/base.html' with title='Автор - '|add:object.cover_name content=about_author_tmpl %}
 
     <div style="width:1px; height:7px"><!-- --></div>
 
-    <div class="big1 bl">Последние статьи автора:</div>
-    <div style="width:1px; height:1px"><!-- --></div>
-    <div class="border_bl">
+    {% capture as author_article_list_tmpl silent %}
         <div class="p_hv">
             <div class="normal">
                 <ul>
@@ -52,13 +43,7 @@
                 </ul>
             </div>
         </div>
-    </div>
+    {% endcapture %}
+    {% include 'incl/tile/base.html' with title='Последние статьи автора:' content=author_article_list_tmpl color_class='bl_inside' %}
 
-    <table class="full-table h7 bgFFF0E6">
-        <tr>
-            <td class="bg_blu_l w7"><div style="width:7px; height:7px"><!-- --></div></td>
-            <td class="wp100 bg_blu_c"><div style="width:1px; height:7px"><!-- --></div></td>
-            <td class="bg_blu_r w7"><div style="width:7px; height:7px"><!-- --></div></td>
-        </tr>
-    </table>
 {% endblock %}

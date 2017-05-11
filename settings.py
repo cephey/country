@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'captcha',
     'ckeditor',
     'cacheback',
+    'capture_tag',
 
     'debug_toolbar',
 ]
@@ -176,7 +177,12 @@ LOGGING = {
 }
 
 # REDIS
-REDIS_DB = 0 if 'PROD' in os.environ else 3
+if 'PROD' in os.environ:
+    REDIS_DB = 0
+elif 'L' in os.environ:  # test
+    REDIS_DB = 4
+else:
+    REDIS_DB = 3
 REDIS_LOCATION = 'redis://127.0.0.1:6379/{}'.format(REDIS_DB)
 
 DJANGO_CACHE_VERSION = 1
@@ -208,5 +214,5 @@ CELERYBEAT_SCHEDULE = {
 }
 
 
-if 'L' in os.environ:
+if 'L' in os.environ:  # test
     CAPTCHA_TEST_MODE = True

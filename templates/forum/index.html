@@ -1,78 +1,69 @@
 {% extends 'base_wide.html' %}
 
 {% load static %}
+{% load capture_tags %}
 
 {% block title %}Форум - ФОРУМ.мск{% endblock %}
 
 {% block content %}
-    <div class="big1 bl">
-        <table width=95% border=0>
+
+    {% capture as forum_title_tmpl silent %}
+        <h2><a href="{% url 'forum:index' %}">Форум</a></h2>
+    {% endcapture %}
+
+    {% capture as forum_article_list_tmpl silent %}
+        <table width="100%" cellpadding="0" cellspacing="0" class="table">
             <tr>
-                <td>
-                    <h2><a href="{% url 'forum:index' %}">Форум</a></h2>
-                </td>
-            </tr>
-        </table>
-    </div>
-    <div style="width:1px; height:1px"><!-- --></div>
-    <div class="border_bl">
-    <div style="width:1px; height:7px"><!-- --></div>
-    <table width="100%" cellpadding="0" cellspacing="0" class="table">
-        <tr>
-            <th>#</th>
-            <th>Темы</th>
-            <th>Дата</th>
-            <th>Автор</th>
-            <th>Ответов</th>
-        </tr>
-        <tr>
-            <td colspan=5 class="nopad">
-                <div style="height:1px; background: #C1DAE6;"><!-- --></div>
-            </td>
-        </tr>
-        {% for article in object_list %}
-            <tr>
-                <td>
-                    <b>{{ forloop.counter }}</b>&nbsp;
-                </td>
-                <td>
-                    <a href="{% url 'forum:thread' article.id %}">{{ article.title }}</a>
-                    <span class="active">
-                        <a href="<% $url %>">&gt;&gt;</a>
-                    </span>
-                    {% if request.user.is_staff %}
-                        &nbsp;(<a href="{% url 'articles:action' article.id 'close' %}"
-                                  onclick="return confirm('Вы уверены в удалении?');">удалить</a>)
-                    {% endif %}
-                </td>
-                <td>{{ article.publish_date|date:'d.m.Y H:i' }}</td>
-                <td>{{ article.main_author.cover_name }}</td>
-                <td>{{ article.comments_count }}</td>
+                <th>#</th>
+                <th>Темы</th>
+                <th>Дата</th>
+                <th>Автор</th>
+                <th>Ответов</th>
             </tr>
             <tr>
                 <td colspan=5 class="nopad">
-                    <div style="height:1px; background:#C1DAE6;"><!-- --></div>
+                    <div style="height:1px; background: #C1DAE6;"><!-- --></div>
                 </td>
             </tr>
-        {% endfor %}
-    </table>
-    <div style="width:1px; height:7px"><!-- --></div>
-    <table width="100%">
-        <tr>
-            <td>
-                <div class="normal">
-                    <div class="p_l">
-                        {% include 'incl/paginator.html' with page_obj=page_obj page='p' %}
+            {% for article in object_list %}
+                <tr>
+                    <td>
+                        <b>{{ forloop.counter }}</b>&nbsp;
+                    </td>
+                    <td>
+                        <a href="{% url 'forum:thread' article.id %}">{{ article.title }}</a>
+                        <span class="active">
+                            <a href="<% $url %>">&gt;&gt;</a>
+                        </span>
+                        {% if request.user.is_staff %}
+                            &nbsp;(<a href="{% url 'articles:action' article.id 'close' %}"
+                                      onclick="return confirm('Вы уверены в удалении?');">удалить</a>)
+                        {% endif %}
+                    </td>
+                    <td>{{ article.publish_date|date:'d.m.Y H:i' }}</td>
+                    <td>{{ article.main_author.cover_name }}</td>
+                    <td>{{ article.comments_count }}</td>
+                </tr>
+                <tr>
+                    <td colspan=5 class="nopad">
+                        <div style="height:1px; background:#C1DAE6;"><!-- --></div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <div style="width:1px; height:7px"><!-- --></div>
+        <table width="100%">
+            <tr>
+                <td>
+                    <div class="normal">
+                        <div class="p_l">
+                            {% include 'incl/paginator.html' with page_obj=page_obj page='p' %}
+                        </div>
                     </div>
-                </div>
-            </td>
-        </tr>
-    </table>
-    <table class="h7 full-table bgFFF0E6">
-        <tr>
-            <td class="bg_blu_l w7"><div style="width:7px; height:7px"><!-- --></div></td>
-            <td width="100%" class="bg_blu_c"><div style="width:1px; height:7px"><!-- --></div></td>
-            <td class="bg_blu_r w7"><div style="width:7px; height:7px"><!-- --></div></td>
-        </tr>
-    </table>
+                </td>
+            </tr>
+        </table>
+    {% endcapture %}
+    {% include 'incl/tile/base.html' with title=forum_title_tmpl content=forum_article_list_tmpl color_class='bl_inside' %}
+
 {% endblock %}

@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load capture_tags %}
+
 {% block head_css %}
     {{ block.super }}
     <style>
@@ -12,198 +14,200 @@
 {% endblock %}
 
 {% block content %}
-<div class="big1 or">Реклама на сайте</div>
-<div class="normal">
-    <div class="border_or">
-        <div class="p_hv">
-            <table width=90% class="align-center">
-                <tr>
-                    <td>
-                        <TABLE cellPadding=0 width="100%" bgColor=#f6f8fa border=0 class=ta>
-                            <TR>
-                                <TD colSpan=4>
-                                    <P><B>Реклама на главной странице (цены указаны в долларах США без НДС)</B></P>
-                                </TD>
-                            </TR>
-                            <TR>
-                                <TD>
-                                    <P class="align-center"><B>Размер баннеров</B></P></TD>
-                                <TD>
-                                    <P class="align-center"><B>Динамическое размещение за 1000 показов $ (* * *)</B></P>
-                                </TD>
-                                <TD>
-                                    <P class="align-center"><B>Статичное размещение, Сутки $</B></P>
-                                </TD>
-                                <TD>
-                                    <P class="align-center"><B>Статичное размещение, Неделя $</B></P>
-                                </TD>
-                            </TR>
-                            <TR>
-                                <TD>
-                                    <P class="align-center"><B>120Х600</B></P>
-                                </TD>
-                                <TD>
-                                    <P class="align-center">3</P>
-                                </TD>
-                                <TD>
-                                    <P class="align-center">80</P>
-                                </TD>
-                                <TD>
-                                    <P class="align-center">450</P>
-                                </TD>
-                            </TR>
-                            <TR>
-                                <TD>
-                                    <P class="align-center"><B>468Х60</B></P>
-                                </TD>
-                                <TD>
-                                    <P class="align-center">0.5</P>
-                                </TD>
-                                <TD>
-                                    <P class="align-center">100</P>
-                                </TD>
-                                <TD>
-                                    <P class="align-center">300</P>
-                                </TD>
-                            </TR>
-                            <TR>
-                                <TD>
-                                    <P class="align-center"><B>234Х60 </B></P>
-                                </TD>
-                                <TD>
-                                    <P class="align-center">0.25</P>
-                                </TD>
-                                <TD>
-                                    <P class="align-center">75</P>
-                                </TD>
-                                <TD>
-                                    <P class="align-center">200</P>
-                                </TD>
-                            </TR>
-                            <TR>
-                                <TD>
-                                    <P class="align-center"><B>100Х100</B></P>
-                                </TD>
-                                <TD>
-                                    <P class="align-center">1</P>
-                                </TD>
-                                <TD>
-                                    <P class="align-center">60</P>
-                                </TD>
-                                <TD>
-                                    <P class="align-center">200</P>
-                                </TD>
-                            </TR>
-                        </TABLE>
-                        <br>
-                        <br>
-                        <TABLE cellPadding=0 width="100%" bgColor=#f6f8fa border=0 class=ta>
-                            <TR>
-                                <TD colSpan=2>
-                                    <P><B>Pop</B><B>-</B><B>under</B><B> на главной странице (цены указаны в долларах США без НДС)</B></P>
-                                </TD>
-                            </TR>
-                            <TR>
-                                <TD>
-                                    <P class="align-center"><B>Размер баннера</B></P>
-                                </TD>
-                                <TD>
-                                    <P class="align-center"><B>Динамическое размещение, за 1000 показов $</B></P>
-                                </TD>
-                            </TR>
-                            <TR>
-                                <TD>
-                                    <P class="align-center"><B>300Х250</B></P>
-                                </TD>
-                                <TD>
-                                    <P class="align-center">3.5</P>
-                                </TD>
-                            </TR>
-                        </TABLE>
-                        <br>
-                        <br>
-                        <TABLE cellPadding=0 width="100%" bgColor=#f6f8fa border=0 class=ta>
-                            <TR>
-                                <TD rowSpan=2>
-                                    <P class="align-center"><B>Размер баннеров</B></P>
-                                </TD>
-                                <TD width="79%" colSpan=3>
-                                    <P class="align-center"><B>*</B></P>
-                                </TD>
-                            </TR>
-                            <TR>
-                                <TD>
-                                    <P class="align-center"><B>1000 показов</B></P>
-                                </TD>
-                                <TD>
-                                    <P class="align-center"><B>день</B></P>
-                                </TD>
-                                <TD  width="59%">
-                                    <P class="align-center"><B>неделя</B></P>
-                                </TD>
-                            </TR>
-                            <TR>
-                                <TD>
-                                    <P class="align-center"><B>120Х600</B></P>
-                                </TD>
-                                <TD>
-                                    <P class="align-center">2</P>
-                                </TD>
-                                <TD>
-                                    <P class="align-center">125</P>
-                                </TD>
-                                <TD  width="59%">
-                                    <P class="align-center">425</P>
-                                </TD>
-                            </TR>
-                            <TR>
-                                <TD>
-                                    <P class="align-center"><B>468Х60</B></P>
-                                </TD>
-                                <TD>
-                                    <P class="align-center">2</P>
-                                </TD>
-                                <TD>
-                                    <P class="align-center">110</P>
-                                </TD>
-                                <TD  width="59%">
-                                    <P class="align-center">450</P>
-                                </TD>
-                            </TR>
-                            <TR>
-                                <TD>
-                                    <P class="align-center"><B>234</B><B>X</B><B>60</B></P>
-                                </TD>
-                                <TD>
-                                    <P class="align-center">2</P>
-                                </TD>
-                                <TD>
-                                    <P class="align-center">75</P>
-                                </TD>
-                                <TD  width="59%">
-                                    <P class="align-center">300</P>
-                                </TD>
-                            </TR>
-                            <TR>
-                                <TD>
-                                    <P class="align-center"><B>100Х100</B></P>
-                                </TD>
-                                <TD>
-                                    <P class="align-center">1.5</P>
-                                </TD>
-                                <TD>
-                                    <P class="align-center">50</P>
-                                </TD>
-                                <TD width="59%">
-                                    <P class="align-center">200</P>
-                                </TD>
-                            </TR>
-                        </TABLE>
-                        <P><a href="mailto:forum-msk@yandex.ru">Связаться с нами</a>.</P>
-                    </td>
-                </tr>
-            </table>
+
+    {% capture as advert_tmpl silent %}
+        <div class="normal">
+            <div class="p_hv">
+                <table width=90% class="align-center">
+                    <tr>
+                        <td>
+                            <TABLE cellPadding=0 width="100%" bgColor=#f6f8fa border=0 class=ta>
+                                <TR>
+                                    <TD colSpan=4>
+                                        <P><B>Реклама на главной странице (цены указаны в долларах США без НДС)</B></P>
+                                    </TD>
+                                </TR>
+                                <TR>
+                                    <TD>
+                                        <P class="align-center"><B>Размер баннеров</B></P></TD>
+                                    <TD>
+                                        <P class="align-center"><B>Динамическое размещение за 1000 показов $ (* * *)</B></P>
+                                    </TD>
+                                    <TD>
+                                        <P class="align-center"><B>Статичное размещение, Сутки $</B></P>
+                                    </TD>
+                                    <TD>
+                                        <P class="align-center"><B>Статичное размещение, Неделя $</B></P>
+                                    </TD>
+                                </TR>
+                                <TR>
+                                    <TD>
+                                        <P class="align-center"><B>120Х600</B></P>
+                                    </TD>
+                                    <TD>
+                                        <P class="align-center">3</P>
+                                    </TD>
+                                    <TD>
+                                        <P class="align-center">80</P>
+                                    </TD>
+                                    <TD>
+                                        <P class="align-center">450</P>
+                                    </TD>
+                                </TR>
+                                <TR>
+                                    <TD>
+                                        <P class="align-center"><B>468Х60</B></P>
+                                    </TD>
+                                    <TD>
+                                        <P class="align-center">0.5</P>
+                                    </TD>
+                                    <TD>
+                                        <P class="align-center">100</P>
+                                    </TD>
+                                    <TD>
+                                        <P class="align-center">300</P>
+                                    </TD>
+                                </TR>
+                                <TR>
+                                    <TD>
+                                        <P class="align-center"><B>234Х60 </B></P>
+                                    </TD>
+                                    <TD>
+                                        <P class="align-center">0.25</P>
+                                    </TD>
+                                    <TD>
+                                        <P class="align-center">75</P>
+                                    </TD>
+                                    <TD>
+                                        <P class="align-center">200</P>
+                                    </TD>
+                                </TR>
+                                <TR>
+                                    <TD>
+                                        <P class="align-center"><B>100Х100</B></P>
+                                    </TD>
+                                    <TD>
+                                        <P class="align-center">1</P>
+                                    </TD>
+                                    <TD>
+                                        <P class="align-center">60</P>
+                                    </TD>
+                                    <TD>
+                                        <P class="align-center">200</P>
+                                    </TD>
+                                </TR>
+                            </TABLE>
+                            <br>
+                            <br>
+                            <TABLE cellPadding=0 width="100%" bgColor=#f6f8fa border=0 class=ta>
+                                <TR>
+                                    <TD colSpan=2>
+                                        <P><B>Pop</B><B>-</B><B>under</B><B> на главной странице (цены указаны в долларах США без НДС)</B></P>
+                                    </TD>
+                                </TR>
+                                <TR>
+                                    <TD>
+                                        <P class="align-center"><B>Размер баннера</B></P>
+                                    </TD>
+                                    <TD>
+                                        <P class="align-center"><B>Динамическое размещение, за 1000 показов $</B></P>
+                                    </TD>
+                                </TR>
+                                <TR>
+                                    <TD>
+                                        <P class="align-center"><B>300Х250</B></P>
+                                    </TD>
+                                    <TD>
+                                        <P class="align-center">3.5</P>
+                                    </TD>
+                                </TR>
+                            </TABLE>
+                            <br>
+                            <br>
+                            <TABLE cellPadding=0 width="100%" bgColor=#f6f8fa border=0 class=ta>
+                                <TR>
+                                    <TD rowSpan=2>
+                                        <P class="align-center"><B>Размер баннеров</B></P>
+                                    </TD>
+                                    <TD width="79%" colSpan=3>
+                                        <P class="align-center"><B>*</B></P>
+                                    </TD>
+                                </TR>
+                                <TR>
+                                    <TD>
+                                        <P class="align-center"><B>1000 показов</B></P>
+                                    </TD>
+                                    <TD>
+                                        <P class="align-center"><B>день</B></P>
+                                    </TD>
+                                    <TD  width="59%">
+                                        <P class="align-center"><B>неделя</B></P>
+                                    </TD>
+                                </TR>
+                                <TR>
+                                    <TD>
+                                        <P class="align-center"><B>120Х600</B></P>
+                                    </TD>
+                                    <TD>
+                                        <P class="align-center">2</P>
+                                    </TD>
+                                    <TD>
+                                        <P class="align-center">125</P>
+                                    </TD>
+                                    <TD  width="59%">
+                                        <P class="align-center">425</P>
+                                    </TD>
+                                </TR>
+                                <TR>
+                                    <TD>
+                                        <P class="align-center"><B>468Х60</B></P>
+                                    </TD>
+                                    <TD>
+                                        <P class="align-center">2</P>
+                                    </TD>
+                                    <TD>
+                                        <P class="align-center">110</P>
+                                    </TD>
+                                    <TD  width="59%">
+                                        <P class="align-center">450</P>
+                                    </TD>
+                                </TR>
+                                <TR>
+                                    <TD>
+                                        <P class="align-center"><B>234</B><B>X</B><B>60</B></P>
+                                    </TD>
+                                    <TD>
+                                        <P class="align-center">2</P>
+                                    </TD>
+                                    <TD>
+                                        <P class="align-center">75</P>
+                                    </TD>
+                                    <TD  width="59%">
+                                        <P class="align-center">300</P>
+                                    </TD>
+                                </TR>
+                                <TR>
+                                    <TD>
+                                        <P class="align-center"><B>100Х100</B></P>
+                                    </TD>
+                                    <TD>
+                                        <P class="align-center">1.5</P>
+                                    </TD>
+                                    <TD>
+                                        <P class="align-center">50</P>
+                                    </TD>
+                                    <TD width="59%">
+                                        <P class="align-center">200</P>
+                                    </TD>
+                                </TR>
+                            </TABLE>
+                            <P><a href="mailto:forum-msk@yandex.ru">Связаться с нами</a>.</P>
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
-    </div>
-</div>
+    {% endcapture %}
+    {% include 'incl/tile/base.html' with title='Реклама на сайте' content=advert_tmpl %}
+
 {% endblock %}

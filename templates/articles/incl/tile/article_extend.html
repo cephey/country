@@ -1,13 +1,17 @@
-{% if material %}
-<div class="big1 rl">
-    <a href="{% url 'articles:section' material.section.slug %}">{{ material.section.name }}</a>
-</div>
+{% extends 'incl/tile/base.html' %}
 
-<div style="width:1px; height:1px"><!-- --></div>
+{% block height_class %}{% endblock %}
 
-<div class="border_bl">
+{% block color_class %}bl_inside{% endblock %}
 
-    {% if material.articles %}
+{% block title %}
+    {% if material %}
+        <a href="{% url 'articles:section' material.section.slug %}">{{ material.section.name }}</a>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% if material and material.articles %}
 
         {% with article=material.articles.0 %}
             <table class="full-table">
@@ -20,7 +24,6 @@
         {% endwith %}
 
         {% if material.articles|length > 1 %}
-
             <div style="height:1px; background: #C1DAE6;"><!-- --></div>
             <div class="normal">
                 <div class="p_h">
@@ -40,18 +43,7 @@
                     </div>
                 </div>
             </div>
-
         {% endif %}
 
     {% endif %}
-
-    <table class="full-table h7 bgFFF0E6">
-        <tr>
-            <td class="bg_blu_l w7"><div style="width:7px; height:7px"><!-- --></div></td>
-            <td class="wp100 bg_blu_c"><div style="width:1px; height:7px"><!-- --></div></td>
-            <td class="bg_blu_r w7"><div style="width:7px; height:7px"><!-- --></div></td>
-        </tr>
-    </table>
-
-</div>
-{% endif %}
+{% endblock %}

@@ -2,24 +2,29 @@
 
 {% load static %}
 {% load htmlutils %}
+{% load capture_tags %}
 
 {% block title %}Наша блогосфера - ФОРУМ.мск{% endblock %}
 
 {% block description %}Наша блогосфера{% endblock %}
 
 {% block content %}
-<div class="or">
-    <div class="big1">Наша блогосфера</div>
-    <br />
-    {% for blogger in blogger_list %}
-        <a href="{% url 'bloggers:blogger_entry_list' blogger.id %}">
-            <img src="{{ blogger.icon|crop:'25x25' }}" alt="{{ blogger.cover_name|safe }}"
-                 title="{{ blogger.cover_name|safe }}" width="25" height="25"></a>
-        &nbsp;&nbsp;
-    {% endfor %}
-</div>
 
-<div style="width:1px; height:1px"><!-- --></div>
+    {% capture as bloggers_title_tmpl silent %}
+        Наша блогосфера
+        <br />
+        <br />
+        {% for blogger in blogger_list %}
+            <a href="{% url 'bloggers:blogger_entry_list' blogger.id %}">
+                <img src="{{ blogger.icon|crop:'25x25' }}" alt="{{ blogger.cover_name|safe }}"
+                     title="{{ blogger.cover_name|safe }}" width="25" height="25"></a>
+            &nbsp;&nbsp;
+        {% endfor %}
+    {% endcapture %}
 
-{% include 'bloggers/incl/entry.html' %}
+    {% capture as entry_list_tmpl silent %}
+        {% include 'bloggers/incl/entry.html' %}
+    {% endcapture %}
+    {% include 'incl/tile/base.html' with title=bloggers_title_tmpl content=entry_list_tmpl %}
+
 {% endblock %}

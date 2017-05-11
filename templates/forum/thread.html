@@ -1,14 +1,18 @@
 {% extends 'base.html' %}
 
 {% load static %}
+{% load capture_tags %}
 
 {% block title %}Форум - {{ thread.title }} - ФОРУМ.мск{% endblock %}
 
 {% block content %}
+
     <a id="comment"></a>
-    <div class="big1 bl"><a href="{% url 'forum:thread' thread.id %}">Форум</a> :: {{ thread.title }}</div>
-    <div style="width:1px; height:1px"><!-- --></div>
-    <div class="border_bl">
+    {% capture as thread_title_tmpl silent %}
+        <a href="{% url 'forum:index' %}">Форум</a> :: {{ thread.title }}
+    {% endcapture %}
+
+    {% capture as thread_comment_list_tmpl silent %}
         <div style="width:1px; height:7px"><!-- --></div>
         <div class="normal">
             <div class="p_l">
@@ -65,32 +69,17 @@
                 {% include 'incl/paginator.html' with page_obj=page_obj page='p' %}
             </div>
         </div>
-    </div>
-
-    <table class="full-table h7 bgFFF0E6">
-        <tr>
-            <td class="bg_blu_l w7"><div style="width:7px; height:7px"><!-- --></div></td>
-            <td class="wp100 bg_blu_c"><div style="width:1px; height:7px"><!-- --></div></td>
-            <td class="bg_blu_r w7"><div style="width:7px; height:7px"><!-- --></div></td>
-        </tr>
-    </table>
+    {% endcapture %}
+    {% include 'incl/tile/base.html' with title=thread_title_tmpl content=thread_comment_list_tmpl color_class='bl_inside' %}
 
     <div style="width:1px; height:7px"><!-- --></div>
 
     <a id="replay"></a>
-    <div class="big1 bl">Ответить</div>
-    <div style="width:1px; height:1px"><!-- --></div>
-    <div class="border_bl">
-        <div class="p_hv">
+    {% capture as thread_form_tmpl silent %}
+         <div class="p_hv">
             {% include 'incl/forum_message_form.html' with article=thread form=comment_form %}
         </div>
-    </div>
+    {% endcapture %}
+    {% include 'incl/tile/base.html' with title='Ответить' content=thread_form_tmpl color_class='bl_inside' %}
 
-    <table class="h7 full-table bgFFF0E6">
-        <tr>
-            <td class="bg_blu_l w7"><div style="width:7px; height:7px"><!-- --></div></td>
-            <td class="wp100 bg_blu_c"><div style="width:1px; height:7px"><!-- --></div></td>
-            <td class="bg_blu_r w7"><div style="width:7px; height:7px"><!-- --></div></td>
-        </tr>
-    </table>
 {% endblock %}

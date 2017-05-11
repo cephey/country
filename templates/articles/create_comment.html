@@ -2,21 +2,15 @@
 
 {% load static %}
 {% load htmlutils %}
+{% load capture_tags %}
 
 {% block content %}
-    <div class="big1 bl">Ответить</div>
-    <div style="width:1px; height:1px"><!-- --></div>
-    <div class="border_bl">
+
+    {% capture as create_form_tmpl silent %}
         <div class="p_hv">
             {% include 'incl/forum_message_form.html' %}
         </div>
-    </div>
+    {% endcapture %}
+    {% include 'incl/tile/base.html' with title='Ответить' content=create_form_tmpl color_class='bl_inside' %}
 
-    <table class="full-table h7 bgFFF0E6">
-        <tr>
-            <td class="bg_blu_l w7"><div style="width:7px; height:7px"><!-- --></div></td>
-            <td class="wp100 bg_blu_c"><div style="width:1px; height:7px"><!-- --></div></td>
-            <td class="bg_blu_r w7"><div style="width:7px; height:7px"><!-- --></div></td>
-        </tr>
-    </table>
 {% endblock %}

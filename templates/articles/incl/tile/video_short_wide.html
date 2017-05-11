@@ -1,0 +1,29 @@
+{% extends 'incl/tile/base.html' %}
+
+{% block height_class %}{% endblock %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <table width="100%">
+        <tr>
+            <td class="valign-top">{{ article.video_code|safe }}</td>
+            <td class="valign-top">
+                <div class="normal">
+                    <span>
+                        {% include 'authors/incl/cover_name.html' with article=article %}
+                        {{ article.publish_date|date:'d.m.Y' }}<br>
+                    </span>
+                </div>
+                <div class="p_t art_or">
+                    <div class="normal">
+                        <a href="{{ article.get_absolute_url }}">{{ article.preview|striptags }}</a>
+                        <span class="active">
+                            <a href="{{ article.get_absolute_url }}">&gt;&gt;</a>
+                        </span>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+{% endblock %}

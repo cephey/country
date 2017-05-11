@@ -10,25 +10,12 @@
 {% block content %}
 <table class="full-table">
     <tr>
-        <td>
-            <div class="big1 or">Главная новость</div>
-            <div style="width:1px; height:1px"><!-- --></div>
-        </td>
-        <td>&nbsp;</td>
-        <td>
-            <div class="big1 or">Материал дня</div>
-            <div style="width:1px; height:1px"><!-- --></div>
-        </td>
-    </tr>
-    <tr>
         <td class="valign-top wp50 hp100">
-            {% include 'incl/article_block.html' with article=main_news color='bgFFF0E6' %}
+            {% include 'articles/incl/tile/article_short.html' with title='Главная новость' article=main_news %}
         </td>
-        <td class="w7">
-            <div style="width:7px; height:1px"><!-- --></div>
-        </td>
+        <td class="w7"><div style="width:7px; height:1px"><!-- --></div></td>
         <td class="valign-top wp50 hp100">
-            {% include 'incl/article_block.html' with article=main_material color='bgFFF0E6' %}
+            {% include 'articles/incl/tile/article_short.html' with title='Материал дня' article=main_material %}
         </td>
     </tr>
 </table>
@@ -41,39 +28,37 @@
 
 <table class="full-table">
     <tr>
-        <td class="valign-top wp50">
-            {% include 'incl/tile/block.html' with material=materials.politic %}
-            <div style="width:1px; height:7px"><!-- --></div>
+        <td class="valign-top wp50 hp100">
+            {% include 'articles/incl/tile/article_extend.html' with material=materials.politic %}
         </td>
-        <td class="w7">
-            <div style="width:7px; height:1px"><!-- --></div>
-        </td>
-        <td class="valign-top wp50">
-            {% include 'incl/tile/block.html' with material=materials.moscow %}
-            <div style="width:1px; height:7px"><!-- --></div>
+        <td class="w7"><div style="width:7px; height:1px"><!-- --></div></td>
+        <td class="valign-top wp50 hp100">
+            {% include 'articles/incl/tile/article_extend.html' with material=materials.moscow %}
         </td>
     </tr>
 </table>
 
+<div style="width:1px; height:7px"><!-- --></div>
+
 <table class="full-table">
     <tr>
         <td class="valign-top wp50">
-            {% include 'incl/tile/block.html' with material=materials.economic %}
+            {% include 'articles/incl/tile/article_extend.html' with material=materials.economic %}
             <div style="width:1px; height:7px"><!-- --></div>
-            {% include 'incl/tile/block.html' with material=materials.region %}
+            {% include 'articles/incl/tile/article_extend.html' with material=materials.region %}
             <div style="width:1px; height:7px"><!-- --></div>
-            {% include 'incl/tile/block.html' with material=materials.society %}
+            {% include 'articles/incl/tile/article_extend.html' with material=materials.society %}
             <div style="width:1px; height:7px"><!-- --></div>
         </td>
         <td class="w7">
             <div style="width:7px; height:1px"><!-- --></div>
         </td>
         <td class="valign-top wp50">
-            {% include 'incl/tile/block.html' with material=materials.power %}
+            {% include 'articles/incl/tile/article_extend.html' with material=materials.power %}
             <div style="width:1px; height:7px"><!-- --></div>
-            {% include 'incl/tile/block.html' with material=materials.fpolitic %}
+            {% include 'articles/incl/tile/article_extend.html' with material=materials.fpolitic %}
             <div style="width:1px; height:7px"><!-- --></div>
-            {% include 'incl/tile/block.html' with material=materials.kompromat %}
+            {% include 'articles/incl/tile/article_extend.html' with material=materials.kompromat %}
             <div style="width:1px; height:7px"><!-- --></div>
         </td>
     </tr>

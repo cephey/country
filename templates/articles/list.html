@@ -2,6 +2,7 @@
 
 {% load static %}
 {% load htmlutils %}
+{% load capture_tags %}
 
 {% block title %}{{ partition.name }}{% if page_obj.number > 1 %}, страница {{ page_obj.number }}{% endif %} - ФОРУМ.мск{% endblock %}
 
@@ -13,64 +14,57 @@
 {% endblock %}
 
 {% block content %}
-<div class="big1 or">{{ partition.name }}</div>
-<div style="width:1px; height:1px"><!-- --></div>
-<div class="border_or">
-    <table class="full-table">
-        {% for article in object_list %}
-            <tr>
-                <td>
-                    <div class="p_hv">
-                        <div class="or2_normal">
-                            {% include 'articles/incl/image.html' with article=article %}
-                            <strong class="black">
-                                <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
-                            </strong>
-                            {% if article.show_comments %}
-                                <span class="active_or">
-                                    <a title="{{ article.comments_count|num_ending:'комментари,й,я,ев' }}"
-                                       href="{{ article.get_absolute_url }}#clist">({{ article.comments_count }})</a>
-                                </span>
-                            {% endif %}
-                            <br>
-                            <span>
-                                {% include 'authors/incl/cover_name.html' with article=article %}
-                                {{ article.publish_date|date:'d.m.Y' }}<br>
-                            </span>
-                        </div>
-                        <div class="p_t">
-                            <div class="normal">
-                                <a href="{{ article.get_absolute_url }}">{{ article.preview|striptags }}</a>
-                                <span class="active_or">
-                                    <a href="{{ article.get_absolute_url }}">&gt;&gt;</a>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            {% if not forloop.last %}
+
+    {% capture as article_list_tmpl silent %}
+        <table class="full-table">
+            {% for article in object_list %}
                 <tr>
                     <td>
-                        <div style="height:1px; background: #FFD4B7;"><!-- --></div>
+                        <div class="p_hv">
+                            <div class="or2_normal">
+                                {% include 'articles/incl/image.html' with article=article %}
+                                <strong class="black">
+                                    <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
+                                </strong>
+                                {% if article.show_comments %}
+                                    <span class="active_or">
+                                        <a title="{{ article.comments_count|num_ending:'комментари,й,я,ев' }}"
+                                           href="{{ article.get_absolute_url }}#clist">({{ article.comments_count }})</a>
+                                    </span>
+                                {% endif %}
+                                <br>
+                                <span>
+                                    {% include 'authors/incl/cover_name.html' with article=article %}
+                                    {{ article.publish_date|date:'d.m.Y' }}<br>
+                                </span>
+                            </div>
+                            <div class="p_t">
+                                <div class="normal">
+                                    <a href="{{ article.get_absolute_url }}">{{ article.preview|striptags }}</a>
+                                    <span class="active_or">
+                                        <a href="{{ article.get_absolute_url }}">&gt;&gt;</a>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     </td>
                 </tr>
-            {% endif %}
-        {% endfor %}
-    </table>
+                {% if not forloop.last %}
+                    <tr>
+                        <td>
+                            <div style="height:1px; background: #FFD4B7;"><!-- --></div>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </table>
 
-    <div class="normal">
-        <div class="p_l align-center">
-            {% include 'incl/paginator.html' with page_obj=page_obj page='p' %}
+        <div class="normal">
+            <div class="p_l align-center">
+                {% include 'incl/paginator.html' with page_obj=page_obj page='p' %}
+            </div>
         </div>
-    </div>
-</div>
+    {% endcapture %}
+    {% include 'incl/tile/base.html' with title=partition.name content=article_list_tmpl %}
 
-<table class="full-table h7 bgFFF0E6">
-    <tr>
-        <td class="bg_orange_l w7"><div style="width:7px; height:7px"><!-- --></div></td>
-        <td class="wp100 bg_orange_c"><div style="width:1px; height:7px"><!-- --></div></td>
-        <td class="bg_orange_r w7"><div style="width:7px; height:7px"><!-- --></div></td>
-    </tr>
-</table>
 {% endblock %}
