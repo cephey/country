@@ -1,9 +1,16 @@
-{% if material %}
-    <div class="big1 title">
+{% extends 'incl/tile/base.html' %}
+
+{% block height_class %}hp100{% endblock %}
+{% block color_class %}{{ color_class }}{% endblock %}
+
+{% block title %}
+    {% if material %}
         <a href="{{ material.section.get_absolute_url }}">{{ material.section.name }}</a>
-    </div>
-    <div style="width:1px; height:1px"><!-- --></div>
-    <div class="border_wrap">
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% if material %}
         <table class="wp100">
             <tr>
                 {% for article in material.articles %}
@@ -28,12 +35,5 @@
                 {% endfor %}
             </tr>
         </table>
-    </div>
-    <table class="full-table h7 bgFFF0E6">
-        <tr>
-            <td class="bg_bottom_l w7"><div style="width:7px; height:7px"><!-- --></div></td>
-            <td class="bg_bottom_c wp100"><div style="width:1px; height:7px"><!-- --></div></td>
-            <td class="bg_bottom_r w7"><div style="width:7px; height:7px"><!-- --></div></td>
-        </tr>
-    </table>
-{% endif %}
+    {% endif %}
+{% endblock %}
