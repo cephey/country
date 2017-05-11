@@ -17,6 +17,7 @@ urlpatterns = [
     url(r'', include('apps.articles.urls', namespace='articles')),
     url(r'', include('apps.pages.urls', namespace='pages')),
     url(r'', include('apps.forum.urls', namespace='forum')),
+    url(r'', include('apps.users.urls', namespace='users')),
     url(r'^bloggers/', include('apps.bloggers.urls', namespace='bloggers')),
     url(r'^author/', include('apps.authors.urls', namespace='authors')),
     url(r'^tags/', include('apps.tags.urls', namespace='tags')),
