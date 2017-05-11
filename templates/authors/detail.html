@@ -21,7 +21,7 @@
             </tr>
         </table>
     {% endcapture %}
-    {% include 'incl/tile/base_orange.html' with title='Автор - '|add:object.cover_name content=about_author_tmpl %}
+    {% include 'incl/tile/base.html' with title='Автор - '|add:object.cover_name content=about_author_tmpl %}
 
     <div style="width:1px; height:7px"><!-- --></div>
 
@@ -44,6 +44,6 @@
             </div>
         </div>
     {% endcapture %}
-    {% include 'incl/tile/base_blue.html' with title='Последние статьи автора:' content=author_article_list_tmpl %}
+    {% include 'incl/tile/base.html' with title='Последние статьи автора:' content=author_article_list_tmpl color_class='bl_inside' %}
 
 {% endblock %}

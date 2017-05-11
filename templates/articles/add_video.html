@@ -15,7 +15,7 @@
             </div>
         </div>
     {% endcapture %}
-    {% include 'incl/tile/base_orange.html' with title='Добавление видео' content=description_tmpl %}
+    {% include 'incl/tile/base.html' with title='Добавление видео' content=description_tmpl %}
 
     <div style="width:1px; height:7px"><!-- --></div>
 
@@ -133,6 +133,6 @@
             </div>
         </form>
     {% endcapture %}
-    {% include 'incl/tile/base_blue.html' with title='Добавление видео:' content=form_tmpl %}
+    {% include 'incl/tile/base.html' with title='Добавление видео:' content=form_tmpl color_class='bl_inside' %}
 
 {% endblock %}

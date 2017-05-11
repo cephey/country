@@ -70,7 +70,7 @@
             </div>
         </div>
     {% endcapture %}
-    {% include 'incl/tile/base_blue.html' with title=thread_title_tmpl content=thread_comment_list_tmpl %}
+    {% include 'incl/tile/base.html' with title=thread_title_tmpl content=thread_comment_list_tmpl color_class='bl_inside' %}
 
     <div style="width:1px; height:7px"><!-- --></div>
 
@@ -80,6 +80,6 @@
             {% include 'incl/forum_message_form.html' with article=thread form=comment_form %}
         </div>
     {% endcapture %}
-    {% include 'incl/tile/base_blue.html' with title='Ответить' content=thread_form_tmpl %}
+    {% include 'incl/tile/base.html' with title='Ответить' content=thread_form_tmpl color_class='bl_inside' %}
 
 {% endblock %}

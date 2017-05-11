@@ -25,6 +25,6 @@
     {% capture as entry_list_tmpl silent %}
         {% include 'bloggers/incl/entry.html' %}
     {% endcapture %}
-    {% include 'incl/tile/base_orange.html' with title=bloggers_title_tmpl content=entry_list_tmpl %}
+    {% include 'incl/tile/base.html' with title=bloggers_title_tmpl content=entry_list_tmpl %}
 
 {% endblock %}
