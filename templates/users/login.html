@@ -10,6 +10,12 @@
             <form action="{% url 'users:login' %}" method="POST">
                 {% csrf_token %}
                 <input type=hidden name="next" value="{{ next }}">
+                {% if form.non_field_errors %}
+                    {% for error in form.non_field_errors %}
+                        <div class="align-center" style="color:red">{{ error|safe }}</div>
+                    {% endfor %}
+                    <br />
+                {% endif %}
                 <table class="noborder wp90">
                     <tr>
                         <td class="normal w100"><b>Логин:</b></td>
