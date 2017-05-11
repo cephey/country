@@ -1,13 +1,15 @@
-{% extends 'incl/tile/base_bl.html' %}
+{% extends 'incl/tile/base_blue.html' %}
 
 {% block height_class %}{% endblock %}
 
 {% block title %}
-    <a href="{% url 'articles:section' material.section.slug %}">{{ material.section.name }}</a>
+    {% if material %}
+        <a href="{% url 'articles:section' material.section.slug %}">{{ material.section.name }}</a>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
-    {% if material.articles %}
+    {% if material and material.articles %}
 
         {% with article=material.articles.0 %}
             <table class="full-table">

@@ -1,9 +1,9 @@
-<table class="full-table {% block height_class %}{% endblock %}">
+<table class="full-table {% block height_class %}{{ height_class|default:'' }}{% endblock %}">
     {% if not hide_tile_title %}
         <tr>
             <td colspan="3">
                 <div class="big1 rl">
-                    {% block title %}{% endblock %}
+                    {% block title %}{{ title }}{% endblock %}
                 </div>
                 <div style="width:1px; height:1px"><!-- --></div>
             </td>
@@ -12,7 +12,7 @@
     <tr>
         <td colspan="3" class="valign-top hp100 bgE6F0F5">
             <div class="border_bl">
-                {% block content %}{% endblock %}
+                {% block content %}{{ content }}{% endblock %}
             </div>
         </td>
     </tr>

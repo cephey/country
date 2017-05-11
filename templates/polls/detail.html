@@ -2,13 +2,13 @@
 
 {% load static %}
 {% load htmlutils %}
+{% load capture_tags %}
 
 {% block title %}Результаты голосования - ФОРУМ.мск{% endblock %}
 
 {% block content %}
-    <div class="big1 or">Результаты голосования</div>
-    <div style="width:1px; height:1px"><!-- --></div>
-    <div class="border_or">
+
+    {% capture as poll_results_tmpl silent %}
         <div class="normal">
             <div class="p_hv">
                 <table width="100%">
@@ -45,13 +45,7 @@
             <br />
             <br />
         </div>
-    </div>
+    {% endcapture %}
+    {% include 'incl/tile/base_orange.html' with title='Результаты голосования' content=poll_results_tmpl %}
 
-    <table class="full-table h7 bgFFF0E6">
-        <tr>
-            <td class="bg_orange_l w7"><div style="width:7px; height:7px"><!-- --></div></td>
-            <td class="wp100 bg_orange_c"><div style="width:1px; height:7px"><!-- --></div></td>
-            <td class="bg_orange_r w7"><div style="width:7px; height:7px"><!-- --></div></td>
-        </tr>
-    </table>
 {% endblock %}

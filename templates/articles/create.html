@@ -2,156 +2,142 @@
 
 {% load static %}
 {% load htmlutils %}
+{% load capture_tags %}
 
 {% block title %}Добавление статьи - ФОРУМ.мск{% endblock %}
 
 {% block content %}
-<div class="big1 or">Добавление статьи</div>
-<div style="width:1px; height:1px"><!-- --></div>
-<div class="border_or">
-    <div class="normal">
-        <div class="p_hv">
-            {% include 'articles/incl/add_material_recommends.html' with full_text=True %}
+
+    {% capture as description_tmpl silent %}
+        <div class="normal">
+            <div class="p_hv">
+                {% include 'articles/incl/recommends_add_material.html' with full_text=True %}
+            </div>
         </div>
-    </div>
-</div>
+    {% endcapture %}
+    {% include 'incl/tile/base_orange.html' with title='Добавление статьи' content=description_tmpl %}
 
-<table class="full-table h7 bgFFF0E6">
-    <tr>
-        <td class="bg_orange_l w7"><div style="width:7px; height:7px"><!-- --></div></td>
-        <td class="wp100 bg_orange_c"><div style="width:1px; height:7px"><!-- --></div></td>
-        <td class="bg_orange_r w7"><div style="width:7px; height:7px"><!-- --></div></td>
-    </tr>
-</table>
+    <div style="width:1px; height:7px"><!-- --></div>
 
-<div style="width:1px; height:7px"><!-- --></div>
-<a id="res"></a>
-<div class="big1 bl">Добавление статьи:</div>
-<form action="{% url 'articles:create' %}" method=POST >
-    {% csrf_token %}
-    <div style="width:1px; height:1px"><!-- --></div>
-    <div class="border_bl">
-        <div class="p_hv">
-            {% if messages %}
-                {% for message in messages %}
+    <a id="res"></a>
+    {% capture as form_tmpl silent %}
+        <form action="{% url 'articles:create' %}" method=POST >
+            {% csrf_token %}
+            <div class="p_hv">
+                {% if messages %}
+                    {% for message in messages %}
+                        <center>
+                            <h2>{{ message }}</h2>
+                        </center>
+                        <br>
+                    {% endfor %}
+                {% endif %}
+                {% if form.non_field_errors %}
+                    {% for error in form.non_field_errors %}
+                        <div class="big1 align-center" style="color:red">{{ error|safe }}</div>
+                    {% endfor %}
+                {% endif %}
+                {% if form.author_names.errors or form.title.errors or form.description.errors or form.content.errors %}
                     <center>
-                        <h2>{{ message }}</h2>
+                        <h2>Произошла ошибка: неверно заполнены поля добавления материала.</h2>
                     </center>
                     <br>
-                {% endfor %}
-            {% endif %}
-            {% if form.non_field_errors %}
-                {% for error in form.non_field_errors %}
-                    <div class="big1 align-center" style="color:red">{{ error|safe }}</div>
-                {% endfor %}
-            {% endif %}
-            {% if form.author_names.errors or form.title.errors or form.description.errors or form.content.errors %}
-                <center>
-                    <h2>Произошла ошибка: неверно заполнены поля добавления материала.</h2>
-                </center>
-                <br>
-            {% endif %}
+                {% endif %}
 
-            <table border="0" cellpadding="0" cellspacing="0" width="90%">
-                <tr>
-                    <td class="normal" width="100">
-                        <b>Ваше имя:</b>
-                    </td>
-                    <td>
-                        {% if form.author_names.errors %}
-                            {% for error in form.author_names.errors %}
-                                <span class="normal" style="color:red">
-                                    <b>{{ error|escape }}</b>
-                                </span>
-                            {% endfor %}
-                        {% endif %}
-                        <input type="text" name="author_names" value="{{ form.author_names.value|default:'' }}" maxlength="250" style="width:100%;">
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <div style="width:1px; height:7px"><!-- --></div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="normal">
-                        <b>Заголовок:</b>
-                    </td>
-                    <td>
-                        {% if form.title.errors %}
-                            {% for error in form.title.errors %}
-                                <span class="normal" style="color:red">
-                                    <b>{{ error|escape }}</b>
-                                </span>
-                            {% endfor %}
-                        {% endif %}
-                        <input type="text" name="title" value="{{ form.title.value|default:'' }}" maxlength="100" style="width:100%;">
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <div style="width:1px; height:7px"><!-- --></div>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <span class="normal">
-                            <b>Аннотация (она же - начало статьи, дублировать не надо, размер - не более двух предложений средней длины):</b>
-                        </span>
-                        <div style="width:1px; height:7px"><!-- --></div>
-                        {% if form.description.errors %}
-                            {% for error in form.description.errors %}
-                                <span class="normal" style="color:red">
-                                    <b>{{ error|escape }}</b>
-                                </span>
-                            {% endfor %}
-                        {% endif %}
-                        <textarea name="description" rows="8" style="width:100%;">{{ form.description.value|default:'' }}</textarea>
-                        <div style="width:1px; height:7px"><!-- --></div>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <span class="normal"><b>Полный текст статьи:</b></span>
-                        <div style="width:1px; height:7px"><!-- --></div>
-                        {% if form.content.errors %}
-                                {% for error in form.content.errors %}
+                <table border="0" cellpadding="0" cellspacing="0" width="90%">
+                    <tr>
+                        <td class="normal" width="100">
+                            <b>Ваше имя:</b>
+                        </td>
+                        <td>
+                            {% if form.author_names.errors %}
+                                {% for error in form.author_names.errors %}
                                     <span class="normal" style="color:red">
                                         <b>{{ error|escape }}</b>
                                     </span>
                                 {% endfor %}
                             {% endif %}
-                        <textarea name="content" rows="8" style="width:100%;">{{ form.content.value|default:'' }}</textarea>
-                        <div style="width:1px; height:7px"><!-- --></div>
-                    </td>
-                </tr>
-                <tr>
-                    <td width="250" class="normal"><b>Введите число, указанное на картинке:</b></td>
-                    <td>
-                        {% if form.captcha.errors %}
-                            {% for error in form.captcha.errors %}
-                                <span class="normal" style="color:red">{{ error|escape }}</span>
-                            {% endfor %}
-                            <br>
-                        {% endif %}
-                        {{ form.captcha }}
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <input type="submit" value="добавить" class="but">
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div>
+                            <input type="text" name="author_names" value="{{ form.author_names.value|default:'' }}" maxlength="250" style="width:100%;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div style="width:1px; height:7px"><!-- --></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="normal">
+                            <b>Заголовок:</b>
+                        </td>
+                        <td>
+                            {% if form.title.errors %}
+                                {% for error in form.title.errors %}
+                                    <span class="normal" style="color:red">
+                                        <b>{{ error|escape }}</b>
+                                    </span>
+                                {% endfor %}
+                            {% endif %}
+                            <input type="text" name="title" value="{{ form.title.value|default:'' }}" maxlength="100" style="width:100%;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div style="width:1px; height:7px"><!-- --></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <span class="normal">
+                                <b>Аннотация (она же - начало статьи, дублировать не надо, размер - не более двух предложений средней длины):</b>
+                            </span>
+                            <div style="width:1px; height:7px"><!-- --></div>
+                            {% if form.description.errors %}
+                                {% for error in form.description.errors %}
+                                    <span class="normal" style="color:red">
+                                        <b>{{ error|escape }}</b>
+                                    </span>
+                                {% endfor %}
+                            {% endif %}
+                            <textarea name="description" rows="8" style="width:100%;">{{ form.description.value|default:'' }}</textarea>
+                            <div style="width:1px; height:7px"><!-- --></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <span class="normal"><b>Полный текст статьи:</b></span>
+                            <div style="width:1px; height:7px"><!-- --></div>
+                            {% if form.content.errors %}
+                                    {% for error in form.content.errors %}
+                                        <span class="normal" style="color:red">
+                                            <b>{{ error|escape }}</b>
+                                        </span>
+                                    {% endfor %}
+                                {% endif %}
+                            <textarea name="content" rows="8" style="width:100%;">{{ form.content.value|default:'' }}</textarea>
+                            <div style="width:1px; height:7px"><!-- --></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="250" class="normal"><b>Введите число, указанное на картинке:</b></td>
+                        <td>
+                            {% if form.captcha.errors %}
+                                {% for error in form.captcha.errors %}
+                                    <span class="normal" style="color:red">{{ error|escape }}</span>
+                                {% endfor %}
+                                <br>
+                            {% endif %}
+                            {{ form.captcha }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <input type="submit" value="добавить" class="but">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    {% endcapture %}
+    {% include 'incl/tile/base_blue.html' with title='Добавление статьи:' content=form_tmpl %}
 
-    <table class="full-table h7 bgFFF0E6">
-        <tr>
-            <td class="bg_blu_l w7"><div style="width:7px; height:7px"><!-- --></div></td>
-            <td class="wp100 bg_blu_c"><div style="width:1px; height:7px"><!-- --></div></td>
-            <td class="bg_blu_r w7"><div style="width:7px; height:7px"><!-- --></div></td>
-        </tr>
-    </table>
-</form>
 {% endblock %}

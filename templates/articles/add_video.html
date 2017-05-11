@@ -2,35 +2,27 @@
 
 {% load static %}
 {% load htmlutils %}
+{% load capture_tags %}
 
 {% block title %}Добавление видео - ФОРУМ.мск{% endblock %}
 
 {% block content %}
-    <div class="big1 or">Добавление видео</div>
-    <div style="width:1px; height:1px"><!-- --></div>
-    <div class="border_or">
+
+    {% capture as description_tmpl silent %}
         <div class="normal">
             <div class="p_hv">
-                {% include 'articles/incl/add_material_recommends.html' %}
+                {% include 'articles/incl/recommends_add_material.html' %}
             </div>
         </div>
-    </div>
-    <table class="full-table h7 bgFFF0E6">
-        <tr>
-            <td class="bg_orange_l w7"><div style="width:7px; height:7px"><!-- --></div></td>
-            <td class="wp100 bg_orange_c"><div style="width:1px; height:7px"><!-- --></div></td>
-            <td class="bg_orange_r w7"><div style="width:7px; height:7px"><!-- --></div></td>
-        </tr>
-    </table>
+    {% endcapture %}
+    {% include 'incl/tile/base_orange.html' with title='Добавление видео' content=description_tmpl %}
+
     <div style="width:1px; height:7px"><!-- --></div>
 
     <a id="res"></a>
-    <div class="big1 bl">Добавление видео:</div>
-    <div style="width:1px; height:1px"><!-- --></div>
-
-    <form action="{% url 'articles:video_add' %}" method="POST">
-        {% csrf_token %}
-        <div class="border_bl">
+    {% capture as form_tmpl silent %}
+        <form action="{% url 'articles:video_add' %}" method="POST">
+            {% csrf_token %}
             <div class="p_hv">
                 {% if messages %}
                     {% for message in messages %}
@@ -139,14 +131,8 @@
                     </tr>
                 </table>
             </div>
-        </div>
+        </form>
+    {% endcapture %}
+    {% include 'incl/tile/base_blue.html' with title='Добавление видео:' content=form_tmpl %}
 
-        <table class="full-table h7 bgFFF0E6">
-            <tr>
-                <td class="bg_blu_l w7"><div style="width:7px; height:7px"><!-- --></div></td>
-                <td class="wp100 bg_blu_c"><div style="width:1px; height:7px"><!-- --></div></td>
-                <td class="bg_blu_r w7"><div style="width:7px; height:7px"><!-- --></div></td>
-            </tr>
-        </table>
-    </form>
 {% endblock %}
