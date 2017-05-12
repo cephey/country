@@ -1,10 +1,9 @@
-import re
 import csv
-import json
 from urllib.parse import urlparse, parse_qs
 from django.core.management.base import BaseCommand, CommandError
 
 from apps.articles.models import Section
+from apps.utils.converters import perl_to_python_dict
 
 
 class Command(BaseCommand):
@@ -25,11 +24,8 @@ class Command(BaseCommand):
 
             sections = []
             for row in reader:
-                data = row[8]
                 try:
-                    data = re.search('(\{.*?\})', data).group(1)
-                    data = data.replace('\'', '\"').replace('=>', ':')
-                    data = json.loads(data)
+                    data = perl_to_python_dict(row[8])
                 except Exception as e:
                     self.stderr.write(e)
                     continue

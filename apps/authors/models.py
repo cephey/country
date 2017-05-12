@@ -14,6 +14,8 @@ class Author(TimeStampedModel):
     photo = models.ImageField(_('Фото'), upload_to='authors', max_length=255, blank=True, null=True)
     is_active = models.BooleanField(default=True)
 
+    ext_id = models.IntegerField(_('Внешний ID'), editable=False, default=0, db_index=True)
+
     class Meta:
         verbose_name = _('Автор')
         verbose_name_plural = _('Авторы')

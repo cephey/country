@@ -15,7 +15,7 @@
                     <div class="or2_normal">&nbsp;&nbsp;<b>Об авторе:</b></div>
                     <div class="normal">
                         <img class="pwi" src="{{ object.icon|crop:'100x100' }}" alt="{{ object.cover_name|safe }}">
-                        {{ object.description }}
+                        {{ object.description|safe }}
                     </div>
                 </td>
             </tr>
