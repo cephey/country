@@ -296,7 +296,7 @@ class ImportTestCase(TestCase):
         section1 = PartnerVideoSectionFactory(ext_id=123456)
         section2 = PartnerVideoSectionFactory(ext_id=200300)
         call_command(
-            'migrate_videos',
+            'migrate_partners_videos',
             path=os.path.join(settings.BASE_DIR, 'fixtures/csv/import_video_news.csv')
         )
         articles = Article.objects.order_by('id')
