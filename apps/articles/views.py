@@ -25,12 +25,12 @@ class IndexView(PageContextMixin, TemplateView):
         kwargs.update(
             main_news=(Article.objects.visible().with_authors()
                        .select_related('section')
-                       .filter(is_news=True)
+                       .filter(is_news=True, is_main_news=True, section__is_video=False)
                        .order_by('-publish_date')
                        .first()),
             main_material=(Article.objects.visible().with_authors()
                            .select_related('section')
-                           .filter(is_news=False)
+                           .filter(is_news=False, is_day_material=True, section__is_video=False)
                            .order_by('-publish_date', '-comments_count')
                            .first()),
             materials=IndexSectionArticlesJob().get()
@@ -165,12 +165,12 @@ class VideoIndexView(VideoContextMixin, PageContextMixin, TemplateView):
         kwargs.update(
             main_news=(Article.objects.visible().with_authors()
                        .select_related('section')
-                       .filter(is_news=True, section__is_video=True)
+                       .filter(is_news=True, is_main_news=True, section__is_video=True)
                        .order_by('-publish_date')
                        .first()),
             main_material=(Article.objects.visible().with_authors()
                            .select_related('section')
-                           .filter(is_news=False, section__is_video=True)
+                           .filter(is_news=False, is_day_material=True, section__is_video=True)
                            .order_by('-publish_date', '-comments_count')
                            .first())
         )

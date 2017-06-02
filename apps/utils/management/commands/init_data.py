@@ -23,6 +23,29 @@ class Command(BaseCommand):
             path=os.path.join(path, 'documents.csv')
         )
 
+        self.stdout.write('Create sections...')
+        call_command(
+            'create_sections'
+        )
+
+        self.stdout.write('Migrate tags...')
+        call_command(
+            'migrate_tags',
+            path=os.path.join(path, 'tags.csv')
+        )
+
+        self.stdout.write('Migrate articles...')
+        call_command(
+            'migrate_articles',
+            path=os.path.join(path, 'news.csv')
+        )
+
+        self.stdout.write('Create opposition partitions...')
+        call_command(
+            'create_opposition_partitions'
+        )
+
+        # partner video -------------------------------------------------------
         self.stdout.write('Migrate partner video channels (partner video sections)...')
         call_command(
             'migrate_channels',
@@ -35,7 +58,9 @@ class Command(BaseCommand):
             path=os.path.join(path, 'import_video_news.csv')
         )
         download_latest_partners_videos()
+        # ---------------------------------------------------------------------
 
+        # bloggers ------------------------------------------------------------
         self.stdout.write('Migrate bloggers...')
         call_command(
             'migrate_bloggers',
@@ -49,3 +74,4 @@ class Command(BaseCommand):
             path=os.path.join(path, 'forum_bloggers_news.csv')
         )
         download_latest_entries()
+        # ---------------------------------------------------------------------

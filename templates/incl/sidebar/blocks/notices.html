@@ -6,7 +6,7 @@
 <ul style="margin: 0; padding: 0 5px 0 10px;">
     {% for notice in notices %}
         <li class="li_normal">
-            <a href="{% url 'articles:notice' %}#{{ notice.id }}">{{ notice.content }}</a>
+            <a href="{% url 'articles:notice' %}#{{ notice.id }}">{{ notice.content|safe }}</a>
             <span class="active_or">
                 <a href="{% url 'articles:notice' %}#{{ notice.id }}">&gt;&gt;</a>
             </span>

@@ -71,5 +71,6 @@ class AdminNoticeForm(forms.ModelForm):
         model = Comment
         fields = '__all__'
         widgets = {
+            'content': forms.Textarea(attrs={'cols': 80, 'rows': 8}),
             'status': forms.RadioSelect
         }

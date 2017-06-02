@@ -10,6 +10,8 @@ from apps.utils.models import TimeStampedModel
 class Tag(TimeStampedModel):
     name = models.CharField(_('Название'), max_length=255, unique=True)
 
+    ext_id = models.IntegerField(_('Внешний ID'), editable=False, default=0, db_index=True)
+
     class Meta:
         verbose_name = _('Тег')
         verbose_name_plural = _('Теги')

@@ -24,7 +24,7 @@
                             <div class="or2_normal">
                                 {% include 'articles/incl/image.html' with article=article %}
                                 <strong class="black">
-                                    <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
+                                    <a href="{{ article.get_absolute_url }}">{{ article.title|safe }}</a>
                                 </strong>
                                 {% if article.show_comments %}
                                     <span class="active_or">
@@ -40,7 +40,7 @@
                             </div>
                             <div class="p_t">
                                 <div class="normal">
-                                    <a href="{{ article.get_absolute_url }}">{{ article.preview|striptags }}</a>
+                                    <a href="{{ article.get_absolute_url }}">{{ article.preview|striptags|safe }}</a>
                                     <span class="active_or">
                                         <a href="{{ article.get_absolute_url }}">&gt;&gt;</a>
                                     </span>

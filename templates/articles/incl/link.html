@@ -2,10 +2,10 @@
 
 {% if strong %}
     <strong>
-        <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
+        <a href="{{ article.get_absolute_url }}">{{ article.title|safe }}</a>
     </strong>
 {% else %}
-    <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
+    <a href="{{ article.get_absolute_url }}">{{ article.title|safe }}</a>
 {% endif %}
 
 {% if article.show_comments %}

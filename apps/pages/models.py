@@ -11,6 +11,8 @@ class Partition(models.Model):
     name = models.CharField(_('Название'), max_length=255, unique=True)
     is_active = models.BooleanField(default=True)
 
+    ext_id = models.IntegerField(_('Внешний ID'), editable=False, default=0, db_index=True)
+
     objects = models.Manager.from_queryset(PartitionQuerySet)()
 
     class Meta:

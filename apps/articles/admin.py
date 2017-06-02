@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.db import models
 
 from apps.articles.models import Section, Article, Notice, Comment
 from apps.articles.forms import AdminArticleForm, AdminNoticeForm
@@ -83,5 +84,4 @@ class NoticeAdmin(admin.ModelAdmin):
     form = AdminNoticeForm
     list_display = ('__str__', 'status')
     list_filter = ('status',)
-    readonly_fields = ('content',)
     fields = ('content', 'status')

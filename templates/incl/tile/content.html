@@ -11,7 +11,7 @@
         </div>
         <div class="p_t">
             <div class="normal">
-                <a href="{{ article.get_absolute_url }}">{{ article.preview|striptags }}</a>
+                <a href="{{ article.get_absolute_url }}">{{ article.preview|striptags|safe }}</a>
                 <span class="active">
                     <a href="{{ article.get_absolute_url }}">&gt;&gt;</a>
                 </span>

@@ -19,7 +19,8 @@ class VideoTestCase(TestCase):
 
         for section in (section1, section2, section3):
             ArticleFactory.create_batch(4, section=section, image=None, with_video=True)
-            ArticleFactory(section=section, image=None, with_video=True, is_news=True)  # news
+            ArticleFactory(section=section, image=None, with_video=True, is_news=True, is_main_news=True)  # news
+            ArticleFactory(section=section, image=None, with_video=True, is_day_material=True)  # main material
 
         resp = self.app.get('/video/')
         self.assertEqual(resp.status_code, 200)

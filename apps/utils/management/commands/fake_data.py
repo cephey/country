@@ -96,16 +96,13 @@ class Command(BaseCommand):
         choice_ct = ContentType.objects.get_for_model(Choice)
 
         self.stdout.write('Remove all data from DB')
-        Notice.objects.all().delete()
         Comment.objects.all().delete()
         Multimedia.objects.all().delete()
 
         if kwargs.get('dev'):
             Article.objects.all().delete()
             Section.objects.all().delete()
-        else:
-            Article.objects.filter(section__channel='').delete()
-            Section.objects.filter(channel='').delete()
+            Notice.objects.all().delete()
 
         if kwargs.get('dev'):
             Author.objects.all().delete()
@@ -117,11 +114,14 @@ class Command(BaseCommand):
         Choice.objects.all().delete()
         Poll.objects.all().delete()
 
-        Tag.objects.all().delete()
+        if kwargs.get('dev'):
+            Tag.objects.all().delete()
+
         Vote.objects.all().delete()
 
         Resource.objects.all().delete()
-        Partition.objects.all().delete()
+        if kwargs.get('dev'):
+            Partition.objects.all().delete()
 
         get_user_model().objects.exclude(is_staff=True).delete()
 
@@ -137,84 +137,93 @@ class Command(BaseCommand):
         else:
             authors = list(Author.objects.all())
 
-        self.stdout.write('Generate tags...')
-        tags = TagFactory.create_batch(STR['tag_count'])
-
-        self.stdout.write('Generate sections...')
-        sections = [
-            SectionFactory(name='Политический расклад', slug='politic'),
-            SectionFactory(name='Экономическая реальность', slug='economic'),
-            SectionFactory(name='Жизнь регионов', slug='region'),
-            SectionFactory(name='Общество и его культура', slug='society'),
-            SectionFactory(name='Силовые структуры', slug='power'),
-            SectionFactory(name='Особенности внешней политики', slug='fpolitic'),
-            SectionFactory(name='Компрометирующие материалы', slug='kompromat'),
-            SectionFactory(name='Московский листок', slug='moscow'),
-
-            # video
-            VideoSectionFactory(name='Новости политики', slug='video_politic'),
-            VideoSectionFactory(name='Экономический расклад', slug='video_economic'),
-            VideoSectionFactory(name='Проиcшествия', slug='video_accidents'),
-            VideoSectionFactory(name='Внешняя политика', slug='video_fpolitic'),
-            VideoSectionFactory(name='Общество и его культура', slug='video_society'),
-            VideoSectionFactory(name='Народное видео', slug='video_national')
-        ]
         if kwargs.get('dev'):
-            sections += [
+            self.stdout.write('Generate tags...')
+            tags = TagFactory.create_batch(STR['tag_count'])
+        else:
+            tags = list(Tag.objects.all())
+
+        if kwargs.get('dev'):
+            self.stdout.write('Generate sections...')
+            sections = [
+                SectionFactory(name='Политический расклад', slug='politic'),
+                SectionFactory(name='Экономическая реальность', slug='economic'),
+                SectionFactory(name='Жизнь регионов', slug='region'),
+                SectionFactory(name='Общество и его культура', slug='society'),
+                SectionFactory(name='Силовые структуры', slug='power'),
+                SectionFactory(name='Особенности внешней политики', slug='fpolitic'),
+                SectionFactory(name='Компрометирующие материалы', slug='kompromat'),
+                SectionFactory(name='Московский листок', slug='moscow'),
+
+                # video
+                VideoSectionFactory(name='Новости политики', slug='video_politic'),
+                VideoSectionFactory(name='Экономический расклад', slug='video_economic'),
+                VideoSectionFactory(name='Проиcшествия', slug='video_accidents'),
+                VideoSectionFactory(name='Внешняя политика', slug='video_fpolitic'),
+                VideoSectionFactory(name='Общество и его культура', slug='video_society'),
+                VideoSectionFactory(name='Народное видео', slug='video_national'),
+
                 # partner video
                 PartnerVideoSectionFactory(name='Луганск 24', slug='video_partner_lugansk24'),
                 PartnerVideoSectionFactory(name='Программа Сергея Доренко', slug='video_partner_dorenko'),
                 PartnerVideoSectionFactory(name='Красное.ТВ', slug='video_partner_krasnoetv'),
                 PartnerVideoSectionFactory(name='Nevex.TV', slug='video_partner_nevextv')
             ]
+        else:
+            sections = list(Section.objects.all())
+
         a_count_list = [2, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
-        self.stdout.write('Generate articles with comments and media...')
-        for i in range(len(sections) * STR['avg_art_count'] * 2):
-            section = random.choice(sections)
+        if kwargs.get('dev'):
+            self.stdout.write('Generate articles...')
+            for i in range(len(sections) * STR['avg_art_count'] * 2):
+                section = random.choice(sections)
 
-            if not kwargs.get('dev') and section.channel:
-                continue
+                if section.is_video and not random.randint(0, 1):
+                    continue
 
-            if section.is_video and not random.randint(0, 1):
-                continue
-
-            # authors
-            params = dict(
-                section=section,
-                is_news=not bool(random.randint(0, 6))
-            )
-            a_count = random.choice(a_count_list)
-            if not a_count:  # no authors
-                if random.randint(0, 1):
-                    params['author_names'] = AuthorFactory.build().cover_name
-            else:
-                params['authors'] = random.sample(authors, a_count)
-
-            # tags
-            a_tags = random.sample(tags, random.randint(0, 6))
-            if a_tags:
-                params['tags'] = a_tags
-
-            # source
-            if not random.randint(0, 5):
-                params['with_source'] = True
-                if random.randint(0, 1):
-                    params['with_source_link'] = True
-
-            if not random.randint(0, 20):
-                params['show_comments'] = False  # hide comments
-            if not random.randint(0, 3):
-                params['discussion_status'] = Article.DISCUSSION_STATUS.close  # close discussion
-
-            if section.is_video:
-                params.update(
-                    image=None,
-                    with_video=True
+                params = dict(
+                    section=section,
+                    is_news=not bool(random.randint(0, 8)),
+                    is_ticker=not bool(random.randint(0, 8)),
+                    is_main_news=not bool(random.randint(0, 8)),
+                    is_day_material=not bool(random.randint(0, 8)),
                 )
 
-            article = ArticleFactory(**params)
+                # authors
+                a_count = random.choice(a_count_list)
+                if not a_count:  # no authors
+                    if random.randint(0, 1):
+                        params['author_names'] = AuthorFactory.build().cover_name
+                else:
+                    params['authors'] = random.sample(authors, a_count)
 
+                # tags
+                a_tags = random.sample(tags, random.randint(0, 6))
+                if a_tags:
+                    params['tags'] = a_tags
+
+                # source
+                if not random.randint(0, 5):
+                    params['with_source'] = True
+                    if random.randint(0, 1):
+                        params['with_source_link'] = True
+
+                if not random.randint(0, 20):
+                    params['show_comments'] = False  # hide comments
+                if not random.randint(0, 3):
+                    params['discussion_status'] = Article.DISCUSSION_STATUS.close  # close discussion
+
+                if section.is_video:
+                    params.update(
+                        image=None,
+                        with_video=True
+                    )
+
+                ArticleFactory(**params)
+
+        self.stdout.write('Generate articles comments and media...')
+        for article in Article.objects.all():
             # comments
             comment_count = random.randint(0, STR['max_com_count'])
             comment_tokens = random.sample(tokens, comment_count)
@@ -234,20 +243,23 @@ class Command(BaseCommand):
                 else:
                     MultimediaFactory.create_batch(2, article=article)
 
-        self.stdout.write('Generate resources...')
-        resource_types = [
-            PartitionFactory(name='Персональные сайты'),
-            PartitionFactory(name='Партии и общественные движения'),
-            PartitionFactory(name='Оппозиционные СМИ'),
-            PartitionFactory(name='Аналитика'),
-            PartitionFactory(name='Креативные проекты'),
-            PartitionFactory(name='Блоги и форумы'),
-            PartitionFactory(name='Музыка'),
-            PartitionFactory(name='Литература и искусство'),
-            PartitionFactory(name='Региональные организации'),
-            PartitionFactory(name='Библиотеки'),
-            PartitionFactory(name='История')
-        ]
+        if kwargs.get('dev'):
+            self.stdout.write('Generate resources...')
+            resource_types = [
+                PartitionFactory(name='Персональные сайты'),
+                PartitionFactory(name='Партии и общественные движения'),
+                PartitionFactory(name='Оппозиционные СМИ'),
+                PartitionFactory(name='Аналитика'),
+                PartitionFactory(name='Креативные проекты'),
+                PartitionFactory(name='Блоги и форумы'),
+                PartitionFactory(name='Музыка'),
+                PartitionFactory(name='Литература и искусство'),
+                PartitionFactory(name='Региональные организации'),
+                PartitionFactory(name='Библиотеки'),
+                PartitionFactory(name='История')
+            ]
+        else:
+            resource_types = list(Partition.objects.all())
         for i in range(len(resource_types) * 6):
             ResourceFactory(partition=random.choice(resource_types), rating=random.randint(0, 10))
 
@@ -267,12 +279,16 @@ class Command(BaseCommand):
                 comment_id, comment_ct, STR['max_like_count'], tokens, users, lambda: random.choice([-1, 1])
             )
 
-        self.stdout.write('Generate notices...')
-        for i in range(STR['notice_count']):
-            if random.randint(0, 2):
-                NoticeFactory()
-            else:
-                NoticeFactory(status=Notice.STATUS.new)
+        if kwargs.get('dev'):
+            self.stdout.write('Generate notices...')
+            for i in range(STR['notice_count']):
+                random_status = random.randint(0, 2)
+                if random_status == 1:
+                    NoticeFactory(status=Notice.STATUS.new)
+                elif random_status == 2:
+                    NoticeFactory(status=Notice.STATUS.rejected)
+                else:
+                    NoticeFactory()
 
         self.stdout.write('Generate polls...')
         polls = PollFactory.create_batch(STR['poll_count'])

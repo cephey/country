@@ -31,6 +31,10 @@ class HeaderContextJob(Job):
     def fetch(self):
         return {
             'header_rating_news': Article.objects.visible().filter(is_news=True).order_by('?')[:3],  # order by vote_sum?
-            'marquee': Article.objects.visible().select_related('section').order_by('-publish_date').first(),
+            'marquee': (Article.objects.visible()
+                        .select_related('section')
+                        .filter(is_ticker=True)
+                        .order_by('-publish_date')
+                        .first()),
             'sections': Section.objects.navigate()
         }

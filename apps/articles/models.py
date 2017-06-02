@@ -84,7 +84,6 @@ class Article(TimeStampedModel):
     description = models.TextField(_('Описание'), blank=True)
     content = models.TextField(_('Содержание'), blank=True)
     section = models.ForeignKey('articles.Section', verbose_name=_('Раздел'), blank=True, null=True)
-    is_news = models.BooleanField(_('Новость'), default=False)
     authors = models.ManyToManyField('authors.Author', verbose_name=_('Авторы'), blank=True)
     author_names = models.CharField(_('Авторы'), max_length=255, blank=True,
                                     help_text=_('Список внешних авторов через запятую'))
@@ -103,9 +102,19 @@ class Article(TimeStampedModel):
     video = models.URLField(_('Ссылка на видео'), blank=True)
     thumbnail = models.CharField(_('Ссылка на превью'), max_length=200, blank=True)
 
+    # flags
+    is_news = models.BooleanField(_('Новость'), default=False, db_index=True)
+    is_ticker = models.BooleanField(_('Бегущая строка'), default=False, db_index=True)
+    is_main_news = models.BooleanField(_('Главная новость'), default=False, db_index=True,
+                                       help_text=_('Главный сюжет для видео'))
+    is_day_material = models.BooleanField(_('Материал дня'), default=False, db_index=True,
+                                          help_text=_('Репортаж дня для видео'))
+
     votes = GenericRelation('votes.Vote')
     rating = models.FloatField(_('Рейтинг'), editable=False, default=0)
     vote_count = models.PositiveIntegerField(_('Кол-во проголосовавших'), editable=False, default=0)
+
+    ext_id = models.IntegerField(_('Внешний ID'), editable=False, default=0, db_index=True)
 
     objects = models.Manager.from_queryset(ArticleQuerySet)()
 
@@ -217,7 +226,8 @@ class Multimedia(models.Model):
 class Notice(TimeStampedModel):
     STATUS = Choices(
         ('new', 'Новый'),
-        ('approved', 'Одобрен')
+        ('approved', 'Одобрен'),
+        ('rejected', 'Отклонен')
     )
     content = models.CharField(_('Содержание'), max_length=200)
     status = models.CharField(_('Статус'), max_length=8, choices=STATUS, default=STATUS.new)

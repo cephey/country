@@ -1,3 +1,4 @@
+import re
 import json
 
 
@@ -7,6 +8,18 @@ def perl_to_python_dict(data):
     :return: python dict {'url': 'http://kolobok1973.livejournal.com/', 'note': ''}
     """
     data = data[data.find("{") + 1: data.rfind("}")]
-    data = data.replace('\"', '\\\"').replace('\'', '\"').replace('=>', ':').replace('\t', '')
-    data = '{' + data + '}'
-    return json.loads(data)
+    data = (data.replace('\"', '\\\"').replace('\'', '\"').replace('=>', ':')
+            .replace('\t', '').replace('\n', '')
+            .replace('undef', 'null'))
+    data = re.sub(r'[\x00-\x1f\x7f-\x9f]', '', data)
+    return json.loads('{' + data + '}')
+
+
+def perl_to_python_list(data):
+    """
+    :param data: string `{123, 10, 8823309}`
+    :return: python list [123, 10, 8823309]
+    """
+    if data and len(data) > 2:
+        return [int(s.strip()) for s in data[1:-1].split(',') if s.strip()]
+    return []
