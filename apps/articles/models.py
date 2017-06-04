@@ -115,6 +115,7 @@ class Article(TimeStampedModel):
     vote_count = models.PositiveIntegerField(_('Кол-во проголосовавших'), editable=False, default=0)
 
     ext_id = models.IntegerField(_('Внешний ID'), editable=False, default=0, db_index=True)
+    thread_id = models.IntegerField(_('Внешний ID Треда'), editable=False, default=0, db_index=True)
 
     objects = models.Manager.from_queryset(ArticleQuerySet)()
 
@@ -183,6 +184,8 @@ class Comment(models.Model):
 
     votes = GenericRelation('votes.Vote')
     karma = models.IntegerField(_('Оценка'), editable=False, default=0)
+
+    ext_id = models.IntegerField(_('Внешний ID'), editable=False, default=0, db_index=True)
 
     objects = models.Manager.from_queryset(CommentQuerySet)()
 

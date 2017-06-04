@@ -40,6 +40,22 @@ class Command(BaseCommand):
             path=os.path.join(path, 'news.csv')
         )
 
+        self.stdout.write('Migrate comments...')
+        call_command(
+            'migrate_comments',
+            path=os.path.join(path, 'forum_messages.csv')
+        )
+
+        self.stdout.write('Denorm article comments count...')
+        call_command(
+            'denorm_article_comments_count'
+        )
+
+        self.stdout.write('Build article videos thumbnail...')
+        call_command(
+            'build_article_videos_thumbnail'
+        )
+
         self.stdout.write('Create opposition partitions...')
         call_command(
             'create_opposition_partitions'

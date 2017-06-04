@@ -10,7 +10,7 @@ from django.test import TestCase, Client
 from django.core.management import call_command
 
 from apps.authors.factories import AuthorFactory
-from apps.articles.models import Article, Section
+from apps.articles.models import Article, Section,Comment
 from apps.articles.factories import (ArticleFactory, SectionFactory, CommentFactory,
                                      MultimediaFactory, VideoSectionFactory,
                                      PartnerVideoSectionFactory)
@@ -313,6 +313,42 @@ class ImportTestCase(TestCase):
 
         self.assertEqual(articles[2].section, section1)
         self.assertEqual(articles[2].video, 'http://www.youtube.com/watch?v=tX_MY6xVvlg&feature=youtube_gdata')
+
+
+class MigrateTestCase(TestCase):
+
+    def test_migrate_comments(self):
+        article = ArticleFactory(thread_id=100500)
+        call_command(
+            'migrate_comments',
+            path=os.path.join(settings.BASE_DIR, 'fixtures/csv/forum_messages.csv')
+        )
+        comments = Comment.objects.order_by('id')
+        self.assertEqual(len(comments), 7)
+
+        for comment in comments:
+            self.assertEqual(comment.article, article)
+
+        self.assertEqual(comments[0].title, 'Корень')
+        self.assertFalse(comments[0].parent)
+
+        self.assertEqual(comments[1].title, 'Корень пустой')
+        self.assertFalse(comments[1].parent)
+
+        self.assertEqual(comments[2].title, 'Второй пустой')
+        self.assertEqual(comments[2].parent, comments[0])
+
+        self.assertEqual(comments[3].title, 'Второй')
+        self.assertEqual(comments[3].parent, comments[0])
+
+        self.assertEqual(comments[4].title, 'Третий')
+        self.assertEqual(comments[4].parent, comments[3])
+
+        self.assertEqual(comments[5].title, 'Третий пустой')
+        self.assertEqual(comments[5].parent, comments[3])
+
+        self.assertEqual(comments[6].title, 'Четвертый пустой')
+        self.assertEqual(comments[6].parent, comments[4])
 
 
 class SitemapTestCase(TestCase):

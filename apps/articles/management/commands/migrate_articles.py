@@ -11,6 +11,8 @@ from apps.authors.models import Author
 from apps.tags.models import Tag, TaggedItem
 from apps.utils.converters import perl_to_python_dict, perl_to_python_list
 
+BATCH_SIZE = 500
+
 
 class Command(BaseCommand):
     help = 'Migrate articles from csv'
@@ -32,6 +34,8 @@ class Command(BaseCommand):
         sections_mapping = dict(Section.objects.values_list('ext_id', 'id'))
         tags_mapping = dict(Tag.objects.values_list('ext_id', 'id'))
 
+        video_sections = list(Section.objects.filter(is_video=True).values_list('id', flat=True))
+
         self.stdout.write('Parse file...')
         csv.field_size_limit(500 * 1024 * 1024)
         with open(path, 'r', encoding='koi8-r') as csvfile:
@@ -42,6 +46,7 @@ class Command(BaseCommand):
             articles = []
             article_authors_relation = {}
             article_tags_relation = defaultdict(list)
+            i, j = 0, 0
 
             for row in reader:
 
@@ -69,10 +74,15 @@ class Command(BaseCommand):
                         )
                     continue
 
+                is_video = bool(row[15])
+
                 section_id = None
                 for ext_id in section_ext_ids:
                     if ext_id in sections_mapping:
                         section_id = sections_mapping[ext_id]
+                        if section_id in video_sections and not is_video:
+                            section_id = None
+                            continue
                         break
 
                 if 108 in section_ext_ids:
@@ -118,16 +128,26 @@ class Command(BaseCommand):
                         is_ticker=is_ticker,
                         is_main_news=is_main_news,
                         is_day_material=is_day_material,
+                        thread_id=row[16] or 0,
                         ext_id=row[0]
                     )
                 )
+                j += 1
+                if j == BATCH_SIZE:
+                    i += 1
+                    self.stdout.write('Bulk create articles (iter {})...'.format(i))
+                    Article.objects.bulk_create(articles)
+                    articles = []
+                    j = 0
+
+        if articles:
+            self.stdout.write('Bulk create articles (iter end)...')
+            Article.objects.bulk_create(articles)
 
         self.stdout.write('Bulk create notices...')
-        Notice.objects.bulk_create(notices, batch_size=500)
+        Notice.objects.bulk_create(notices, batch_size=BATCH_SIZE)
 
-        self.stdout.write('Bulk create articles...')
-        Article.objects.bulk_create(articles, batch_size=500)
-
+        self.stdout.write('- create articles_mapping...')
         articles_mapping = dict(Article.objects.values_list('ext_id', 'id'))
 
         # attach authors
@@ -142,7 +162,7 @@ class Command(BaseCommand):
             for article_id, author_id in relations.items()
         ]
         self.stdout.write('Bulk create relations atricles <-> authors...')
-        ArticleAuthor.objects.bulk_create(article_authors, batch_size=500)
+        ArticleAuthor.objects.bulk_create(article_authors, batch_size=BATCH_SIZE)
 
         # attach tags
         tagged_item = []
@@ -154,6 +174,6 @@ class Command(BaseCommand):
                      for tag_id in tag_ids]
                 )
         self.stdout.write('Bulk create relations atricles <-> tags...')
-        TaggedItem.objects.bulk_create(tagged_item, batch_size=500)
+        TaggedItem.objects.bulk_create(tagged_item, batch_size=BATCH_SIZE)
 
         self.stdout.write('End...')
