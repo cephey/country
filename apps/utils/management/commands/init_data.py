@@ -56,10 +56,18 @@ class Command(BaseCommand):
             'build_article_videos_thumbnail'
         )
 
+        # opposition -------------------------------------------------------
         self.stdout.write('Create opposition partitions...')
         call_command(
             'create_opposition_partitions'
         )
+
+        self.stdout.write('Migrate opposition resources...')
+        call_command(
+            'migrate_opposition_resources',
+            path=os.path.join(path, 'partner_opposition.csv')
+        )
+        # ---------------------------------------------------------------------
 
         # partner video -------------------------------------------------------
         self.stdout.write('Migrate partner video channels (partner video sections)...')
