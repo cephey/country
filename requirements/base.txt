@@ -1,7 +1,7 @@
 # this file contains all the required packages for real (forum-msk) environment
 
 # django and batteries
-Django==1.11.1
+Django==1.11.3
 django-model-utils==2.6.1
 django-simple-captcha==0.5.5
 django-ckeditor==5.2.2

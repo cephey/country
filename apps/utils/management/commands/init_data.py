@@ -91,3 +91,9 @@ class Command(BaseCommand):
         )
         download_latest_entries()
         # ---------------------------------------------------------------------
+
+        self.stdout.write('Migrate polls...')
+        call_command(
+            'migrate_polls',
+            path=os.path.join(path, 'votes.csv')
+        )

@@ -2,16 +2,18 @@ import re
 import json
 
 
-def perl_to_python_dict(data):
+def perl_to_python_dict(data, second=False):
     """
     :param data: string `$VAR1 = {'url' => 'http://kolobok1973.livejournal.com/','note' => ''};`
+    :param second: bool True if it is second parse one and the same string
     :return: python dict {'url': 'http://kolobok1973.livejournal.com/', 'note': ''}
     """
     data = data[data.find("{") + 1: data.rfind("}")]
-    data = (data.replace('\"', '\\\"').replace('\'', '\"').replace('=>', ':')
-            .replace('\t', '').replace('\n', '')
-            .replace('undef', 'null'))
-    data = re.sub(r'[\x00-\x1f\x7f-\x9f]', '', data)
+    if not second:
+        data = (data.replace('\"', '\\\"').replace('\'', '\"').replace('=>', ':')
+                .replace('\t', '').replace('\n', '')
+                .replace('undef', 'null'))
+        data = re.sub(r'[\x00-\x1f\x7f-\x9f]', '', data)
     return json.loads('{' + data + '}')
 
 
