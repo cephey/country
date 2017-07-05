@@ -80,15 +80,28 @@ class Migration(migrations.Migration):
             name='Multimedia',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('link', models.URLField(blank=True, verbose_name='Ссылка на youtube')),
-                ('description', models.TextField(blank=True, verbose_name='Описание')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')),
-                ('article', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='articles.Article', verbose_name='Статья')),
+                ('image_url', models.CharField(max_length=255, verbose_name='Путь до картинки')),
+                ('ext_id', models.IntegerField(db_index=True, default=0, editable=False, verbose_name='Внешний ID')),
             ],
             options={
                 'ordering': ('-pk',),
                 'verbose_name': 'Мультимедиа',
                 'verbose_name_plural': 'Мультимедиа',
+            },
+        ),
+        migrations.CreateModel(
+            name='Attach',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('link', models.URLField(blank=True, verbose_name='Ссылка')),
+                ('description', models.TextField(blank=True, verbose_name='Описание')),
+                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')),
+                ('article', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='articles.Article', verbose_name='Статья')),
+            ],
+            options={
+                'verbose_name_plural': 'Прикрепленные материалы',
+                'verbose_name': 'Прикрепленный материал',
+                'ordering': ('-pk',),
             },
         ),
         migrations.CreateModel(
@@ -127,5 +140,10 @@ class Migration(migrations.Migration):
             model_name='article',
             name='section',
             field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='articles.Section', verbose_name='Раздел'),
+        ),
+        migrations.AddField(
+            model_name='article',
+            name='multimedia',
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='articles.Multimedia'),
         ),
     ]

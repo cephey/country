@@ -38,6 +38,8 @@ VIDEO_SECTIONS = [
     'video_partner_lugansk24', 'video_partner_dorenko', 'video_partner_krasnoetv', 'video_partner_nevextv'
 ]
 
+ARTICLE_UPLOAD_PATH = 'articles_image'
+
 
 class Section(models.Model):
     name = models.CharField(_('Название'), max_length=255)
@@ -98,7 +100,7 @@ class Article(TimeStampedModel):
     comments_count = models.PositiveIntegerField(_('Кол-во комментариев'), editable=False, default=0)
     tags = GenericRelation('tags.TaggedItem')
 
-    image = models.ImageField(_('Картинка'), upload_to='articles_image', max_length=255, blank=True, null=True)
+    image = models.ImageField(_('Картинка'), upload_to=ARTICLE_UPLOAD_PATH, max_length=255, blank=True, null=True)
     video = models.URLField(_('Ссылка на видео'), blank=True)
     thumbnail = models.CharField(_('Ссылка на превью'), max_length=200, blank=True)
 
@@ -116,6 +118,7 @@ class Article(TimeStampedModel):
 
     ext_id = models.IntegerField(_('Внешний ID'), editable=False, default=0, db_index=True)
     thread_id = models.IntegerField(_('Внешний ID Треда'), editable=False, default=0, db_index=True)
+    multimedia = models.ForeignKey('articles.Multimedia', blank=True, null=True)
 
     objects = models.Manager.from_queryset(ArticleQuerySet)()
 
@@ -215,14 +218,24 @@ class Comment(models.Model):
 
 
 class Multimedia(models.Model):
-    article = models.ForeignKey('articles.Article', verbose_name=_('Статья'))
-    link = models.URLField(_('Ссылка на youtube'), blank=True)
-    description = models.TextField(_('Описание'), blank=True)
-    created_at = models.DateTimeField(_('Дата создания'), auto_now_add=True, editable=False)
+    image_url = models.CharField(_('Путь до картинки'), max_length=255)
+    ext_id = models.IntegerField(_('Внешний ID'), editable=False, default=0, db_index=True)
 
     class Meta:
         verbose_name = _('Мультимедиа')
         verbose_name_plural = _('Мультимедиа')
+        ordering = ('-pk',)
+
+
+class Attach(models.Model):
+    article = models.ForeignKey('articles.Article', verbose_name=_('Статья'))
+    link = models.URLField(_('Ссылка'), blank=True)
+    description = models.TextField(_('Описание'), blank=True)
+    created_at = models.DateTimeField(_('Дата создания'), auto_now_add=True, editable=False)
+
+    class Meta:
+        verbose_name = _('Прикрепленный материал')
+        verbose_name_plural = _('Прикрепленные материалы')
         ordering = ('-pk',)
 
 

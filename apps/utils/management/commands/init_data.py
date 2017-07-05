@@ -17,6 +17,12 @@ class Command(BaseCommand):
         if not path:
             raise CommandError('Path is required')
 
+        self.stdout.write('Migrate multimedia...')
+        call_command(
+            'migrate_multimedia',
+            path=os.path.join(path, 'multimedia.csv')
+        )
+
         self.stdout.write('Migrate authors...')
         call_command(
             'migrate_authors',

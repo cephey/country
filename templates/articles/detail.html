@@ -87,9 +87,9 @@
                     </span>
                 {% endif %}
 
-                {% if object.multimedia_set.all %}
+                {% if object.attach_set.all %}
                     <br>&nbsp;Прикреплено:
-                    {% for media in object.multimedia_set.all %}
+                    {% for media in object.attach_set.all %}
                         <a href="{{ media.link }}" target="_blank">{{ media.description }}</a>&nbsp;
                     {% endfor %}
                     <br>

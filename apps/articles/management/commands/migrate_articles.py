@@ -7,7 +7,7 @@ from django.utils.dateparse import parse_datetime
 from django.contrib.contenttypes.models import ContentType
 from django.core.management.base import BaseCommand, CommandError
 
-from apps.articles.models import Section, Article, Notice
+from apps.articles.models import Section, Article, Notice, Multimedia
 from apps.authors.models import Author
 from apps.tags.models import Tag, TaggedItem
 from apps.utils.converters import perl_to_python_dict, perl_to_python_list
@@ -50,6 +50,7 @@ class Command(BaseCommand):
         authors_mapping = dict(Author.objects.values_list('ext_id', 'id'))
         sections_mapping = dict(Section.objects.values_list('ext_id', 'id'))
         tags_mapping = dict(Tag.objects.values_list('ext_id', 'id'))
+        multimedia_mapping = dict(Multimedia.objects.values_list('ext_id', 'id'))
 
         video_sections = list(Section.objects.filter(is_video=True).values_list('id', flat=True))
 
@@ -64,9 +65,16 @@ class Command(BaseCommand):
             article_authors_relation = {}
             article_tags_relation = defaultdict(list)
             article_votes_relation = {}
-            i, j = 0, 0
-
+            j = 0
             for row in reader:
+
+                multimedia_ext_ids = perl_to_python_list(row[17])
+                multimedia_id = None
+                if multimedia_ext_ids:
+                    for multimedia_ext_id in multimedia_ext_ids:
+                        multimedia_id = multimedia_mapping.get(multimedia_ext_id)
+                        if multimedia_id:
+                            break
 
                 try:
                     data = perl_to_python_dict(row[12])
@@ -163,17 +171,16 @@ class Command(BaseCommand):
                         is_day_material=is_day_material,
                         rating=rating,
                         vote_count=vote_count,
+                        multimedia_id=multimedia_id,
                         thread_id=row[16] or 0,
                         ext_id=article_ext_id
                     )
                 )
-                j += 1
-                if j == BATCH_SIZE:
-                    i += 1
-                    self.stdout.write('Bulk create articles (iter {})...'.format(i))
+                if len(articles) == BATCH_SIZE:
+                    self.stdout.write('Bulk create articles (iter {})...'.format(j))
+                    j += 1
                     Article.objects.bulk_create(articles)
                     articles = []
-                    j = 0
 
         if articles:
             self.stdout.write('Bulk create articles (iter end)...')

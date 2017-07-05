@@ -84,7 +84,7 @@ class ArticleDetailView(PageContextMixin, PaginatorMixin, DetailView):
     template_name = 'articles/detail.html'
     queryset = (Article.objects.visible().with_authors()
                 .select_related('section')
-                .prefetch_related('multimedia_set', 'tags__tag'))
+                .prefetch_related('attach_set', 'tags__tag'))
     section = None
 
     def get(self, request, *args, **kwargs):

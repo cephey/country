@@ -50,7 +50,7 @@ class VideoHelper(object):
 
         elif self.provider == VIDEO_PROVIDERS.rutube:
             print(self.url)
-            raise UnknownProvider
+            return ''
             code = self.get_rutube_video_code()
             resp = requests.get('http://rutube.ru/api/video/{}/?format=json'.format(code))
             if resp.status_code == 200:
@@ -62,7 +62,7 @@ class VideoHelper(object):
 
         elif self.provider == VIDEO_PROVIDERS.vimeo:
             print(self.url)
-            raise UnknownProvider
+            return ''
             code = self.get_vimeo_video_code()
             resp = requests.get('http://vimeo.com/api/v2/video/{}.json'.format(code))
             if resp.status_code == 200:
@@ -82,6 +82,7 @@ class VideoHelper(object):
         elif 'vimeo' in domain:
             self.provider = VIDEO_PROVIDERS.vimeo
         else:
+            return
             raise UnknownProvider('Received unknown provider {}'.format(domain))
 
     def get_youtube_video_code(self):
