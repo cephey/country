@@ -1,6 +1,7 @@
 import csv
 from django.core.management.base import BaseCommand, CommandError
 
+from apps.articles.models import Multimedia
 from apps.pages.models import Resource, Partition
 from apps.utils.converters import perl_to_python_dict, perl_to_python_list
 
@@ -20,15 +21,15 @@ class Command(BaseCommand):
         if not path:
             raise CommandError('Path is required')
 
+        partition_mapping = dict(Partition.objects.values_list('ext_id', 'id'))
+        multimedia_mapping = dict(Multimedia.objects.values_list('ext_id', 'id'))
+
         self.stdout.write('Parse file...')
         csv.field_size_limit(500 * 1024 * 1024)
         with open(path, 'r', encoding='koi8-r') as csvfile:
             reader = csv.reader(csvfile)
 
-            partition_mapping = dict(Partition.objects.values_list('ext_id', 'id'))
-
             resources = []
-
             for row in reader:
 
                 try:
@@ -49,18 +50,27 @@ class Command(BaseCommand):
                 if not partition_ids:
                     continue
 
+                multimedia_ext_ids = perl_to_python_list(row[11])
+                multimedia_id = None
+                if multimedia_ext_ids:
+                    for multimedia_ext_id in multimedia_ext_ids:
+                        multimedia_id = multimedia_mapping.get(multimedia_ext_id)
+                        if multimedia_id:
+                            break
+
                 resources.append(
                     Resource(
                         partition_id=partition_ids[0],
                         name=row[7],
                         url=data['url'],
                         rating=int(row[8]),
+                        multimedia_id=multimedia_id,
                         is_active=bool(int(row[5]))
                     )
                 )
 
         if resources:
             self.stdout.write('Bulk create resources...')
-            Resource.objects.bulk_create(resources)
+            Resource.objects.bulk_create(resources, batch_size=BATCH_SIZE)
 
         self.stdout.write('End...')

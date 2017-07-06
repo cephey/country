@@ -11,6 +11,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
+        ('articles', '0001_initial'),
     ]
 
     operations = [
@@ -40,6 +41,7 @@ class Migration(migrations.Migration):
                 ('rating', models.PositiveIntegerField(default=0, verbose_name='Рейтинг')),
                 ('is_active', models.BooleanField(default=True)),
                 ('partition', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='pages.Partition', verbose_name='Тип')),
+                ('multimedia', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='articles.Multimedia')),
             ],
             options={
                 'ordering': ('-pk',),

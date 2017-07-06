@@ -23,6 +23,8 @@ class Command(BaseCommand):
 
         multimedia_mapping = dict(Multimedia.objects.values_list('ext_id', 'id'))
 
+        self.stdout.write('Parse file...')
+        csv.field_size_limit(500 * 1024 * 1024)
         with open(path, 'r', encoding='koi8-r') as csvfile:
             reader = csv.reader(csvfile)
 
@@ -30,14 +32,6 @@ class Command(BaseCommand):
             for row in reader:
                 if row[1] != 'Forum::Author':
                     continue
-
-                multimedia_ext_ids = perl_to_python_list(row[10])
-                multimedia_id = None
-                if multimedia_ext_ids:
-                    for multimedia_ext_id in multimedia_ext_ids:
-                        multimedia_id = multimedia_mapping.get(multimedia_ext_id)
-                        if multimedia_id:
-                            break
 
                 try:
                     last_name, first_name = row[7].split()
@@ -50,6 +44,14 @@ class Command(BaseCommand):
                 except Exception as e:
                     self.stderr.write(e)
                     continue
+
+                multimedia_ext_ids = perl_to_python_list(row[10])
+                multimedia_id = None
+                if multimedia_ext_ids:
+                    for multimedia_ext_id in multimedia_ext_ids:
+                        multimedia_id = multimedia_mapping.get(multimedia_ext_id)
+                        if multimedia_id:
+                            break
 
                 authors.append(
                     Author(

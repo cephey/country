@@ -6,6 +6,8 @@ from django.utils.translation import ugettext_lazy as _
 from apps.utils.models import TimeStampedModel
 from apps.pages.managers import PartitionQuerySet, ResourceQuerySet
 
+RESOURCE_UPLOAD_PATH = 'pages'
+
 
 class Partition(models.Model):
     name = models.CharField(_('Название'), max_length=255, unique=True)
@@ -30,10 +32,12 @@ class Partition(models.Model):
 class Resource(TimeStampedModel):
     partition = models.ForeignKey('pages.Partition', verbose_name=_('Тип'))
     name = models.CharField(_('Название'), max_length=255)
-    logo = models.ImageField(_('Логотип'), upload_to='pages', max_length=255, blank=True, null=True)
+    logo = models.ImageField(_('Логотип'), upload_to=RESOURCE_UPLOAD_PATH, max_length=255, blank=True, null=True)
     url = models.CharField(_('Адрес'), max_length=255, blank=True)
     rating = models.PositiveIntegerField(_('Рейтинг'), default=0)
     is_active = models.BooleanField(default=True)
+
+    multimedia = models.ForeignKey('articles.Multimedia', blank=True, null=True)
 
     objects = models.Manager.from_queryset(ResourceQuerySet)()
 
