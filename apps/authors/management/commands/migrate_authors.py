@@ -1,8 +1,11 @@
 import csv
 from django.core.management.base import BaseCommand, CommandError
 
+from apps.articles.models import Multimedia
 from apps.authors.models import Author
-from apps.utils.converters import perl_to_python_dict
+from apps.utils.converters import perl_to_python_dict, perl_to_python_list
+
+BATCH_SIZE = 500
 
 
 class Command(BaseCommand):
@@ -18,6 +21,8 @@ class Command(BaseCommand):
         if not path:
             raise CommandError('Path is required')
 
+        multimedia_mapping = dict(Multimedia.objects.values_list('ext_id', 'id'))
+
         with open(path, 'r', encoding='koi8-r') as csvfile:
             reader = csv.reader(csvfile)
 
@@ -25,6 +30,14 @@ class Command(BaseCommand):
             for row in reader:
                 if row[1] != 'Forum::Author':
                     continue
+
+                multimedia_ext_ids = perl_to_python_list(row[10])
+                multimedia_id = None
+                if multimedia_ext_ids:
+                    for multimedia_ext_id in multimedia_ext_ids:
+                        multimedia_id = multimedia_mapping.get(multimedia_ext_id)
+                        if multimedia_id:
+                            break
 
                 try:
                     last_name, first_name = row[7].split()
@@ -40,10 +53,13 @@ class Command(BaseCommand):
 
                 authors.append(
                     Author(
-                        first_name=first_name, last_name=last_name,
+                        first_name=first_name,
+                        last_name=last_name,
                         description=data.get('about'),
-                        is_active=bool(int(row[5])), ext_id=row[0]
+                        is_active=bool(int(row[5])),
+                        multimedia_id=multimedia_id,
+                        ext_id=row[0]
                     )
                 )
-        Author.objects.bulk_create(authors, batch_size=100)
+        Author.objects.bulk_create(authors, batch_size=BATCH_SIZE)
         self.stdout.write('End...')
