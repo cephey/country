@@ -151,6 +151,11 @@ class Command(BaseCommand):
                     if vote_count:
                         rating = float(vote_sum) / vote_count
 
+                discussion_status = Article.DISCUSSION_STATUS.close
+                can_comment = data.get('can_comment')
+                if can_comment and can_comment == '1':
+                    discussion_status = Article.DISCUSSION_STATUS.open
+
                 articles.append(
                     Article(
                         title=row[7],
@@ -162,7 +167,7 @@ class Command(BaseCommand):
                         is_active=bool(int(row[5])),
                         source=data.get('source') or '',
                         source_link=data.get('sourcelink') or '',
-                        discussion_status=data.get('can_comment') or Article.DISCUSSION_STATUS.open,
+                        discussion_status=discussion_status,
                         status=Article.STATUS.approved,
                         video=row[15] or '',
                         is_news=is_news,
