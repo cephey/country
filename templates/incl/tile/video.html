@@ -24,7 +24,7 @@
                             <tr>
                                 <td>
                                     <div class="or2_normal">
-                                        <a href="{{ article.get_absolute_url }}">{{ article.title|truncatechars:50 }}</a>
+                                        <a href="{{ article.get_absolute_url }}">{{ article.title|safe|truncatechars:50 }}</a>
                                         <br />
                                         {{ article.publish_date|date:'d.m.Y' }}
                                     </div>

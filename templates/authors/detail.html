@@ -32,7 +32,7 @@
                 <ul>
                     {% for article in obj_atricles %}
                         <li>
-                            <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
+                            <a href="{{ article.get_absolute_url }}">{{ article.title|safe }}</a>
                             <span class="grey">
                                 {{ article.publish_date|date:'d.m.Y' }}
                             </span>
