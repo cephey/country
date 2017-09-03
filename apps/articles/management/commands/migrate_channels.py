@@ -1,5 +1,7 @@
 import csv
 from urllib.parse import urlparse, parse_qs
+
+from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
 from apps.articles.models import Section
@@ -19,7 +21,7 @@ class Command(BaseCommand):
         if not path:
             raise CommandError('Path is required')
 
-        with open(path, 'r', encoding='koi8-r') as csvfile:
+        with open(path, 'r', encoding=settings.MIGRATE_FILE_ENCODING) as csvfile:
             reader = csv.reader(csvfile)
 
             sections = []

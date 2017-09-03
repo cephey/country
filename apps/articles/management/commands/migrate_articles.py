@@ -2,6 +2,7 @@ import csv
 import math
 from collections import defaultdict
 
+from django.conf import settings
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.contrib.contenttypes.models import ContentType
@@ -56,7 +57,7 @@ class Command(BaseCommand):
 
         self.stdout.write('Parse file...')
         csv.field_size_limit(500 * 1024 * 1024)
-        with open(path, 'r', encoding='koi8-r') as csvfile:
+        with open(path, 'r', encoding=settings.MIGRATE_FILE_ENCODING) as csvfile:
             reader = csv.reader(csvfile)
 
             notices = []
@@ -162,14 +163,16 @@ class Command(BaseCommand):
                         description=data.get('note') or '',
                         content=data.get('body') or '',
                         section_id=section_id,
-                        author_names=data.get('author') or '',
+                        author_names=data.get('author') if (data.get('author')
+                                                            and len(data.get('author')) < 255) else '',
                         publish_date=timezone.make_aware(parse_datetime(row[4]), current_timezone, is_dst=True),
                         is_active=bool(int(row[5])),
                         source=data.get('source') or '',
-                        source_link=data.get('sourcelink') or '',
+                        source_link=data.get('sourcelink') if (data.get('sourcelink')
+                                                               and len(data.get('sourcelink')) < 200) else '',
                         discussion_status=discussion_status,
                         status=Article.STATUS.approved,
-                        video=row[15] or '',
+                        video=row[15] if (row[15] and len(row[15]) < 200) else '',
                         is_news=is_news,
                         is_ticker=is_ticker,
                         is_main_news=is_main_news,

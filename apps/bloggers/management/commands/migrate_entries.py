@@ -1,5 +1,7 @@
 import csv
 import html2text
+
+from django.conf import settings
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.core.management.base import BaseCommand, CommandError
@@ -23,7 +25,7 @@ class Command(BaseCommand):
 
         bloggers_mapping = dict(Blogger.objects.values_list('ext_id', 'id'))
 
-        with open(path, 'r', encoding='koi8-r') as csvfile:
+        with open(path, 'r', encoding=settings.MIGRATE_FILE_ENCODING) as csvfile:
             reader = csv.reader(csvfile)
 
             entries = []

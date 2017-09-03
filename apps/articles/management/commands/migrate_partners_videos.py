@@ -1,5 +1,7 @@
 import csv
+
 from django.db.models import Q
+from django.conf import settings
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.core.management.base import BaseCommand, CommandError
@@ -25,7 +27,7 @@ class Command(BaseCommand):
                                 .filter(~Q(channel=''), is_video=True)
                                 .values_list('ext_id', 'id'))
 
-        with open(path, 'r', encoding='koi8-r') as csvfile:
+        with open(path, 'r', encoding=settings.MIGRATE_FILE_ENCODING) as csvfile:
             reader = csv.reader(csvfile)
 
             for row in reader:

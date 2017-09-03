@@ -1,4 +1,6 @@
 import csv
+
+from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
 from apps.articles.models import Multimedia
@@ -26,7 +28,7 @@ class Command(BaseCommand):
 
         self.stdout.write('Parse file...')
         csv.field_size_limit(500 * 1024 * 1024)
-        with open(path, 'r', encoding='koi8-r') as csvfile:
+        with open(path, 'r', encoding=settings.MIGRATE_FILE_ENCODING) as csvfile:
             reader = csv.reader(csvfile)
 
             resources = []

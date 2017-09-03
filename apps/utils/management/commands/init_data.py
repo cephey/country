@@ -94,14 +94,14 @@ class Command(BaseCommand):
         self.stdout.write('Migrate bloggers...')
         call_command(
             'migrate_bloggers',
-            path=os.path.join(path, 'forum_bloggers.csv')
+            path=os.path.join(path, 'import_bloggers.csv')
         )
         update_bloggers_photos()
 
         self.stdout.write('Migrate bloggers entries...')
         call_command(
             'migrate_entries',
-            path=os.path.join(path, 'forum_bloggers_news.csv')
+            path=os.path.join(path, 'import_blogger_news.csv')
         )
         download_latest_entries()
         # ---------------------------------------------------------------------

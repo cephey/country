@@ -82,7 +82,7 @@ class Article(TimeStampedModel):
         ('new', 'Новая'),
         ('approved', 'Одобрена')
     )
-    title = models.CharField(_('Заголовок'), max_length=255)
+    title = models.CharField(_('Заголовок'), max_length=511)
     description = models.TextField(_('Описание'), blank=True)
     content = models.TextField(_('Содержание'), blank=True)
     section = models.ForeignKey('articles.Section', verbose_name=_('Раздел'), blank=True, null=True)
@@ -245,7 +245,7 @@ class Notice(TimeStampedModel):
         ('approved', 'Одобрен'),
         ('rejected', 'Отклонен')
     )
-    content = models.CharField(_('Содержание'), max_length=200)
+    content = models.TextField(_('Содержание'))
     status = models.CharField(_('Статус'), max_length=8, choices=STATUS, default=STATUS.new)
 
     objects = models.Manager.from_queryset(NoticeQuerySet)()

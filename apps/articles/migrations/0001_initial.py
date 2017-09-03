@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')),
                 ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Дата обновления')),
-                ('title', models.CharField(max_length=255, verbose_name='Заголовок')),
+                ('title', models.CharField(max_length=511, verbose_name='Заголовок')),
                 ('description', models.TextField(blank=True, verbose_name='Описание')),
                 ('content', models.TextField(blank=True, verbose_name='Содержание')),
                 ('author_names', models.CharField(blank=True, help_text='Список внешних авторов через запятую', max_length=255, verbose_name='Авторы')),
@@ -110,7 +110,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')),
                 ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Дата обновления')),
-                ('content', models.CharField(max_length=200, verbose_name='Содержание')),
+                ('content', models.TextField(verbose_name='Содержание')),
                 ('status', models.CharField(choices=[('new', 'Новый'), ('approved', 'Одобрен'), ('rejected', 'Отклонен')], default='new', max_length=8, verbose_name='Статус')),
             ],
             options={
