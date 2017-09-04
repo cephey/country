@@ -1,3 +1,4 @@
+import os
 import uuid
 import logging
 import requests
@@ -61,8 +62,14 @@ def update_single_blogger_photo(blogger_id):
     data = xmltodict.parse(resp.content)
     info = data['rss']['channel']
 
-    resp = requests.get(info['image']['url'])
-    blogger.photo.save(str(uuid.uuid4()), File(BytesIO(resp.content)), save=True)
+    image_url = info['image']['url']
+    resp = requests.get(image_url)
+    ext = resp.headers['content-type'].split('/')[1]
+
+    new_stem = str(uuid.uuid5(uuid.NAMESPACE_DNS, image_url)) + '.{}'.format(ext)
+    new_stem = os.path.join(new_stem[:2], new_stem[2:4], new_stem)
+
+    blogger.photo.save(new_stem, File(BytesIO(resp.content)))
 
 
 @app.task(name='update_bloggers_photos')

@@ -16,6 +16,34 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('--path', help='/path/to/dir/')
 
+    def save_images(self, instances, upload_path, import_path, attr_name):
+        saved_files = set()
+        model_name = '{}s'.format(instances.model.__name__.lower())
+
+        j = 0
+        for instance in instances:
+            stem, ext = os.path.splitext(instance.multimedia.image_url)
+            new_stem = str(uuid.uuid5(uuid.NAMESPACE_DNS, stem)) + ext
+            new_stem = os.path.join(new_stem[:2], new_stem[2:4], new_stem)
+
+            if new_stem in saved_files:
+                getattr(instance, attr_name).name = os.path.join(upload_path, new_stem)
+                instance.save(update_fields=[attr_name])
+            else:
+                abs_path = os.path.join(import_path, instance.multimedia.image_url)
+                try:
+                    getattr(instance, attr_name).save(new_stem, File(open(abs_path, 'rb')))
+                except FileNotFoundError:
+                    continue
+                else:
+                    saved_files.add(new_stem)
+
+            j += 1
+            if j % BATCH_SIZE == 0:
+                self.stdout.write('Save {} {} images...'.format(j, model_name))
+
+        self.stdout.write('Save {} {} images...'.format(j, model_name))
+
     def handle(self, *args, **kwargs):
         self.stdout.write('Start...')
 
@@ -31,31 +59,7 @@ class Command(BaseCommand):
                     .select_related('multimedia')
                     .order_by('-id'))
 
-        articles_saved_files = set()
-
-        j = 0
-        for article in articles:
-            stem, ext = os.path.splitext(article.multimedia.image_url)
-            new_stem = str(uuid.uuid5(uuid.NAMESPACE_DNS, stem)) + ext
-            new_stem = os.path.join(new_stem[:2], new_stem[2:4], new_stem)
-
-            if new_stem in articles_saved_files:
-                article.image.name = os.path.join(ARTICLE_UPLOAD_PATH, new_stem)
-                article.save(update_fields=['image'])
-            else:
-                abs_path = os.path.join(path, article.multimedia.image_url)
-                try:
-                    article.image.save(new_stem, File(open(abs_path, 'rb')))
-                except FileNotFoundError:
-                    continue
-                else:
-                    articles_saved_files.add(new_stem)
-
-            j += 1
-            if j % BATCH_SIZE == 0:
-                self.stdout.write('Save {} articles images...'.format(j))
-
-        self.stdout.write('Save {} articles images...'.format(j))
+        self.save_images(articles, ARTICLE_UPLOAD_PATH, path, 'image')
 
         # ---------------------------------------------------------------------
         self.stdout.write('--- get authors...')
@@ -65,31 +69,7 @@ class Command(BaseCommand):
                    .select_related('multimedia')
                    .order_by('-id'))
 
-        authors_saved_files = set()
-
-        j = 0
-        for author in authors:
-            stem, ext = os.path.splitext(author.multimedia.image_url)
-            new_stem = str(uuid.uuid5(uuid.NAMESPACE_DNS, stem)) + ext
-            new_stem = os.path.join(new_stem[:2], new_stem[2:4], new_stem)
-
-            if new_stem in authors_saved_files:
-                author.photo.name = os.path.join(AUTHOR_UPLOAD_PATH, new_stem)
-                author.save(update_fields=['photo'])
-            else:
-                abs_path = os.path.join(path, author.multimedia.image_url)
-                try:
-                    author.photo.save(new_stem, File(open(abs_path, 'rb')))
-                except FileNotFoundError:
-                    continue
-                else:
-                    authors_saved_files.add(new_stem)
-
-            j += 1
-            if j % BATCH_SIZE == 0:
-                self.stdout.write('Save {} authors images...'.format(j))
-
-        self.stdout.write('Save {} authors images...'.format(j))
+        self.save_images(authors, AUTHOR_UPLOAD_PATH, path, 'photo')
 
         # ---------------------------------------------------------------------
         self.stdout.write('--- get opposition resources...')
@@ -99,31 +79,7 @@ class Command(BaseCommand):
                      .select_related('multimedia')
                      .order_by('-id'))
 
-        resources_saved_files = set()
-
-        j = 0
-        for resource in resources:
-            stem, ext = os.path.splitext(resource.multimedia.image_url)
-            new_stem = str(uuid.uuid5(uuid.NAMESPACE_DNS, stem)) + ext
-            new_stem = os.path.join(new_stem[:2], new_stem[2:4], new_stem)
-
-            if new_stem in resources_saved_files:
-                resource.logo.name = os.path.join(RESOURCE_UPLOAD_PATH, new_stem)
-                resource.save(update_fields=['logo'])
-            else:
-                abs_path = os.path.join(path, resource.multimedia.image_url)
-                try:
-                    resource.logo.save(new_stem, File(open(abs_path, 'rb')))
-                except FileNotFoundError:
-                    continue
-                else:
-                    resources_saved_files.add(new_stem)
-
-            j += 1
-            if j % BATCH_SIZE == 0:
-                self.stdout.write('Save {} opposition resources images...'.format(j))
-
-        self.stdout.write('Save {} opposition resources images...'.format(j))
+        self.save_images(resources, RESOURCE_UPLOAD_PATH, path, 'logo')
 
         # ---------------------------------------------------------------------
 

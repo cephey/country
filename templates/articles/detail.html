@@ -4,7 +4,7 @@
 {% load htmlutils %}
 {% load capture_tags %}
 
-{% block title %}{{ object.title }} - {{ art_section.name }} - ФОРУМ.мск{% endblock %}
+{% block title %}{{ object.title|safe }} - {{ art_section.name }} - ФОРУМ.мск{% endblock %}
 
 {% block description %}{{ object.preview|striptags }}{% endblock %}
 
@@ -32,7 +32,7 @@
     {% capture as article_detail_tmpl silent %}
         <div class="p_hv" itemscope itemtype="http://schema.org/NewsArticle">
             <div class="big1 ortext newstitle">
-                <h1 itemprop="headline">{{ object.title }}</h1>
+                <h1 itemprop="headline">{{ object.title|safe }}</h1>
             </div>
             <p class="news-meta">
                 <span>Опубликовано {{ object.publish_date|date:'d.m.Y' }}</span>
