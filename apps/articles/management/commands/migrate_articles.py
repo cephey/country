@@ -164,7 +164,7 @@ class Command(BaseCommand):
                         content=data.get('body') or '',
                         section_id=section_id,
                         author_names=data.get('author') if (data.get('author')
-                                                            and len(data.get('author')) < 255) else '',
+                                                            and len(data.get('author')) < 511) else '',
                         publish_date=timezone.make_aware(parse_datetime(row[4]), current_timezone, is_dst=True),
                         is_active=bool(int(row[5])),
                         source=data.get('source') or '',
